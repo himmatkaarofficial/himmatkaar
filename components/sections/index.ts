@@ -1,0 +1,9 @@
+export { HeroSection } from './HeroSection';
+export { PartnerMarquee } from './PartnerMarquee';
+export { AboutSection } from './AboutSection';
+export { ProgramTracksSection } from './ProgramTracksSection';
+export { OfferingsSection } from './OfferingsSection';
+export { StatsBar } from './StatsBar';
+export { EventsSection } from './EventsSection';
+export { TestimonialsSection } from './TestimonialsSection';
+export { NewsletterSection } from './NewsletterSection';
