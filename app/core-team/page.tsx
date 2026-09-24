@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Linkedin, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Linkedin, Loader2, ChevronLeft, ChevronRight, Sparkles, CheckCircle2, UserCheck } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TeamCardImage from "@/components/TeamCardImage";
@@ -77,13 +77,13 @@ const DEFAULT_CORE_TEAM: TeamMember[] = [
 ];
 
 const ITEMS_PER_PAGE = 6;
-const CARD_COLORS = ['var(--color-field-deep)', 'var(--color-charcoal)', 'var(--color-field-olive)', 'var(--color-field-emerald)', 'var(--color-field-deep)', 'var(--color-charcoal)'];
 
 export default function CoreTeamPage() {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedMemberId, setSelectedMemberId] = useState<string>("1");
 
   // Background carousel auto-slide
   useEffect(() => {
@@ -130,14 +130,18 @@ export default function CoreTeamPage() {
     return displayMembers.slice(start, start + ITEMS_PER_PAGE);
   }, [displayMembers, currentPage]);
 
+  const selectedMember = useMemo(() => {
+    return displayMembers.find((m) => m.id === selectedMemberId) || displayMembers[0];
+  }, [displayMembers, selectedMemberId]);
+
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--color-canvas)', color: 'var(--color-text-primary)', overflowX: 'hidden' }}>
+    <div className="min-h-screen bg-[#07190e] text-white flex flex-col font-sans selection:bg-[#2d7a46] selection:text-white">
       <Navbar />
 
-      <main className="pt-20">
+      <main className="pt-20 flex-grow">
 
         {/* ── Page Hero with Animated Background Carousel ── */}
-        <section className="relative text-white flex items-center overflow-hidden py-4 sm:py-6">
+        <section className="relative text-white flex items-center overflow-hidden py-16 sm:py-20 border-b border-[#1d442a]">
           {/* Full-bleed Animated Image Carousel */}
           <AnimatePresence mode="sync">
             <motion.div
@@ -159,32 +163,34 @@ export default function CoreTeamPage() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Dark Monograph Vignette Overlay */}
-          <div className="absolute inset-0 z-10" style={{ background: 'rgba(13,40,24,0.72)' }} />
-          <div className="absolute inset-0 z-10" style={{ background: 'linear-gradient(to right, rgba(13,40,24,0.65), transparent)' }} />
+          {/* Refined Dark Monograph Vignette Overlay for Clear Image Visibility */}
+          <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#07190e]/80 via-[#0c2616]/50 to-[#07190e]/25" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#07190e]/90 via-transparent to-black/20" />
 
           {/* Hero Content */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-16 sm:pt-6 sm:pb-20 relative z-20 w-full">
-            <Link href="/team" className="inline-flex items-center gap-2 mb-6 label-gallery text-[var(--color-text-muted)] hover:text-white transition-colors">
-              <ArrowLeft size={14} /> Back to Team
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-20 w-full">
+            <Link 
+              href="/team" 
+              className="inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-lg bg-[#0c2616]/80 border border-[#1d442a] text-[#a3caad] hover:text-white hover:border-[#389456] transition-colors text-xs font-mono uppercase tracking-wider"
+            >
+              <ArrowLeft size={14} className="text-[#389456]" /> Back to Team Overview
             </Link>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <div className="mb-4">
-                <span className="annotation-curly">
-                  &#123; Core Team &#125;
-                </span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#0c2616]/80 border border-[#1d442a] text-[#f3ae29] text-xs font-mono uppercase tracking-widest mb-4">
+                <Sparkles size={14} className="text-[#f3ae29]" />
+                <span>Executive Leadership</span>
               </div>
-              <h1 
-                className="mb-4 text-white font-bold leading-[1.05] tracking-tight max-w-3xl"
-                style={{ fontSize: "clamp(34px, 5.5vw, 68px)" }}
-              >
+              <h1 className="font-serif-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 tracking-tight leading-[1.1] max-w-3xl">
                 Meet All Our{" "}
-                <span className="text-[#0ae448] underline decoration-[#0ae448]/40 underline-offset-8">
-                  Teammates!
+                <span className="text-[#389456]">
+                  Teammates
+                </span>
+                <span className="font-urdu block text-2xl sm:text-3xl lg:text-4xl text-[#f3ae29] font-normal mt-2">
+                  ہمت کار لیڈرشپ
                 </span>
               </h1>
-              <p className="text-base sm:text-lg lg:text-xl leading-relaxed text-[#8ea896] max-w-2xl font-normal">
-                Explore our complete leadership team and the people driving Himmatkaar forward.
+              <p className="text-base sm:text-lg text-[#d1e7d8] max-w-2xl font-normal leading-relaxed">
+                Explore our full leadership roster and the dedicated mentors, facilitators, and directors building the future of Pakistan&apos;s youth.
               </p>
             </motion.div>
           </div>
@@ -192,99 +198,162 @@ export default function CoreTeamPage() {
           {/* Carousel Prev Arrow */}
           <button
             onClick={prevImage}
-            className="absolute left-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-full transition-all"
-            style={{ border: '1px solid var(--color-border)', background: 'rgba(13,40,24,0.5)' }}
+            className="absolute left-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-xl bg-[#0c2616]/80 border border-[#1d442a] hover:border-[#389456] hover:bg-[#0c2616] transition-all"
             aria-label="Previous image"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={20} className="text-[#389456]" />
           </button>
 
           {/* Carousel Next Arrow */}
           <button
             onClick={nextImage}
-            className="absolute right-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-full transition-all"
-            style={{ border: '1px solid var(--color-border)', background: 'rgba(13,40,24,0.5)' }}
+            className="absolute right-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-xl bg-[#0c2616]/80 border border-[#1d442a] hover:border-[#389456] hover:bg-[#0c2616] transition-all"
             aria-label="Next image"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={20} className="text-[#389456]" />
           </button>
 
-          {/* Carousel Dot Indicators */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2.5">
+          {/* Carousel Indicators */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
             {TEAM_HERO_IMAGES.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentImageIndex(index)}
-                className="h-1.5 rounded-full transition-all duration-300"
-                style={{
-                  width: index === currentImageIndex ? '28px' : '8px',
-                  background: index === currentImageIndex
-                    ? 'var(--color-badge-gold)'
-                    : 'rgba(255,255,255,0.3)',
-                }}
+                className={`h-2 rounded-md transition-all duration-300 ${
+                  index === currentImageIndex ? "w-8 bg-[#f3ae29]" : "w-2.5 bg-white/30"
+                }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
         </section>
 
-        {/* ── Team Grid ── */}
-        <section style={{ background: 'var(--color-canvas)', padding: '60px 0 80px' }}>
+        {/* ── CRISP WHITE SECTION: Interactive Team Member Cards ── */}
+        <section className="bg-[#f8faf7] py-16 sm:py-24 border-b border-[#e2ede4]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            
+            {/* Header with Selector Hint */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+              <div>
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#e8f5ec] text-[#2d7a46] text-xs font-mono font-semibold uppercase tracking-wider mb-3">
+                  <UserCheck size={14} className="text-[#2d7a46]" /> Click any card to preview full details
+                </span>
+                <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-[#0c2616] tracking-tight">
+                  Core Team Directory
+                </h2>
+                <p className="text-slate-600 text-sm sm:text-base mt-1">
+                  Click on any leader below to switch their details and view their impact highlights.
+                </p>
+              </div>
+
+              {selectedMember && (
+                <div className="p-3 px-4 rounded-xl bg-white border border-[#2d7a46]/30 shadow-sm flex items-center gap-3">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#2d7a46] animate-pulse" />
+                  <span className="text-xs font-medium text-slate-700">
+                    Currently Viewing: <strong className="text-[#0c2616]">{selectedMember.name}</strong>
+                  </span>
+                </div>
+              )}
+            </div>
+
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="animate-spin" size={40} style={{ color: 'var(--color-badge-gold)' }} />
+                <Loader2 className="animate-spin text-[#2d7a46]" size={40} />
               </div>
             ) : (
               <>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {paginatedMembers.map((member, idx) => (
-                    <motion.div
-                      key={member.id}
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: idx * 0.08 }}
-                      style={{ background: CARD_COLORS[idx % CARD_COLORS.length], borderRadius: 'var(--radius-cards)', overflow: 'hidden', display: 'flex', flexDirection: 'column', border: '1px solid var(--color-border)' }}
-                    >
-                      <div style={{ margin: '20px 20px 0', borderRadius: 'var(--radius-images)', overflow: 'hidden', position: 'relative', height: '240px' }}>
-                        <TeamCardImage
-                          src={member.image}
-                          alt={member.name}
-                          name={member.name}
-                          sizes="400px"
-                        />
-                        {member.linkedin && (
-                          <a
-                            href={member.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="absolute bottom-3 right-3"
-                            style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'var(--color-badge-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-dark)', zIndex: 10 }}
-                            aria-label={`${member.name} LinkedIn`}
-                          >
-                            <Linkedin size={13} />
-                          </a>
-                        )}
-                      </div>
-                      <div style={{ padding: '20px 20px 28px' }}>
-                        <h3 className="font-portrait mb-1" style={{ fontSize: '24px', color: 'var(--color-text-primary)' }}>{member.name}</h3>
-                        <p className="label-gallery mb-3" style={{ color: 'var(--color-badge-gold)' }}>{member.role}</p>
-                        <p style={{ fontSize: '14px', lineHeight: 1.3, color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans-gallery)' }}>{member.bio}</p>
-                      </div>
-                    </motion.div>
-                  ))}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {paginatedMembers.map((member, idx) => {
+                    const isSelected = selectedMemberId === member.id;
+                    return (
+                      <motion.div
+                        key={member.id}
+                        initial={{ opacity: 0, y: 25 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: idx * 0.06 }}
+                        onClick={() => setSelectedMemberId(member.id)}
+                        className={`cursor-pointer rounded-2xl p-5 border transition-all duration-300 flex flex-col justify-between group ${
+                          isSelected
+                            ? "bg-[#0c2616] text-white border-[#2d7a46] shadow-xl ring-2 ring-[#2d7a46]/40 scale-[1.02]"
+                            : "bg-white text-slate-900 border-[#e2ede4] hover:border-[#2d7a46]/50 hover:shadow-md"
+                        }`}
+                      >
+                        <div>
+                          {/* Image container */}
+                          <div className="rounded-xl overflow-hidden relative h-56 w-full border border-black/5 mb-4">
+                            <TeamCardImage
+                              src={member.image}
+                              alt={member.name}
+                              name={member.name}
+                              sizes="400px"
+                            />
+                            {isSelected && (
+                              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-[#2d7a46] text-white text-[10px] font-mono uppercase tracking-wider flex items-center gap-1 shadow-md">
+                                <CheckCircle2 size={12} /> Active
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                              <h3 className={`font-serif-heading text-xl font-bold transition-colors ${
+                                isSelected ? "text-white" : "text-[#0c2616] group-hover:text-[#2d7a46]"
+                              }`}>
+                                {member.name}
+                              </h3>
+                              <p className={`text-xs font-mono font-semibold uppercase tracking-wider ${
+                                isSelected ? "text-[#f3ae29]" : "text-[#2d7a46]"
+                              }`}>
+                                {member.role}
+                              </p>
+                            </div>
+                            {member.linkedin && (
+                              <a
+                                href={member.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className={`p-2 rounded-lg border transition-colors ${
+                                  isSelected 
+                                    ? "bg-[#163e24] border-[#2d7a46] text-[#f3ae29] hover:bg-[#2d7a46] hover:text-white"
+                                    : "bg-[#f8faf7] border-[#e2ede4] text-[#2d7a46] hover:bg-[#e8f5ec]"
+                                }`}
+                                aria-label={`${member.name} LinkedIn`}
+                              >
+                                <Linkedin size={15} />
+                              </a>
+                            )}
+                          </div>
+
+                          <p className={`text-xs leading-relaxed mt-2 line-clamp-3 ${
+                            isSelected ? "text-[#d1e7d8]" : "text-slate-600"
+                          }`}>
+                            {member.bio}
+                          </p>
+                        </div>
+
+                        <div className={`mt-5 pt-3 border-t flex items-center justify-between text-[11px] font-mono ${
+                          isSelected ? "border-[#1d442a] text-[#a3caad]" : "border-slate-100 text-slate-500"
+                        }`}>
+                          <span>HimmatKaar Leadership</span>
+                          <span className={isSelected ? "text-[#f3ae29] font-bold" : "text-[#2d7a46]"}>
+                            {isSelected ? "Selected" : "Click to select"}
+                          </span>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
 
-                {/* Pagination */}
+                {/* Pagination Controls */}
                 {totalPages > 1 && (
                   <div className="mt-12 flex flex-wrap items-center justify-center gap-2">
                     <button
                       type="button"
                       onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                       disabled={currentPage === 1}
-                      className="btn-ghost-pill"
-                      style={{ opacity: currentPage === 1 ? 0.4 : 1, cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                      className="px-4 py-2 rounded-xl bg-white border border-[#e2ede4] text-xs font-medium text-slate-700 hover:border-[#2d7a46] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     >
                       Previous
                     </button>
@@ -294,20 +363,11 @@ export default function CoreTeamPage() {
                         key={page}
                         type="button"
                         onClick={() => setCurrentPage(page)}
-                        style={{
-                          padding: '7px 16px',
-                          borderRadius: 'var(--radius-buttons)',
-                          fontSize: '9px',
-                          fontWeight: 700,
-                          letterSpacing: '0.15em',
-                          fontFamily: 'var(--font-sans-gallery)',
-                          border: `1px solid ${page === currentPage ? 'var(--color-badge-gold)' : 'var(--color-border)'}`,
-                          background: page === currentPage ? 'var(--color-badge-gold)' : 'transparent',
-                          color: page === currentPage ? 'var(--color-text-dark)' : 'var(--color-text-muted)',
-                          cursor: 'pointer',
-                          textTransform: 'uppercase',
-                          transition: 'all 0.2s',
-                        }}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold font-mono transition-all ${
+                          page === currentPage
+                            ? "bg-[#0c2616] text-white border border-[#0c2616] shadow-sm"
+                            : "bg-white text-slate-700 border border-[#e2ede4] hover:border-[#2d7a46]"
+                        }`}
                       >
                         {page}
                       </button>
@@ -317,8 +377,7 @@ export default function CoreTeamPage() {
                       type="button"
                       onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                       disabled={currentPage === totalPages}
-                      className="btn-ghost-pill"
-                      style={{ opacity: currentPage === totalPages ? 0.4 : 1, cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                      className="px-4 py-2 rounded-xl bg-white border border-[#e2ede4] text-xs font-medium text-slate-700 hover:border-[#2d7a46] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     >
                       Next
                     </button>
@@ -326,6 +385,35 @@ export default function CoreTeamPage() {
                 )}
               </>
             )}
+          </div>
+        </section>
+
+        {/* ── Dark Forest CTA ── */}
+        <section className="bg-[#0c2616] py-16 sm:py-20 border-t border-[#1d442a]">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#07190e] border border-[#1d442a] text-[#f3ae29] text-xs font-mono uppercase tracking-wider mb-4">
+              Join Our Mission
+            </span>
+            <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-white mb-4 tracking-tight">
+              Want to Join the HimmatKaar Team?
+            </h2>
+            <p className="text-base text-[#d1e7d8] max-w-xl mx-auto mb-8 font-normal leading-relaxed">
+              We are continually expanding our facilitator network, campus leads, and strategic advisors across Pakistan.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/contact"
+                className="px-6 py-3.5 rounded-xl bg-[#2d7a46] text-white font-semibold hover:bg-[#389456] transition-colors text-sm shadow-md"
+              >
+                Apply for Leadership & Mentorship
+              </Link>
+              <Link
+                href="/ambassadors"
+                className="px-6 py-3.5 rounded-xl bg-[#07190e] border border-[#1d442a] text-[#d1e7d8] hover:text-white hover:border-[#389456] transition-colors text-sm"
+              >
+                Explore Campus Ambassadors
+              </Link>
+            </div>
           </div>
         </section>
 

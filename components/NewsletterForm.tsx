@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Mail, ArrowUpRight, CheckCircle2 } from "lucide-react";
 
 export default function NewsletterForm() {
   const [email, setEmail] = useState("");
@@ -29,8 +30,7 @@ export default function NewsletterForm() {
       } else {
         setError(data.error || 'Failed to subscribe');
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
       setError('Failed to subscribe. Please try again.');
     } finally {
       setSubmitting(false);
@@ -38,20 +38,20 @@ export default function NewsletterForm() {
   };
 
   return (
-    <div className="max-w-[540px]">
+    <div className="max-w-[560px]">
       {success && (
         <div
-          className="mb-4 px-4 py-3 rounded-full bg-[#0ae448]/10 border border-[#0ae448]/40 text-[#0ae448] font-mono text-xs uppercase tracking-wider flex items-center gap-2"
+          className="mb-4 px-4 py-3 rounded-xl bg-[#e8f5ec] border border-[#2d7a46] text-[#2d7a46] font-mono text-xs uppercase tracking-wider flex items-center gap-2"
           role="alert"
           aria-live="polite"
         >
-          <span className="w-2 h-2 rounded-full bg-[#0ae448] shadow-[0_0_8px_#0ae448]" />
-          Successfully subscribed to newsletter!
+          <CheckCircle2 size={16} className="text-[#2d7a46]" />
+          Successfully subscribed to Himmatkaar newsletter!
         </div>
       )}
       {error && (
         <div
-          className="mb-4 px-4 py-3 rounded-full bg-red-950/40 border border-red-500/40 text-red-300 font-mono text-xs uppercase tracking-wider"
+          className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-300 text-red-700 font-mono text-xs uppercase tracking-wider"
           role="alert"
           aria-live="assertive"
         >
@@ -64,27 +64,35 @@ export default function NewsletterForm() {
         aria-label="Newsletter subscription form"
       >
         <label htmlFor="newsletter-email" className="sr-only">Email address</label>
-        <input
-          id="newsletter-email"
-          type="email"
-          placeholder="Enter your email address"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="flex-1 bg-[#08170d] border border-[#1a3a24] rounded-full px-6 py-3.5 text-white placeholder-[#a8d5b5]/50 focus:outline-none focus:border-[#0ae448] focus:ring-1 focus:ring-[#0ae448] transition-all text-sm sm:text-base font-normal"
-          aria-label="Email address for newsletter subscription"
-          aria-describedby={error ? "newsletter-error" : undefined}
-        />
+        <div className="relative flex-1">
+          {/* Naked Mail Icon */}
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4a6b53] pointer-events-none">
+            <Mail size={18} />
+          </div>
+          <input
+            id="newsletter-email"
+            type="email"
+            placeholder="Enter your email address"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full bg-[#f8faf7] border border-[#d8e6db] rounded-xl pl-11 pr-4 py-3.5 text-[#07190e] placeholder-[#4a6b53]/60 focus:outline-none focus:border-[#2d7a46] focus:ring-1 focus:ring-[#2d7a46] transition-all text-sm font-normal shadow-sm"
+            aria-label="Email address for newsletter subscription"
+            aria-describedby={error ? "newsletter-error" : undefined}
+          />
+        </div>
         <button
           type="submit"
           disabled={submitting}
-          className="btn-gsap-cta disabled:opacity-50 whitespace-nowrap justify-center"
+          className="btn-gsap-cta disabled:opacity-50 whitespace-nowrap justify-center !rounded-xl !py-3.5 !px-6"
           aria-label={submitting ? 'Subscribing to newsletter' : 'Subscribe to newsletter'}
         >
-          {submitting ? 'Subscribing…' : 'Subscribe'}
+          <span>{submitting ? 'Subscribing…' : 'SUBSCRIBE'}</span>
+          <ArrowUpRight size={16} className="text-[#f3ae29]" />
         </button>
       </form>
     </div>
   );
 }
+
 

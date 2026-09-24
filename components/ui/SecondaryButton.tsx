@@ -6,6 +6,7 @@ export interface SecondaryButtonProps {
   onClick?: () => void;
   href?: string;
   disabled?: boolean;
+  className?: string;
 }
 
 export const SecondaryButton: React.FC<SecondaryButtonProps> = ({
@@ -13,8 +14,9 @@ export const SecondaryButton: React.FC<SecondaryButtonProps> = ({
   onClick,
   href,
   disabled = false,
+  className = "",
 }) => {
-  const baseClasses = "btn-ghost-pill inline-flex items-center justify-center text-center cursor-pointer font-bold disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseClasses = `btn-gsap-ghost inline-flex items-center justify-center text-center cursor-pointer font-bold disabled:opacity-50 disabled:cursor-not-allowed !rounded-xl ${className}`;
 
   if (href && !disabled) {
     return (

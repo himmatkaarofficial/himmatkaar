@@ -4,20 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft, ShieldCheck, Sparkles } from "lucide-react";
 import { signIn } from "@/lib/auth";
-
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  background: 'var(--color-espresso)',
-  border: '1px solid var(--color-border)',
-  borderRadius: 'var(--radius-controls)',
-  padding: '12px 16px 12px 44px',
-  color: 'var(--color-text-primary)',
-  fontSize: '14px',
-  fontFamily: 'var(--font-sans-gallery)',
-  outline: 'none',
-};
 
 export default function Login() {
   const router = useRouter();
@@ -41,96 +29,127 @@ export default function Login() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--color-canvas)', display: 'flex', color: 'var(--color-text-primary)' }}>
+    <div className="min-h-screen bg-[#07190e] text-white flex flex-col lg:flex-row font-sans selection:bg-[#2d7a46] selection:text-white">
 
       {/* ── Left — Hero Panel ── */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden" style={{ background: 'var(--color-field-forest)' }}>
-        <div className="absolute inset-0" style={{ background: 'rgba(13,40,24,0.55)', zIndex: 1 }} />
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#0c2616] border-r border-[#1d442a]">
         <div
-          className="absolute inset-0 bg-center bg-cover"
+          className="absolute inset-0 bg-center bg-cover z-0"
           style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80")' }}
         />
-        <div className="relative z-10 flex flex-col justify-between h-full p-16 text-white">
-          <Link href="/" className="flex items-center gap-3 w-fit hover:opacity-80 transition-opacity">
-            <Image src="/himmatkaar-logo.jpg" alt="Himmatkaar Logo" width={40} height={40} style={{ borderRadius: 'var(--radius-controls)' }} />
-            <span className="font-portrait" style={{ fontSize: '20px', color: 'var(--color-text-primary)' }}>Himmatkaar</span>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07190e]/95 via-[#07190e]/60 to-[#07190e]/30 z-10" />
+        <div className="relative z-20 flex flex-col justify-between h-full p-16 text-white w-full">
+          <Link href="/" className="inline-flex items-center gap-3 w-fit group">
+            <div className="w-11 h-11 rounded-xl overflow-hidden border border-[#2d7a46]/40 relative">
+              <Image src="/himmatkaar-logo.jpg" alt="Himmatkaar Logo" fill className="object-cover" />
+            </div>
+            <div>
+              <span className="font-serif-heading text-xl font-bold text-white block">HimmatKaar</span>
+              <span className="font-urdu text-sm text-[#f3ae29]">ہمت کار پورٹل</span>
+            </div>
           </Link>
-          <div>
-            <span className="badge-gallery badge-gold inline-flex mb-5">Admin Portal</span>
-            <h1 className="font-portrait mb-4" style={{ fontSize: '40px', color: 'var(--color-text-primary)', maxWidth: '400px' }}>
-              Empowering the youth of tomorrow.
+          
+          <div className="max-w-md">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#07190e]/90 border border-[#1d442a] text-[#f3ae29] text-xs font-mono uppercase tracking-widest mb-4">
+              <ShieldCheck size={14} className="text-[#f3ae29]" />
+              <span>Administrative Gateway</span>
+            </div>
+            <h1 className="font-serif-heading text-4xl sm:text-5xl font-extrabold text-white mb-4 leading-tight">
+              Empowering the youth of Pakistan.
             </h1>
-            <p style={{ fontSize: '15px', lineHeight: 1.3, color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans-gallery)', maxWidth: '360px' }}>
-              Join a community dedicated to growth, innovation, and leadership. Your journey to excellence starts here.
+            <p className="text-base text-[#d1e7d8] leading-relaxed font-normal">
+              Sign in to manage curriculum milestones, verify student portfolios, and coordinate nationwide events.
             </p>
+          </div>
+
+          <div className="text-xs font-mono text-[#a3caad]">
+            © {new Date().getFullYear()} HimmatKaar Foundation. All rights reserved.
           </div>
         </div>
       </div>
 
-      {/* ── Right — Form Panel ── */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8" style={{ background: 'var(--color-canvas)' }}>
-        <div className="w-full" style={{ maxWidth: '400px' }}>
+      {/* ── Right — Form Panel (Crisp Light Canvas) ── */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-[#f8faf7] text-slate-900">
+        <div className="w-full max-w-[440px]">
+          
+          {/* Back button */}
+          <Link 
+            href="/" 
+            className="inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-lg bg-white border border-[#e2ede4] text-slate-600 hover:text-[#0c2616] hover:border-[#2d7a46] transition-colors text-xs font-mono uppercase tracking-wider shadow-sm"
+          >
+            <ArrowLeft size={14} className="text-[#2d7a46]" /> Return Home
+          </Link>
+
           {/* Mobile logo */}
-          <div className="lg:hidden flex justify-center mb-8">
-            <Link href="/" className="flex items-center gap-3">
-              <Image src="/himmatkaar-logo.jpg" alt="Himmatkaar Logo" width={36} height={36} style={{ borderRadius: 'var(--radius-controls)' }} />
-              <span className="font-portrait" style={{ fontSize: '18px', color: 'var(--color-text-primary)' }}>Himmatkaar</span>
-            </Link>
+          <div className="lg:hidden flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl overflow-hidden border border-[#2d7a46]/30 relative">
+              <Image src="/himmatkaar-logo.jpg" alt="Himmatkaar Logo" fill className="object-cover" />
+            </div>
+            <div>
+              <span className="font-serif-heading text-lg font-bold text-[#0c2616]">HimmatKaar</span>
+              <span className="font-urdu text-xs text-[#2d7a46] block">ہمت کار</span>
+            </div>
           </div>
 
-          <span className="badge-gallery badge-mint inline-flex mb-5">Secure Login</span>
-          <h2 className="font-portrait mb-2" style={{ fontSize: '35px', color: 'var(--color-text-primary)' }}>Login</h2>
-          <p className="mb-8" style={{ fontSize: '14px', color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans-gallery)' }}>
-            Sign in to access your dashboard account.
-          </p>
+          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-[#e2ede4] shadow-lg">
+            <div className="mb-6">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#e8f5ec] text-[#2d7a46] text-xs font-mono font-semibold uppercase tracking-wider mb-2">
+                <Sparkles size={13} className="text-[#2d7a46]" /> Secure Portal
+              </span>
+              <h2 className="font-serif-heading text-2xl sm:text-3xl font-bold text-[#0c2616]">
+                Portal Login
+              </h2>
+              <p className="text-slate-600 text-xs sm:text-sm mt-1">
+                Enter your credentials to access the administrative dashboard.
+              </p>
+            </div>
 
-          <div style={{ background: 'var(--color-charcoal)', borderRadius: 'var(--radius-cards)', padding: '32px', border: '1px solid var(--color-border)' }}>
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div style={{ background: 'rgba(185,83,74,0.15)', border: '1px solid rgba(185,83,74,0.3)', borderRadius: 'var(--radius-controls)', padding: '10px 14px', fontSize: '12px', color: '#e07a73', fontFamily: 'var(--font-sans-gallery)', letterSpacing: '0.08em' }}>
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-red-600 text-xs font-medium">
                   {error}
                 </div>
               )}
 
               {/* Email */}
               <div>
-                <label style={{ display: 'block', fontSize: '9px', fontWeight: 700, letterSpacing: '0.20em', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans-gallery)', marginBottom: '6px' }} htmlFor="email">
+                <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-slate-700 mb-1.5" htmlFor="email">
                   Email Address
                 </label>
-                <div style={{ position: 'relative' }}>
-                  <Mail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
+                <div className="relative">
+                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#2d7a46]" />
                   <input
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
-                    style={inputStyle}
-                    placeholder="name@company.com"
+                    className="w-full bg-[#f8faf7] border border-[#e2ede4] rounded-xl pl-10 pr-4 py-3 text-slate-900 text-sm focus:border-[#2d7a46] focus:bg-white outline-none transition-colors"
+                    placeholder="admin@himmatkaar.com"
                   />
                 </div>
               </div>
 
               {/* Password */}
               <div>
-                <label style={{ display: 'block', fontSize: '9px', fontWeight: 700, letterSpacing: '0.20em', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans-gallery)', marginBottom: '6px' }} htmlFor="password">
+                <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-slate-700 mb-1.5" htmlFor="password">
                   Password
                 </label>
-                <div style={{ position: 'relative' }}>
-                  <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
+                <div className="relative">
+                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#2d7a46]" />
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     required
-                    style={{ ...inputStyle, paddingRight: '44px' }}
+                    className="w-full bg-[#f8faf7] border border-[#e2ede4] rounded-xl pl-10 pr-10 py-3 text-slate-900 text-sm focus:border-[#2d7a46] focus:bg-white outline-none transition-colors"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                     aria-label="Toggle password visibility"
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -142,17 +161,20 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-filled-pill w-full justify-center"
-                style={{ width: '100%', fontSize: '10px', padding: '12px 20px', opacity: loading ? 0.7 : 1 }}
+                className="w-full py-3.5 rounded-xl bg-[#2d7a46] text-white font-bold hover:bg-[#389456] transition-colors text-sm shadow-md flex items-center justify-center gap-2 mt-2 disabled:opacity-60"
               >
-                {loading ? <><Loader2 className="animate-spin" size={14} /> Signing in…</> : 'Log In'}
+                {loading ? <><Loader2 className="animate-spin" size={16} /> Signing in…</> : 'Log In to Dashboard'}
               </button>
             </form>
           </div>
 
-          <p className="label-gallery mt-6 text-center" style={{ color: 'var(--color-text-muted)' }}>
-            Public signup is coming soon for other roles.
-          </p>
+          <div className="mt-6 text-center text-xs font-mono text-slate-500">
+            Need student registration?{" "}
+            <Link href="/signup" className="text-[#2d7a46] font-bold hover:underline">
+              Check upcoming open access
+            </Link>
+          </div>
+
         </div>
       </div>
     </div>

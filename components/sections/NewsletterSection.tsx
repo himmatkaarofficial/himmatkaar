@@ -6,21 +6,33 @@ import NewsletterForm from "@/components/NewsletterForm";
 
 export const NewsletterSection: React.FC = () => {
   return (
-    <section className="bg-[#08170d] py-20 md:py-28 text-white border-t border-[#1a3a24] relative overflow-hidden">
-      {/* Background glow */}
-      <div 
-        className="absolute bottom-0 right-10 w-[400px] h-[300px] bg-[#0ae448]/5 blur-[120px] pointer-events-none rounded-full" 
-        aria-hidden="true" 
-      />
+    <section className="bg-[#0a2012] py-20 md:py-28 text-white border-t border-[#1d442a] relative overflow-hidden">
+      {/* Background subtle grid */}
+      <div className="absolute inset-0 bg-grid-subtle opacity-35 pointer-events-none" />
 
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Card Surface */}
-        <div className="bg-[#0e2417] rounded-2xl p-8 sm:p-12 md:p-16 border border-[#1a3a24] relative overflow-hidden shadow-2xl">
-          {/* Subtle internal gradient */}
+        {/* Floating Card Surface (Crisp White Container, Soft Rounded 2XL) */}
+        <div className="bg-white rounded-2xl p-8 sm:p-12 md:p-16 border border-[#d8e6db] relative overflow-hidden shadow-2xl text-[#07190e]">
+          
+          {/* Light Grid Inside Container */}
           <div 
-            className="absolute top-0 right-0 w-[350px] h-[350px] bg-[#0ae448]/5 blur-[90px] pointer-events-none rounded-full" 
-            aria-hidden="true" 
+            className="absolute inset-0 pointer-events-none opacity-30"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, rgba(45, 122, 70, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(45, 122, 70, 0.08) 1px, transparent 1px)
+              `,
+              backgroundSize: '32px 32px'
+            }}
           />
+
+          {/* Urdu Calligraphy Background Watermark */}
+          <div
+            className="absolute -right-4 -bottom-6 font-urdu text-8xl sm:text-9xl text-[#2d7a46]/10 select-none pointer-events-none"
+            dir="rtl"
+          >
+            ہمت کار
+          </div>
 
           <div className="relative z-10">
             <motion.div
@@ -31,18 +43,18 @@ export const NewsletterSection: React.FC = () => {
               className="mb-8"
             >
               <div className="mb-3">
-                <span className="annotation-curly">
-                  &#123; Stay Updated &#125;
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#e8f5ec] border border-[#a3caad] text-[#2d7a46] font-mono text-xs font-bold uppercase tracking-wider">
+                  • Stay Updated
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 tracking-tight leading-[1.08]">
+              <h2 className="font-serif-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-[#07190e] mb-3 tracking-tight leading-[1.08]">
                 Stay{" "}
-                <span className="text-[#0ae448] underline decoration-[#0ae448]/40 underline-offset-8">
+                <span className="text-[#2d7a46] italic">
                   Updated!
                 </span>
               </h2>
-              <p className="text-base sm:text-lg lg:text-xl leading-relaxed text-[#8ea896] max-w-lg font-normal">
-                Subscribe to our newsletter for the latest news, events, and opportunities across Pakistan.
+              <p className="text-base sm:text-lg leading-relaxed text-[#3a5342] max-w-lg font-normal">
+                Subscribe to our newsletter for the latest cohort announcements, technical masterclasses, and career opportunities across Pakistan.
               </p>
             </motion.div>
 
@@ -60,4 +72,5 @@ export const NewsletterSection: React.FC = () => {
     </section>
   );
 };
+
 

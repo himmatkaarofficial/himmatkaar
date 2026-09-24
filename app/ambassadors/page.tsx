@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Linkedin, MapPin, Loader2, ArrowRight } from "lucide-react";
+import { ArrowLeft, Linkedin, MapPin, Loader2, ArrowRight, Sparkles, CheckCircle2, GraduationCap } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TeamCardImage from "@/components/TeamCardImage";
@@ -25,7 +25,7 @@ const DEFAULT_AMBASSADORS: Ambassador[] = [
     name: "Ayesha Khan",
     role: "Campus Ambassador",
     city: "Lahore",
-    bio: "Representing Himmatkaar at UET Lahore and driving student engagement initiatives.",
+    bio: "Representing Himmatkaar at UET Lahore and driving student engagement initiatives across STEM departments.",
     image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
     linkedin: "https://linkedin.com",
   },
@@ -52,22 +52,16 @@ const DEFAULT_AMBASSADORS: Ambassador[] = [
     name: "Bilal Ahmed",
     role: "Campus Ambassador",
     city: "Karachi",
-    bio: "Fostering entrepreneurial networks and campus events at NED University Karachi.",
+    bio: "Fostering entrepreneurial networks and organizing campus discovery bootcamps at NED University Karachi.",
     image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80",
     linkedin: "https://linkedin.com",
   },
 ];
 
-const CARD_COLORS = [
-  'var(--color-field-deep)',
-  'var(--color-charcoal)',
-  'var(--color-field-olive)',
-  'var(--color-field-emerald)',
-];
-
 export default function Ambassadors() {
   const [ambassadors, setAmbassadors] = useState<Ambassador[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedAmbassadorId, setSelectedAmbassadorId] = useState<string>("1");
 
   useEffect(() => {
     const fetchAmbassadors = async () => {
@@ -87,106 +81,202 @@ export default function Ambassadors() {
   }, []);
 
   const displayAmbassadors = ambassadors.length > 0 ? ambassadors : DEFAULT_AMBASSADORS;
+  const selectedAmbassador = displayAmbassadors.find((a) => a.id === selectedAmbassadorId) || displayAmbassadors[0];
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--color-canvas)', color: 'var(--color-text-primary)', overflowX: 'hidden' }}>
+    <div className="min-h-screen bg-[#07190e] text-white flex flex-col font-sans selection:bg-[#2d7a46] selection:text-white">
       <Navbar />
 
-      <main className="pt-20">
+      <main className="pt-20 flex-grow">
 
         {/* ── Page Header ── */}
-        <section className="bg-[#08170d] pt-6 pb-16 sm:pt-8 sm:pb-20 border-b border-[#1a3a24]">
+        <section className="bg-gradient-to-b from-[#0c2616] to-[#07190e] pt-12 pb-16 sm:pt-16 sm:pb-20 border-b border-[#1d442a]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <Link href="/team" className="inline-flex items-center gap-2 mb-6 text-xs font-mono text-[#0ae448] hover:text-white transition-colors uppercase">
-              <ArrowLeft size={14} /> Back to Team
+            <Link 
+              href="/team" 
+              className="inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-lg bg-[#07190e]/80 border border-[#1d442a] text-[#a3caad] hover:text-white hover:border-[#389456] transition-colors text-xs font-mono uppercase tracking-wider"
+            >
+              <ArrowLeft size={14} className="text-[#389456]" /> Back to Team Overview
             </Link>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <div className="mb-4">
-                <span className="annotation-curly">&#123; Campus Ambassadors &#125;</span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#07190e] border border-[#1d442a] text-[#f3ae29] text-xs font-mono uppercase tracking-widest mb-4">
+                <GraduationCap size={14} className="text-[#f3ae29]" />
+                <span>Nationwide Student Network</span>
               </div>
-              <h1 className="text-3xl sm:text-5xl font-bold text-white mb-4 tracking-tight max-w-2xl">
-                Our Ambassadors{" "}
-                <span className="text-[#0ae448] underline decoration-[#0ae448]/40 underline-offset-8">
-                  Network!
+              <h1 className="font-serif-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 tracking-tight leading-[1.1] max-w-3xl">
+                Campus Ambassadors{" "}
+                <span className="text-[#389456]">
+                  Network
+                </span>
+                <span className="font-urdu block text-2xl sm:text-3xl lg:text-4xl text-[#f3ae29] font-normal mt-2">
+                  ہمت کار سفیر
                 </span>
               </h1>
-              <p className="text-base sm:text-lg lg:text-xl text-[#8ea896] leading-relaxed max-w-2xl font-normal">
-                Meet our passionate campus ambassadors representing Himmatkaar across Pakistan&apos;s major cities and universities.
+              <p className="text-base sm:text-lg text-[#d1e7d8] max-w-2xl font-normal leading-relaxed">
+                Meet our passionate student leaders representing Himmatkaar across Pakistan&apos;s leading universities, running local events, and connecting peers with industry opportunities.
               </p>
             </motion.div>
           </div>
         </section>
 
-        {/* ── Ambassadors Grid ── */}
-        <section className="bg-[#08170d] py-16 sm:py-20">
+        {/* ── CRISP WHITE SECTION: Interactive Ambassador Grid ── */}
+        <section className="bg-[#f8faf7] py-16 sm:py-24 border-b border-[#e2ede4]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+              <div>
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#e8f5ec] text-[#2d7a46] text-xs font-mono font-semibold uppercase tracking-wider mb-3">
+                  <Sparkles size={14} className="text-[#2d7a46]" /> Interactive Ambassadors Directory
+                </span>
+                <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-[#0c2616] tracking-tight">
+                  University Representatives
+                </h2>
+                <p className="text-slate-600 text-sm sm:text-base mt-1">
+                  Click any ambassador card to highlight their profile and see their campus mission.
+                </p>
+              </div>
+
+              {selectedAmbassador && (
+                <div className="p-3 px-4 rounded-xl bg-white border border-[#2d7a46]/30 shadow-sm flex items-center gap-3">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#2d7a46] animate-pulse" />
+                  <span className="text-xs font-medium text-slate-700">
+                    Selected: <strong className="text-[#0c2616]">{selectedAmbassador.name} ({selectedAmbassador.city})</strong>
+                  </span>
+                </div>
+              )}
+            </div>
+
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="animate-spin text-[#0ae448]" size={40} />
+                <Loader2 className="animate-spin text-[#2d7a46]" size={40} />
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {displayAmbassadors.map((ambassador, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.08 }}
-                    className="bg-[#0e2417] rounded-xl border border-[#1a3a24] hover:border-[#0ae448]/50 transition-all duration-300 overflow-hidden flex flex-col justify-between group"
-                  >
-                    <div className="m-4 rounded-lg overflow-hidden relative h-48 border border-[#1a3a24]">
-                      <TeamCardImage
-                        src={ambassador.image}
-                        alt={ambassador.name}
-                        name={ambassador.name}
-                        sizes="300px"
-                      />
-                      {/* City badge */}
-                      <span className="bg-[#08170d]/90 text-[#0ae448] border border-[#1a3a24] font-mono text-[10px] px-2.5 py-1 rounded-md absolute top-3 left-3 flex items-center gap-1 uppercase">
-                        <MapPin size={10} /> {ambassador.city}
-                      </span>
-                      {ambassador.linkedin && (
-                        <a
-                          href={ambassador.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="absolute bottom-3 right-3 w-7 h-7 rounded-full bg-[#0ae448] flex items-center justify-center text-[#08170d] hover:bg-[#abff84] transition-colors z-10"
-                          aria-label={`${ambassador.name} LinkedIn`}
-                        >
-                          <Linkedin size={12} />
-                        </a>
-                      )}
-                    </div>
-                    <div className="p-4 pt-1 flex-1">
-                      <h3 className="text-lg font-bold text-white mb-1 group-hover:text-[#0ae448] transition-colors">{ambassador.name}</h3>
-                      <p className="text-[10px] font-mono text-[#0ae448] uppercase tracking-widest mb-2">&#123; {ambassador.role} &#125;</p>
-                      <p className="text-xs text-[#8ea896] leading-relaxed font-normal">{ambassador.bio}</p>
-                    </div>
-                  </motion.div>
-                ))}
+                {displayAmbassadors.map((ambassador, idx) => {
+                  const isSelected = selectedAmbassadorId === ambassador.id;
+                  return (
+                    <motion.div
+                      key={ambassador.id || idx}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.08 }}
+                      onClick={() => setSelectedAmbassadorId(ambassador.id)}
+                      className={`cursor-pointer rounded-2xl p-4 border transition-all duration-300 flex flex-col justify-between group ${
+                        isSelected
+                          ? "bg-[#0c2616] text-white border-[#2d7a46] shadow-xl ring-2 ring-[#2d7a46]/40 scale-[1.02]"
+                          : "bg-white text-slate-900 border-[#e2ede4] hover:border-[#2d7a46]/50 hover:shadow-md"
+                      }`}
+                    >
+                      <div>
+                        {/* Image Frame */}
+                        <div className="rounded-xl overflow-hidden relative h-52 w-full border border-black/5 mb-4">
+                          <TeamCardImage
+                            src={ambassador.image}
+                            alt={ambassador.name}
+                            name={ambassador.name}
+                            sizes="300px"
+                          />
+                          {/* City tag */}
+                          <span className={`absolute top-3 left-3 font-mono text-[11px] px-2.5 py-1 rounded-md flex items-center gap-1 uppercase font-semibold shadow-sm ${
+                            isSelected 
+                              ? "bg-[#07190e]/95 text-[#f3ae29] border border-[#1d442a]"
+                              : "bg-white/95 text-[#2d7a46] border border-[#e2ede4]"
+                          }`}>
+                            <MapPin size={11} className={isSelected ? "text-[#f3ae29]" : "text-[#2d7a46]"} /> {ambassador.city}
+                          </span>
+
+                          {isSelected && (
+                            <div className="absolute top-3 right-3 px-2 py-1 rounded-md bg-[#2d7a46] text-white text-[10px] font-mono uppercase tracking-wider flex items-center gap-1 shadow-md">
+                              <CheckCircle2 size={12} />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-start justify-between gap-2 mb-1.5">
+                          <div>
+                            <h3 className={`font-serif-heading text-lg font-bold transition-colors ${
+                              isSelected ? "text-white" : "text-[#0c2616] group-hover:text-[#2d7a46]"
+                            }`}>
+                              {ambassador.name}
+                            </h3>
+                            <p className={`text-[11px] font-mono font-semibold uppercase tracking-wider ${
+                              isSelected ? "text-[#f3ae29]" : "text-[#2d7a46]"
+                            }`}>
+                              {ambassador.role}
+                            </p>
+                          </div>
+
+                          {ambassador.linkedin && (
+                            <a
+                              href={ambassador.linkedin}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className={`p-2 rounded-lg border transition-colors ${
+                                isSelected 
+                                  ? "bg-[#163e24] border-[#2d7a46] text-[#f3ae29] hover:bg-[#2d7a46] hover:text-white"
+                                  : "bg-[#f8faf7] border-[#e2ede4] text-[#2d7a46] hover:bg-[#e8f5ec]"
+                              }`}
+                              aria-label={`${ambassador.name} LinkedIn`}
+                            >
+                              <Linkedin size={13} />
+                            </a>
+                          )}
+                        </div>
+
+                        <p className={`text-xs leading-relaxed mt-2 ${
+                          isSelected ? "text-[#d1e7d8]" : "text-slate-600"
+                        }`}>
+                          {ambassador.bio}
+                        </p>
+                      </div>
+
+                      <div className={`mt-4 pt-3 border-t flex items-center justify-between text-[11px] font-mono ${
+                        isSelected ? "border-[#1d442a] text-[#a3caad]" : "border-slate-100 text-slate-500"
+                      }`}>
+                        <span>Campus Lead</span>
+                        <span className={isSelected ? "text-[#f3ae29] font-bold" : "text-[#2d7a46]"}>
+                          {isSelected ? "Selected" : "Click to select"}
+                        </span>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
           </div>
         </section>
 
         {/* ── Become Ambassador CTA ── */}
-        <section style={{ background: 'var(--color-canvas)', padding: '0 0 80px' }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <section className="bg-[#0c2616] py-20 border-t border-[#1d442a]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              style={{ background: 'var(--color-field-forest)', borderRadius: 'var(--radius-cards)', padding: '60px 40px', border: '1px solid var(--color-border)' }}
+              className="bg-gradient-to-br from-[#0a2012] to-[#07190e] rounded-3xl p-8 sm:p-12 border border-[#1d442a] shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8"
             >
-              <span className="badge-gallery badge-gold inline-flex mb-5">Apply</span>
-              <h2 className="font-portrait mb-4" style={{ fontSize: '35px', color: 'var(--color-text-primary)' }}>Become a Campus Ambassador</h2>
-              <p className="mb-8" style={{ fontSize: '15px', lineHeight: 1.3, color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans-gallery)', maxWidth: '480px' }}>
-                Join our network and represent Himmatkaar at your university
-              </p>
-              <Link href="/contact">
-                <button className="btn-filled-pill">Apply Now <ArrowRight size={14} /></button>
-              </Link>
+              <div className="max-w-xl">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0c2616] border border-[#1d442a] text-[#f3ae29] text-xs font-mono uppercase tracking-wider mb-4">
+                  Campus Leadership 2026
+                </span>
+                <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-white mb-4 tracking-tight">
+                  Become a Campus Ambassador
+                </h2>
+                <p className="text-base text-[#d1e7d8] leading-relaxed font-normal">
+                  Lead student drives, organize exclusive HimmatKaar networking sessions at your university, and earn executive mentorship and certificates.
+                </p>
+              </div>
+
+              <div className="shrink-0 w-full md:w-auto">
+                <Link
+                  href="/contact"
+                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#2d7a46] text-white font-bold hover:bg-[#389456] transition-colors text-base shadow-lg"
+                >
+                  Apply to Represent <ArrowRight size={18} />
+                </Link>
+              </div>
             </motion.div>
           </div>
         </section>

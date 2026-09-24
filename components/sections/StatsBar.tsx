@@ -17,12 +17,9 @@ interface StatsBarProps {
 
 export const StatsBar: React.FC<StatsBarProps> = ({ stats }) => {
   return (
-    <section className="bg-[#08170d] py-16 md:py-20 border-y border-[#1a3a24] relative overflow-hidden">
-      {/* Subtle background glow */}
-      <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[160px] bg-[#0ae448]/5 blur-[100px] pointer-events-none rounded-full" 
-        aria-hidden="true" 
-      />
+    <section className="bg-[#0a2012] py-16 md:py-20 border-y border-[#1d442a] relative overflow-hidden">
+      {/* Background subtle grid */}
+      <div className="absolute inset-0 bg-grid-subtle opacity-30 pointer-events-none" />
 
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
@@ -35,9 +32,9 @@ export const StatsBar: React.FC<StatsBarProps> = ({ stats }) => {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="bg-[#0e2417] rounded-lg p-5 sm:p-7 md:p-8 border border-[#1a3a24] hover:border-[#0ae448]/40 transition-all duration-300 text-center group"
+              className="bg-[#0c2616] rounded-2xl p-6 sm:p-8 border border-[#1d442a] hover:border-[#389456] transition-all duration-300 text-center shadow-xl group hover:shadow-[0_8px_30px_rgba(45,122,70,0.12)]"
             >
-              <p className="font-mono text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 tracking-tight group-hover:text-[#0ae448] transition-colors duration-300">
+              <p className="font-serif-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 tracking-tight group-hover:text-[#f3ae29] transition-colors duration-300">
                 <CountUp
                   end={stat.value}
                   duration={2}
@@ -45,7 +42,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({ stats }) => {
                   prefix={stat.prefix}
                 />
               </p>
-              <p className="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-[#a8d5b5] font-medium">
+              <p className="font-mono text-xs uppercase tracking-widest text-[#a3caad] font-semibold">
                 {stat.label}
               </p>
             </div>

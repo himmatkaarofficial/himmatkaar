@@ -32,6 +32,15 @@ export async function POST(request: Request) {
     } else if (type === 'ambassador') {
       bucket = 'ambassador-images';
       folder = 'ambassadors';
+    } else if (type === 'launchpad') {
+      bucket = 'launchpad-images';
+      folder = 'launchpad';
+    } else if (type === 'partner') {
+      bucket = 'launchpad-images';
+      folder = 'partners';
+    } else if (type === 'testimonial' || type === 'member') {
+      bucket = 'launchpad-images';
+      folder = 'testimonials';
     }
 
     // Generate unique filename
@@ -44,12 +53,29 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(arrayBuffer);
 
     // Upload to Supabase Storage using admin client (bypasses RLS)
-    const { data, error } = await supabaseAdmin.storage
+    let { data, error } = await supabaseAdmin.storage
       .from(bucket)
       .upload(filePath, buffer, {
         contentType: file.type,
         upsert: false
       });
+
+    // If bucket not found, automatically create bucket and retry upload
+    if (error && (error.message?.toLowerCase().includes('bucket not found') || error.message?.toLowerCase().includes('not found'))) {
+      try {
+        await supabaseAdmin.storage.createBucket(bucket, { public: true });
+        const retry = await supabaseAdmin.storage
+          .from(bucket)
+          .upload(filePath, buffer, {
+            contentType: file.type,
+            upsert: false
+          });
+        data = retry.data;
+        error = retry.error;
+      } catch (createErr) {
+        console.error('Failed to auto-create bucket:', createErr);
+      }
+    }
 
     if (error) {
       console.error('Supabase upload error:', error);

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Linkedin, Loader2, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Linkedin, Loader2, ArrowUpRight, ChevronLeft, ChevronRight, CheckCircle2, Sparkles, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TeamCardImage from "@/components/TeamCardImage";
@@ -125,20 +125,12 @@ const DEFAULT_AMBASSADORS: Ambassador[] = [
   },
 ];
 
-const cardStyle = (bg: string): React.CSSProperties => ({
-  background: bg,
-  borderRadius: 'var(--radius-cards)',
-  overflow: 'hidden',
-  display: 'flex',
-  flexDirection: 'column',
-  border: '1px solid var(--color-border)',
-});
-
 export default function Team() {
   const [coreTeam, setCoreTeam] = useState<TeamMember[]>([]);
   const [ambassadors, setAmbassadors] = useState<Ambassador[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedAmbassadorIndex, setSelectedAmbassadorIndex] = useState<number | null>(0);
 
   // Background carousel auto-slide
   useEffect(() => {
@@ -182,19 +174,17 @@ export default function Team() {
     fetchData();
   }, []);
 
-  const chromaColors = ['var(--color-field-deep)', 'var(--color-field-forest)', 'var(--color-field-olive)', 'var(--color-charcoal)', 'var(--color-field-emerald)', 'var(--color-field-deep)'];
   const displayCoreTeam = coreTeam.length > 0 ? coreTeam : DEFAULT_CORE_TEAM;
   const displayAmbassadors = ambassadors.length > 0 ? ambassadors : DEFAULT_AMBASSADORS;
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--color-canvas)', color: 'var(--color-text-primary)', overflowX: 'hidden' }}>
+    <div className="min-h-screen bg-[#08170d] text-white overflow-x-hidden">
       <Navbar />
 
       <main className="pt-20">
 
-        {/* ── Page Hero with Animated Background Image Carousel ── */}
-        <section className="relative text-white flex items-center overflow-hidden py-4 sm:py-6">
-          {/* Full-bleed Animated Image Carousel */}
+        {/* ── 1. Page Hero with Carousel (Dark Forest) ── */}
+        <section className="relative text-white flex items-center overflow-hidden py-16 sm:py-20 min-h-[520px]">
           <AnimatePresence mode="sync">
             <motion.div
               key={currentImageIndex}
@@ -215,68 +205,59 @@ export default function Team() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Dark Monograph Vignette Overlay */}
-          <div className="absolute inset-0 z-10" style={{ background: 'rgba(13,40,24,0.72)' }} />
-          <div className="absolute inset-0 z-10" style={{ background: 'linear-gradient(to right, rgba(13,40,24,0.65), transparent)' }} />
+          {/* Refined Vignette Overlay */}
+          <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#07190e]/80 via-[#0a2012]/50 to-[#0c2616]/25" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0a2012]/90 via-transparent to-black/20" />
+          <div className="absolute inset-0 z-10 bg-radial-grid opacity-30 pointer-events-none" />
 
           {/* Hero Content */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-16 sm:pt-6 sm:pb-20 relative z-20 w-full">
-            <Link href="/" className="inline-flex items-center gap-2 mb-6 label-gallery text-[var(--color-text-muted)] hover:text-white transition-colors">
-              <ArrowLeft size={14} /> Back to Home
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 relative z-20 w-full">
+            <Link href="/" className="inline-flex items-center gap-2 mb-6 text-sm font-mono text-[#a3caad] hover:text-white transition-colors">
+              <ArrowLeft size={16} /> Back to Home
             </Link>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <div className="mb-4">
-                <span className="annotation-curly">
-                  &#123; Our Team &#125;
+                <span className="badge-category-green !rounded-md !px-3 !py-1 !text-xs">
+                  • Leadership & Mentors
                 </span>
               </div>
-              <h1 
-                className="mb-4 text-white font-bold leading-[1.05] tracking-tight max-w-3xl"
-                style={{ fontSize: "clamp(34px, 5.5vw, 68px)" }}
-              >
+              <h1 className="font-serif-heading mb-4 text-white font-bold leading-[1.08] tracking-tight max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
                 Meet the People Behind{" "}
-                <span className="text-[#0ae448] underline decoration-[#0ae448]/40 underline-offset-8">
+                <span className="text-[#389456] italic">
                   Himmatkaar!
                 </span>
               </h1>
-              <p className="text-base sm:text-lg lg:text-xl leading-relaxed text-[#8ea896] max-w-2xl font-normal">
-                Our dedicated team of professionals is committed to empowering youth across Pakistan and creating lasting impact in communities.
+              <p className="text-base sm:text-lg lg:text-xl leading-relaxed text-[#d1e7d8] max-w-2xl font-normal">
+                Our dedicated team of professionals is committed to empowering youth across Pakistan and creating lasting impact in local communities.
               </p>
             </motion.div>
           </div>
 
-          {/* Carousel Prev Arrow */}
+          {/* Carousel controls */}
           <button
             onClick={prevImage}
-            className="absolute left-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-full transition-all"
-            style={{ border: '1px solid var(--color-border)', background: 'rgba(13,40,24,0.5)' }}
+            className="hidden sm:flex absolute left-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-xl border border-[#1d442a] bg-[#0c2616]/80 hover:bg-[#10321e] hover:border-[#389456] transition-all backdrop-blur-md"
             aria-label="Previous image"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={22} className="text-[#e8f5ec]" />
           </button>
-
-          {/* Carousel Next Arrow */}
           <button
             onClick={nextImage}
-            className="absolute right-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-full transition-all"
-            style={{ border: '1px solid var(--color-border)', background: 'rgba(13,40,24,0.5)' }}
+            className="hidden sm:flex absolute right-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-xl border border-[#1d442a] bg-[#0c2616]/80 hover:bg-[#10321e] hover:border-[#389456] transition-all backdrop-blur-md"
             aria-label="Next image"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={22} className="text-[#e8f5ec]" />
           </button>
 
-          {/* Carousel Dot Indicators */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2.5">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
             {TEAM_HERO_IMAGES.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentImageIndex(index)}
-                className="h-1.5 rounded-full transition-all duration-300"
+                className="h-2 rounded-sm transition-all duration-300"
                 style={{
                   width: index === currentImageIndex ? '28px' : '8px',
-                  background: index === currentImageIndex
-                    ? 'var(--color-badge-gold)'
-                    : 'rgba(255,255,255,0.3)',
+                  background: index === currentImageIndex ? '#f3ae29' : 'rgba(232,245,236,0.3)',
                 }}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -284,29 +265,27 @@ export default function Team() {
           </div>
         </section>
 
-        {/* ── Core Team ── */}
-        <section className="bg-[#08170d] py-16 sm:py-20 border-t border-[#1a3a24]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+        {/* ── 2. Core Team (Dark Forest Green) ── */}
+        <section className="bg-[#0a2012] py-20 sm:py-24 border-t border-[#1d442a]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
               <div>
                 <div className="mb-2">
-                  <span className="annotation-curly">&#123; Leadership &#125;</span>
+                  <span className="annotation-curly">Leadership</span>
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-                  Core{" "}
-                  <span className="text-[#0ae448] underline decoration-[#0ae448]/40 underline-offset-8">
-                    Team!
-                  </span>
+                <h2 className="font-serif-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight">
+                  Core <span className="text-[#389456] italic">Team!</span>
                 </h2>
               </div>
-              <Link href="/core-team" className="btn-gsap-ghost inline-flex items-center gap-2">
-                View All <ArrowRight size={14} className="text-[#0ae448]" />
+              <Link href="/core-team" className="btn-gsap-ghost inline-flex items-center gap-2 !rounded-xl">
+                <span>View Full Team</span>
+                <ArrowUpRight size={16} className="text-[#f3ae29]" />
               </Link>
             </div>
 
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="animate-spin text-[#0ae448]" size={40} />
+                <Loader2 className="animate-spin text-[#389456]" size={40} />
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -317,10 +296,9 @@ export default function Team() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.08 }}
-                    className="bg-[#0e2417] rounded-xl border border-[#1a3a24] hover:border-[#0ae448]/50 transition-all duration-300 overflow-hidden flex flex-col justify-between group"
+                    className="bg-[#0c2616] rounded-2xl border border-[#1d442a] hover:border-[#389456] hover:bg-[#10321e] transition-all duration-300 overflow-hidden flex flex-col justify-between group shadow-xl"
                   >
-                    {/* Image tile */}
-                    <div className="m-4 rounded-lg overflow-hidden relative h-56 border border-[#1a3a24]">
+                    <div className="m-4 rounded-xl overflow-hidden relative h-60 border border-[#1d442a] bg-[#0a2012]">
                       <TeamCardImage
                         src={member.image}
                         alt={member.name}
@@ -332,18 +310,18 @@ export default function Team() {
                           href={member.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-[#0ae448] flex items-center justify-center text-[#08170d] hover:bg-[#abff84] transition-colors z-10"
+                          className="absolute bottom-3 right-3 w-9 h-9 rounded-xl bg-[#0c2616]/90 border border-[#2d7a46] flex items-center justify-center text-[#f3ae29] hover:bg-[#2d7a46] hover:text-white transition-all z-10 shadow-lg"
                           aria-label={`${member.name} LinkedIn`}
                         >
-                          <Linkedin size={14} />
+                          <Linkedin size={16} />
                         </a>
                       )}
                     </div>
-                    {/* Card body */}
-                    <div className="p-5 pt-1">
-                      <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#0ae448] transition-colors">{member.name}</h3>
-                      <p className="text-xs font-mono text-[#0ae448] tracking-widest uppercase mb-3">&#123; {member.role} &#125;</p>
-                      <p className="text-xs sm:text-sm leading-relaxed text-[#8ea896] font-normal">{member.bio}</p>
+                    
+                    <div className="p-6 pt-1">
+                      <h3 className="font-serif-heading text-xl font-bold text-white mb-1 group-hover:text-[#d1e7d8] transition-colors">{member.name}</h3>
+                      <p className="text-xs font-mono text-[#389456] font-semibold uppercase tracking-wider mb-3">{member.role}</p>
+                      <p className="text-sm leading-relaxed text-[#a3caad] font-normal">{member.bio}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -352,72 +330,130 @@ export default function Team() {
           </div>
         </section>
 
-        {/* ── Ambassadors ── */}
-        <section style={{ background: 'var(--color-charcoal)', padding: '80px 0', borderTop: '1px solid var(--color-border)' }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex justify-between items-end mb-12">
+        {/* ── 3. Campus Ambassadors (Crisp White / Light Section with Interactive Selection) ── */}
+        <section className="bg-white py-20 sm:py-24 border-t border-[#e2ede4] text-[#07190e] relative">
+          <div 
+            className="absolute inset-0 pointer-events-none opacity-40"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, rgba(45, 122, 70, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(45, 122, 70, 0.08) 1px, transparent 1px)
+              `,
+              backgroundSize: '36px 36px'
+            }}
+          />
+
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
               <div>
-                <h2 className="font-portrait mb-2" style={{ fontSize: '35px', color: 'var(--color-text-primary)' }}>Campus Ambassadors</h2>
-                <p className="label-gallery" style={{ color: 'var(--color-text-muted)' }}>Our representatives spreading impact across Pakistan</p>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#e8f5ec] border border-[#a3caad] text-[#2d7a46] font-mono text-xs font-bold uppercase tracking-wider mb-3">
+                  • Campus Ambassadors
+                </span>
+                <h2 className="font-serif-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-[#07190e] tracking-tight leading-[1.08]">
+                  Campus <span className="text-[#2d7a46] italic">Ambassadors!</span>
+                </h2>
+                <p className="text-base sm:text-lg text-[#3a5342] font-normal leading-relaxed mt-2">
+                  Our student leaders driving impact across Pakistan&apos;s leading universities. Click any card to select.
+                </p>
               </div>
-              <Link href="/ambassadors" className="btn-ghost-pill inline-flex items-center gap-2">
-                View All <ArrowRight size={11} />
+              <Link href="/ambassadors" className="btn-gsap-ghost !text-[#07190e] !border-[#d8e6db] hover:!border-[#2d7a46] inline-flex items-center gap-2 !rounded-xl">
+                <span>View All Ambassadors</span>
+                <ArrowUpRight size={16} className="text-[#2d7a46]" />
               </Link>
             </div>
 
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="animate-spin" size={40} style={{ color: 'var(--color-badge-gold)' }} />
+                <Loader2 className="animate-spin text-[#2d7a46]" size={40} />
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-                {displayAmbassadors.map((member, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.08 }}
-                    style={cardStyle(chromaColors[idx % chromaColors.length])}
-                  >
-                    <div style={{ margin: '16px 16px 0', borderRadius: 'var(--radius-images)', overflow: 'hidden', position: 'relative', height: '200px' }}>
-                      <TeamCardImage
-                        src={member.image}
-                        alt={member.name}
-                        name={member.name}
-                        sizes="300px"
-                      />
-                    </div>
-                    <div style={{ padding: '16px 16px 24px' }}>
-                      <h3 className="font-portrait mb-1" style={{ fontSize: '20px', color: 'var(--color-text-primary)' }}>{member.name}</h3>
-                      <p className="label-gallery mb-2" style={{ color: 'var(--color-badge-mint)' }}>{member.role}</p>
-                      <p style={{ fontSize: '13px', lineHeight: 1.3, color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans-gallery)' }}>{member.bio}</p>
-                    </div>
-                  </motion.div>
-                ))}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {displayAmbassadors.map((member, idx) => {
+                  const isSelected = selectedAmbassadorIndex === idx;
+                  return (
+                    <motion.div
+                      key={idx}
+                      onClick={() => setSelectedAmbassadorIndex(idx)}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.08 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`rounded-2xl border transition-all duration-300 overflow-hidden flex flex-col justify-between cursor-pointer select-none shadow-md ${
+                        isSelected
+                          ? "bg-[#0c2616] text-white border-[#2d7a46] shadow-2xl scale-[1.02]"
+                          : "bg-[#f8faf7] text-[#07190e] border-[#d8e6db] hover:border-[#2d7a46] hover:bg-[#f0f6f2]"
+                      }`}
+                    >
+                      <div className="m-4 rounded-xl overflow-hidden relative h-48 border border-[#d8e6db] bg-white">
+                        <TeamCardImage
+                          src={member.image}
+                          alt={member.name}
+                          name={member.name}
+                          sizes="300px"
+                        />
+                        <span className={`font-mono text-[10px] font-bold px-2.5 py-1 rounded-md absolute top-3 left-3 flex items-center gap-1 uppercase border ${
+                          isSelected ? "bg-[#2d7a46] text-white border-[#389456]" : "bg-white/95 text-[#2d7a46] border-[#d8e6db]"
+                        }`}>
+                          <MapPin size={10} /> {member.city}
+                        </span>
+                      </div>
+                      
+                      <div className="p-5 pt-1 flex-1">
+                        <h3 className={`font-serif-heading text-lg font-bold mb-1 ${
+                          isSelected ? "text-white" : "text-[#07190e]"
+                        }`}>
+                          {member.name}
+                        </h3>
+                        <p className={`text-xs font-mono font-semibold uppercase tracking-wider mb-2 ${
+                          isSelected ? "text-[#f3ae29]" : "text-[#2d7a46]"
+                        }`}>
+                          {member.role}
+                        </p>
+                        <p className={`text-xs leading-relaxed ${
+                          isSelected ? "text-[#d1e7d8]" : "text-[#4a6b53]"
+                        }`}>
+                          {member.bio}
+                        </p>
+                      </div>
+
+                      <div className={`px-5 pb-4 pt-3 border-t text-xs font-mono flex items-center justify-between ${
+                        isSelected ? "border-[#1d442a] text-[#f3ae29]" : "border-[#e2ede4] text-[#4a6b53]"
+                      }`}>
+                        <span>{isSelected ? "✓ Selected Ambassador" : "Click to select"}</span>
+                        <span className={`text-[10px] font-bold ${isSelected ? "text-[#f3ae29]" : "text-[#2d7a46]"}`}>
+                          {isSelected ? "ACTIVE" : "SELECT →"}
+                        </span>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
           </div>
         </section>
 
-        {/* ── Join CTA ── */}
-        <section style={{ background: 'var(--color-canvas)', padding: '80px 0' }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              style={{ background: 'var(--color-field-forest)', borderRadius: 'var(--radius-cards)', padding: '60px 40px', textAlign: 'left', border: '1px solid var(--color-border)' }}
-            >
-              <span className="badge-gallery badge-gold inline-flex mb-5">Join Us</span>
-              <h2 className="font-portrait mb-4" style={{ fontSize: '35px', color: 'var(--color-text-primary)' }}>Want to Join Our Team?</h2>
-              <p className="mb-8" style={{ fontSize: '15px', lineHeight: 1.3, color: 'var(--color-text-muted)', fontFamily: 'var(--font-sans-gallery)', maxWidth: '480px' }}>
-                We&apos;re always looking for passionate individuals who want to make a difference
+        {/* ── 4. Join CTA ── */}
+        <section className="bg-[#0a2012] py-20 sm:py-24 border-t border-[#1d442a]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-[#0c2616] rounded-2xl p-8 sm:p-12 border border-[#1d442a] shadow-2xl relative overflow-hidden text-center max-w-4xl mx-auto">
+              <div className="mb-3">
+                <span className="annotation-curly">Join Us</span>
+              </div>
+              <h2 className="font-serif-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight leading-[1.08]">
+                Want to Join <span className="text-[#389456] italic">Our Team?</span>
+              </h2>
+              <p className="text-base sm:text-lg text-[#a3caad] mb-8 max-w-xl mx-auto font-normal leading-relaxed">
+                We&apos;re always looking for passionate youth mentors, operators, and campus leaders who want to create lasting social impact.
               </p>
               <Link href="/contact">
-                <button className="btn-filled-pill">Get in Touch <ArrowRight size={14} /></button>
+                <button className="btn-gsap-cta inline-flex items-center gap-2 !rounded-xl !py-3.5 !px-8">
+                  <span>Get in Touch</span>
+                  <ArrowUpRight size={16} className="text-[#f3ae29]" />
+                </button>
               </Link>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -426,3 +462,4 @@ export default function Team() {
     </div>
   );
 }
+

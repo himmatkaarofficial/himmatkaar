@@ -12,7 +12,8 @@ import {
   Camera, 
   BookOpen,
   Sparkles,
-  Maximize2
+  Maximize2,
+  Linkedin
 } from "lucide-react";
 import { CohortSession, SessionPhoto } from "@/lib/cohort1-data";
 
@@ -131,9 +132,21 @@ export default function SessionDetailModal({
                       {session.mentor.role}
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-1 tracking-tight">
-                    {session.mentor.name}
-                  </h3>
+                  <div className="flex items-center justify-between gap-3 mb-1 font-sans">
+                    <h3 className="text-xl font-bold text-white tracking-tight">
+                      {session.mentor.name}
+                    </h3>
+                    {session.mentor.linkedin && (
+                      <a
+                        href={session.mentor.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#0a66c2]/20 hover:bg-[#0a66c2]/30 text-[#70b5f9] border border-[#0a66c2]/40 rounded-lg text-xs font-semibold transition-all shrink-0"
+                      >
+                        <Linkedin size={14} /> LinkedIn
+                      </a>
+                    )}
+                  </div>
                   <p className="text-xs font-mono text-[#a8d5b5] mb-2.5 flex items-center gap-1.5">
                     <Award size={14} className="text-[#0ae448]" />
                     Expertise: <span className="text-white font-semibold">{session.mentor.expertise}</span>

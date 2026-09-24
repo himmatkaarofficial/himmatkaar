@@ -11,7 +11,9 @@ import {
   Sparkles, 
   CheckCircle2, 
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  Linkedin,
+  ArrowRight
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -28,12 +30,55 @@ const LAUNCHPAD_HERO_IMAGES = [
 ];
 
 export default function Cohort1Page() {
+  const [sessions, setSessions] = useState<CohortSession[]>(COHORT_1_SESSIONS);
   const [selectedSession, setSelectedSession] = useState<CohortSession | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isNextCohortModalOpen, setIsNextCohortModalOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Fetch sessions dynamically from DB
+  useEffect(() => {
+    async function fetchDbSessions() {
+      try {
+        const res = await fetch("/api/launchpad?cohort=Cohort%201", { cache: "no-store" });
+        const data = await res.json();
+        if (data.sessions && data.sessions.length > 0) {
+          const mapped: CohortSession[] = data.sessions.map((s: any) => ({
+            id: s.id,
+            sessionNumber: s.session_number,
+            title: s.title,
+            category: s.category,
+            date: s.date,
+            time: s.time,
+            status: "Completed",
+            mentor: {
+              id: s.id,
+              name: s.mentor_name,
+              initials: s.mentor_name.split(" ").map((n: string) => n[0]).join(""),
+              role: s.mentor_role,
+              expertise: s.category,
+              photoUrl: s.mentor_photo_url,
+              bio: s.mentor_bio,
+              linkedin: s.mentor_linkedin,
+            },
+            summary: s.summary,
+            keyTakeaways: s.key_takeaways || [],
+            sessionPhotos: (s.session_photos || []).map((p: any, idx: number) => ({
+              id: `${s.id}-p-${idx}`,
+              url: p.url,
+              caption: p.caption,
+            })),
+          }));
+          setSessions(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to fetch sessions for cohort-1:", err);
+      }
+    }
+    fetchDbSessions();
+  }, []);
 
   // Background carousel auto-slide
   useEffect(() => {
@@ -53,14 +98,7 @@ export default function Cohort1Page() {
 
   const categories = [
     "All",
-    "Career Development",
-    "Communication",
-    "Corporate Readiness",
-    "Academic & Research",
-    "Career Coaching",
-    "Technology",
-    "Personal Branding",
-    "Networking",
+    ...Array.from(new Set(sessions.map((s) => s.category))),
   ];
 
   const handleOpenSession = (session: CohortSession) => {
@@ -68,7 +106,7 @@ export default function Cohort1Page() {
     setIsModalOpen(true);
   };
 
-  const filteredSessions = COHORT_1_SESSIONS.filter((session) => {
+  const filteredSessions = sessions.filter((session) => {
     const matchesCategory =
       selectedCategory === "All" || session.category === selectedCategory;
     const matchesQuery =
@@ -212,56 +250,145 @@ export default function Cohort1Page() {
         </div>
       </section>
 
-      {/* Filter and Search Toolbar */}
-      <section style={{ background: 'var(--color-canvas)', borderBottom: '1px solid var(--color-border)', padding: '24px 0' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Search Input */}
-            <div className="relative w-full md:w-80">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" size={16} />
-              <input
-                type="text"
-                placeholder="Search mentor or topic..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  background: 'var(--color-espresso)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-controls)',
-                  padding: '10px 16px 10px 40px',
-                  color: 'var(--color-text-primary)',
-                  fontSize: '13px',
-                  fontFamily: 'var(--font-sans-gallery)',
-                  outline: 'none',
-                }}
-              />
-            </div>
 
-            {/* Category Tabs */}
-            <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className="badge-gallery cursor-pointer transition-all"
-                  style={{
-                    background: selectedCategory === cat ? 'var(--color-badge-gold)' : 'var(--color-espresso)',
-                    color: selectedCategory === cat ? 'var(--color-text-dark)' : 'var(--color-text-muted)',
-                    border: '1px solid var(--color-border)',
-                  }}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Sessions Grid */}
       <section style={{ background: 'var(--color-canvas)', padding: '60px 0 100px', minHeight: '600px' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
+
+          {/* Featured One-on-One Mentorship Card */}
+          {(() => {
+            const featuredSession = sessions.find((s) => s.is_featured || s.mentor?.is_featured) || sessions.find((s) => s.mentor.name.toLowerCase().includes("salman")) || sessions[0];
+            if (!featuredSession) return null;
+
+            const mentor = featuredSession.mentor;
+            const mentorName = mentor?.name || "Salman Khan";
+            const mentorRole = mentor?.role || "Lead Mentor & Career Coach";
+            const mentorPhoto = mentor?.photoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80";
+            const mentorBio = mentor?.bio || "Lead Mentor guiding cohort participants through one-on-one sessions, goal setting, and career progression strategies.";
+            const mentorLinkedin = mentor?.linkedin || "https://linkedin.com";
+            const sessionSummary = featuredSession.summary || "Every week throughout Cohort 1, dedicated one-on-one mentorship sessions are held providing tailored career guidance, individual feedback, and strategic growth blueprints.";
+            const sessionPhotos = featuredSession.sessionPhotos || [];
+
+            return (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-[#0e2417] rounded-xl p-6 sm:p-10 border border-[#1a3a24] hover:border-[#0ae448]/50 transition-all duration-300 mb-12 shadow-xl"
+              >
+                <div className="grid lg:grid-cols-2 gap-8 items-center">
+                  <div>
+                    <div className="flex items-center gap-3 mb-4 flex-wrap">
+                      <span className="annotation-curly text-xs">
+                        <Sparkles size={12} className="inline mr-1" /> &#123; Featured Mentorship &#125;
+                      </span>
+                      <span className="text-[10px] font-mono uppercase text-[#8ea896] bg-[#08170d] px-2.5 py-1 rounded border border-[#1a3a24]">
+                        Weekly Throughout Cohort
+                      </span>
+                    </div>
+
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 tracking-tight">
+                      One-on-One Mentorship with {mentorName}
+                    </h2>
+                    <p className="text-sm text-[#8ea896] font-normal leading-relaxed mb-6">
+                      {sessionSummary}
+                    </p>
+
+                    <ul className="space-y-2.5 font-sans mb-6">
+                      {[
+                        "Personalized career guidance and goal setting",
+                        "Individual feedback on progress and development",
+                        "Tailored advice for each student's career path",
+                        "Direct access to industry insights and expertise",
+                      ].map((point, i) => (
+                        <li key={i} className="flex items-center gap-2.5 text-xs text-[#8ea896] font-normal">
+                          <CheckCircle2 size={15} className="text-[#0ae448] shrink-0" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="flex flex-wrap items-center gap-4">
+                      <button
+                        onClick={() => handleOpenSession(featuredSession)}
+                        className="btn-gsap-cta text-xs py-2.5 px-5 flex items-center gap-2 cursor-pointer"
+                      >
+                        <span>View Session Details</span>
+                        <ArrowRight size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-[#08170d] rounded-xl p-6 sm:p-8 border border-[#1a3a24] text-center flex flex-col items-center">
+                    <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-[#0ae448] mb-4 shadow-lg shrink-0">
+                      <Image
+                        src={mentorPhoto}
+                        alt={mentorName}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">
+                      {mentorName}
+                    </h3>
+                    <p className="text-xs font-mono text-[#0ae448] uppercase tracking-wider mb-3 font-semibold">
+                      &#123; {mentorRole} &#125;
+                    </p>
+                    {mentorBio && (
+                      <p className="text-xs text-[#8ea896] font-normal mb-4 max-w-sm line-clamp-3 leading-relaxed">
+                        {mentorBio}
+                      </p>
+                    )}
+
+                    <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
+                      {mentorLinkedin && (
+                        <a
+                          href={mentorLinkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-[#0a66c2]/20 hover:bg-[#0a66c2]/35 text-[#70b5f9] border border-[#0a66c2]/50 rounded-lg text-xs font-semibold transition-all"
+                        >
+                          <Linkedin size={15} /> Connect on LinkedIn
+                        </a>
+                      )}
+                      <button
+                        onClick={() => handleOpenSession(featuredSession)}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#0ae448]/10 hover:bg-[#0ae448]/20 text-[#0ae448] border border-[#0ae448]/30 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+                      >
+                        <Sparkles size={14} /> View Details
+                      </button>
+                    </div>
+
+                    {/* Session Photos Preview */}
+                    {sessionPhotos.length > 0 && (
+                      <div className="w-full pt-4 mt-2 border-t border-[#1a3a24]">
+                        <p className="text-[10px] font-mono text-[#8ea896] uppercase tracking-wider mb-2 text-center">
+                          Session Highlights
+                        </p>
+                        <div className="flex items-center justify-center gap-2.5">
+                          {sessionPhotos.slice(0, 3).map((photo, i) => (
+                            <div
+                              key={i}
+                              onClick={() => handleOpenSession(featuredSession)}
+                              className="relative w-16 h-12 rounded-lg overflow-hidden border border-[#1a3a24] hover:border-[#0ae448] transition-all cursor-pointer shrink-0 group shadow"
+                              title={photo.caption || "View Photo"}
+                            >
+                              <Image src={photo.url} alt={photo.caption || `Photo ${i+1}`} fill className="object-cover group-hover:scale-110 transition-transform" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <p className="text-[11px] font-mono text-[#8ea896]/80 bg-[#0e2417] px-3 py-1.5 rounded-full border border-[#1a3a24] mt-4">
+                      Weekly 1-hour 1-on-1 sessions for personalized growth
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })()}
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="font-portrait text-2xl sm:text-3xl text-white">

@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <body
-        className="font-sans antialiased bg-[#08170d] text-[#ffffff] selection:bg-[#0ae448]/30 selection:text-[#ffffff]"
+        className="font-sans antialiased bg-[#0a2012] text-[#ffffff] selection:bg-[#2d7a46]/40 selection:text-[#ffffff] bg-grid-subtle"
       >
         {children}
       </body>

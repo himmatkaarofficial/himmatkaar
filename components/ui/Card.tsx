@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 
 interface CardProps {
   children: React.ReactNode;
@@ -9,29 +9,26 @@ interface CardProps {
 
 export const Card: React.FC<CardProps> = ({
   children,
-  variant = "white",
+  variant = "dark",
   className = "",
   style = {},
 }) => {
   const variantBackgrounds: Record<string, string> = {
-    white:    "#ffffff",
-    parchment:"var(--color-parchment)",
-    mint:     "var(--color-mint-card)",
-    canopy:   "var(--color-canopy-shadow)",
-    light:    "#ffffff",
-    dark:     "var(--color-canopy-shadow)",
-    forest:   "var(--color-forest-floor)",
-    deep:     "var(--color-canopy-shadow)",
+    white:    "#0c2616",
+    parchment:"#0c2616",
+    mint:     "#10321e",
+    canopy:   "#0a2012",
+    light:    "#0c2616",
+    dark:     "#0c2616",
+    forest:   "#0c2616",
+    deep:     "#07190e",
   };
 
   return (
     <div
-      className={`transition-all duration-300 ease-in-out h-full flex flex-col ${className}`}
+      className={`transition-all duration-300 ease-in-out h-full flex flex-col rounded-2xl border border-[#1d442a] p-6 sm:p-8 ${className}`}
       style={{
-        background: variantBackgrounds[variant] || "#ffffff",
-        borderRadius: "var(--radius-cards)",
-        padding: "var(--card-padding)",
-        border: "1px solid var(--color-dew)",
+        background: variantBackgrounds[variant] || "#0c2616",
         ...style,
       }}
     >

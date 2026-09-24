@@ -1,83 +1,95 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 /* ─────────────────────────────────────────────────────────────────
-   HIMMATKAAR GREEN & WHITE GSAP MOTION DESIGN SYSTEM
-   Deep Forest stage, crisp white typography, electric green accents,
-   outlined ghost pills, curly-bracket annotations, and fluid motion.
+   HIMMATKAAR DARK FOREST GREEN & GOLD DESIGN SYSTEM
+   - Dark Forest Green: #0c2616 / #0a2012 / #07190e
+   - Vibrant Brand Green: #2d7a46 / #389456
+   - Sage & Mint: #e8f5ec / #d1e7d8 / #a3caad
+   - Gold / Amber: #f3ae29
+   - Typography: Playfair Display (Serif), DM Sans (Sans), Noto Nastaliq Urdu
+   - Strict rule: Soft rounded rectangles (no pills), naked icons, background grids
    ───────────────────────────────────────────────────────────────── */
 
 :root {
-  /* ── Canvas & Surfaces (Strict Green & White) ── */
-  --color-green-canvas:       #08170d;   /* Deep Forest Velvet Canvas */
-  --color-green-surface:      #0e2417;   /* Off-dark nested panels */
-  --color-green-card:         #132f1f;   /* Elevated card background */
-  --color-green-hairline:     #1a3a24;   /* Hairline dividers & borders */
+  /* ── Canvas & Surfaces ── */
+  --color-forest-dark:        #07190e;   /* Deepest Base Canvas */
+  --color-forest-base:        #0a2012;   /* Standard Page Canvas */
+  --color-forest-card:        #0c2616;   /* Primary Card Background */
+  --color-forest-card-hover:  #10321e;   /* Hover Card State */
+  --color-forest-border:      #1d442a;   /* Structural Borders */
+  --color-forest-border-light:#275836;   /* Active / Hover Borders */
 
-  /* ── Brand Green Accents ── */
-  --color-brand-green:        #0ae448;   /* Shockingly Green / Electric Lime */
-  --color-light-green:        #abff84;   /* Light Green gradient endpoint */
-  --color-mint-green:         #a8d5b5;   /* Mint tint / tags */
-  --color-emerald-deep:       #0f3d24;   /* Deep emerald */
+  /* ── Brand Accents ── */
+  --color-brand-green:        #2d7a46;   /* Primary Brand Green */
+  --color-brand-accent:       #389456;   /* Vibrant Green Highlight */
+  --color-brand-light:        #48b86e;   /* Electric Touch */
+  --color-gold-amber:         #f3ae29;   /* Gold / Amber Indicator */
+  --color-gold-light:         #f8c764;   /* Amber Light Accent */
 
-  /* ── Typography & White Highlights ── */
-  --color-white-text:         #ffffff;   /* Pure White display & text */
-  --color-cream-text:         #fcfcf9;   /* Warm off-white headings */
-  --color-muted-text:         #8ea896;   /* Muted subtext & metadata */
+  /* ── Sage & Mint Highlights ── */
+  --color-sage-mint:          #a3caad;   /* Mint Secondary Text & Badges */
+  --color-sage-light:         #d1e7d8;   /* Light Sage Headers & Details */
+  --color-sage-bright:        #e8f5ec;   /* High Contrast Sage White */
+  --color-white-text:         #ffffff;   /* Pure White */
 
-  /* ── Legacy Mappings for compatibility ── */
-  --color-forest-depths:      #08170d;
-  --color-lime-pulse:         #0ae448;
-  --color-snow-white:         #08170d;
-  --color-warm-stone:         #0e2417;
-  --color-courage-green:      #0ae448;
-  --color-courage-gold:       #abff84;
-  --color-off-white:          #ffffff;
-  --color-mint-tint:          #a8d5b5;
-  --color-deep-sapphire:      #0e2417;
-  --color-deep-navy:          #08170d;
-  --color-white:              #ffffff;
+  /* ── Typography Fonts ── */
+  --font-heading:             'Playfair Display', Georgia, serif;
+  --font-sans:                'DM Sans', system-ui, sans-serif;
+  --font-mono:                'JetBrains Mono', monospace;
+  --font-urdu:                'Noto Nastaliq Urdu', 'Playfair Display', serif;
 
-  /* ── Typography ── */
-  --font-gsap-sans:           var(--font-gsap-sans), 'DM Sans', system-ui, sans-serif;
-  --font-gsap-mono:           var(--font-gsap-mono), 'JetBrains Mono', monospace;
+  /* ── Soft Rounded Radii (Strictly No Pills) ── */
+  --radius-xs:                4px;
+  --radius-sm:                6px;
+  --radius-md:                8px;
+  --radius-lg:                12px;
+  --radius-xl:                16px;
+  --radius-2xl:               20px;
+  --radius-3xl:               24px;
 
-  /* ── Radii ── */
-  --radius-cards:             8px;
-  --radius-pills:             9999px;
-  --radius-buttons:           100px;
-  --radius-large-cards:       16px;
-
-  /* ── Page Background & Text ── */
-  --background:               #08170d;
+  /* ── Compatibility Aliases ── */
+  --color-green-canvas:       #0a2012;
+  --color-green-surface:      #0c2616;
+  --color-green-card:         #0c2616;
+  --color-green-hairline:     #1d442a;
+  --color-courage-green:      #2d7a46;
+  --color-courage-gold:       #f3ae29;
+  --color-mint-tint:          #a3caad;
+  --background:               #0a2012;
   --foreground:               #ffffff;
 }
 
 @theme inline {
-  --color-green-canvas:       #08170d;
-  --color-green-surface:      #0e2417;
-  --color-green-card:         #132f1f;
-  --color-green-hairline:     #1a3a24;
-  --color-brand-green:        #0ae448;
-  --color-light-green:        #abff84;
-  --color-mint-green:         #a8d5b5;
+  --color-forest-dark:        #07190e;
+  --color-forest-base:        #0a2012;
+  --color-forest-card:        #0c2616;
+  --color-forest-card-hover:  #10321e;
+  --color-forest-border:      #1d442a;
+  --color-brand-green:        #2d7a46;
+  --color-brand-accent:       #389456;
+  --color-sage-mint:          #a3caad;
+  --color-sage-bright:        #e8f5ec;
+  --color-gold-amber:         #f3ae29;
 
-  --color-background:         #08170d;
+  --color-background:         #0a2012;
   --color-foreground:         #ffffff;
-  --color-primary:            #0ae448;
+  --color-primary:            #2d7a46;
 
-  --font-sans:                var(--font-gsap-sans), 'DM Sans', sans-serif;
-  --font-mono:                var(--font-gsap-mono), monospace;
+  --font-sans:                'DM Sans', system-ui, sans-serif;
+  --font-serif:               'Playfair Display', Georgia, serif;
+  --font-mono:                'JetBrains Mono', monospace;
+  --font-urdu:                'Noto Nastaliq Urdu', serif;
 
   --animate-marquee: marquee 30s linear infinite;
-  --animate-marquee-infinite: marquee-infinite 40s linear infinite;
+  --animate-marquee-infinite: marquee-infinite 35s linear infinite;
 }
 
 body {
-  background: #08170d;
+  background-color: #0a2012;
   color: #ffffff;
-  font-family: var(--font-gsap-sans), 'DM Sans', sans-serif;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   box-sizing: border-box;
 }
@@ -87,158 +99,157 @@ html {
   overflow-x: hidden;
 }
 
-/* ── GSAP Signature: Curly-Bracket Eyebrow Annotation ── */
+/* ── Subtle Background Grids ── */
+.bg-grid-subtle {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(45, 95, 61, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(45, 95, 61, 0.08) 1px, transparent 1px);
+}
+
+.bg-radial-grid {
+  background-image: 
+    radial-gradient(circle at center, rgba(45, 122, 70, 0.12) 0%, transparent 70%),
+    linear-gradient(to right, rgba(45, 95, 61, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(45, 95, 61, 0.07) 1px, transparent 1px);
+  background-size: 100% 100%, 36px 36px, 36px 36px;
+}
+
+/* ── Serif Headlines ── */
+.font-serif-heading {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-urdu-calligraphy {
+  font-family: 'Noto Nastaliq Urdu', 'Playfair Display', serif;
+}
+
+/* ── Eyebrow Tag / Annotation (Soft Rounded Rectangle) ── */
 .annotation-curly {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-family: var(--font-gsap-sans), 'DM Sans', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: #ffffff;
-  letter-spacing: -0.01em;
+  gap: 6px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a3caad;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .annotation-curly::before {
-  content: "{\a0";
-  color: #0ae448;
-}
-.annotation-curly::after {
-  content: "\a0}";
-  color: #0ae448;
+  content: "•";
+  color: #f3ae29;
+  font-size: 16px;
 }
 
-/* ── GSAP Signature: Outlined Cream/White Ghost Pill Button ── */
-/* ── GSAP Signature: Outlined Cream/White Ghost Pill Button ── */
-.btn-gsap-ghost,
-.btn-seed-ghost,
-.btn-seed-inverted {
+/* ── Soft Rounded Modern Buttons (Strictly No Pill Shapes) ── */
+.btn-gsap-cta,
+.btn-seed-filled,
+.btn-filled-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 14px 28px;
-  border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  background: transparent;
+  padding: 12px 24px;
+  border-radius: 12px;
+  position: relative;
+  background: #2d7a46;
   color: #ffffff;
-  font-family: var(--font-gsap-sans), 'DM Sans', sans-serif;
-  font-size: 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
   font-weight: 600;
-  line-height: 1.15;
+  line-height: 1.2;
   cursor: pointer;
-  transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+  text-decoration: none;
+  border: 1px solid #389456;
+  box-shadow: 0 4px 20px rgba(45, 122, 70, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-gsap-cta:hover,
+.btn-seed-filled:hover,
+.btn-filled-pill:hover {
+  background: #389456;
+  border-color: #48b86e;
+  box-shadow: 0 6px 25px rgba(56, 148, 86, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-gsap-ghost,
+.btn-seed-ghost,
+.btn-seed-inverted,
+.btn-ghost-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid #1d442a;
+  background: rgba(12, 38, 22, 0.6);
+  backdrop-filter: blur(8px);
+  color: #e8f5ec;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
 }
 .btn-gsap-ghost:hover,
 .btn-seed-ghost:hover,
-.btn-seed-inverted:hover {
-  border-color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-1px);
-}
-
-/* ── GSAP Signature: Gradient-Stroked Ghost CTA Pill ── */
-.btn-gsap-cta,
-.btn-seed-filled {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 14px 28px;
-  border-radius: 100px;
-  position: relative;
-  background: transparent;
+.btn-seed-inverted:hover,
+.btn-ghost-pill:hover {
+  border-color: #389456;
+  background: rgba(45, 122, 70, 0.2);
   color: #ffffff;
-  font-family: var(--font-gsap-sans), 'DM Sans', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.15;
-  cursor: pointer;
-  text-decoration: none;
-  border: 1.5px solid #0ae448;
-  box-shadow: 0 0 20px rgba(10, 228, 72, 0.2);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
-}
-.btn-gsap-cta:hover,
-.btn-seed-filled:hover {
-  border-color: #abff84;
-  box-shadow: 0 0 30px rgba(10, 228, 72, 0.35);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
-/* ── GSAP Hairline Section Divider ── */
+/* ── Section Dividers & Cards ── */
 .hairline-divider {
   width: 100%;
   height: 1px;
-  background: #1a3a24;
+  background: #1d442a;
 }
 
-/* ── Green Ambient Floating Glow Orb ── */
-.glow-green-orb {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(10, 228, 72, 0.15) 0%, rgba(171, 255, 132, 0.04) 50%, transparent 70%);
-  filter: blur(40px);
-  pointer-events: none;
-}
-
-/* ── Category Tag / Specimen Badge ── */
-.badge-category-green {
+/* ── Soft Rounded Category Badges (Strictly No Pills) ── */
+.badge-category-green,
+.badge-lime-pulse,
+.pill-specimen,
+.badge-gallery {
   display: inline-flex;
   align-items: center;
-  padding: 5px 12px;
-  border-radius: 8px;
-  background: rgba(10, 228, 72, 0.1);
-  border: 1px solid rgba(10, 228, 72, 0.3);
-  color: #0ae448;
-  font-family: var(--font-gsap-mono), monospace;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-/* Compatibility aliases */
-.badge-lime-pulse {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 12px;
-  border-radius: 8px;
-  background: rgba(10, 228, 72, 0.1);
-  border: 1px solid rgba(10, 228, 72, 0.3);
-  color: #0ae448;
-  font-family: var(--font-gsap-mono), monospace;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.pill-specimen {
-  display: inline-flex;
-  align-items: center;
+  gap: 6px;
   padding: 4px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(171, 255, 132, 0.3);
-  color: #abff84;
-  font-family: var(--font-gsap-mono), monospace;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  background: rgba(45, 122, 70, 0.15);
+  border: 1px solid rgba(56, 148, 86, 0.35);
+  color: #a3caad;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.badge-gold {
+  background: rgba(243, 174, 41, 0.12);
+  border: 1px solid rgba(243, 174, 41, 0.35);
+  color: #f3ae29;
 }
 
 .link-seed-arrow {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #0ae448;
-  font-size: 15px;
-  font-weight: 500;
+  color: #389456;
+  font-size: 14px;
+  font-weight: 600;
   transition: color 0.2s ease, transform 0.2s ease;
 }
 .link-seed-arrow:hover {
-  color: #abff84;
+  color: #e8f5ec;
   transform: translateX(3px);
 }
 

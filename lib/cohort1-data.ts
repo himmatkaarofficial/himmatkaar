@@ -12,6 +12,8 @@ export interface Mentor {
   expertise: string;
   photoUrl: string;
   bio: string;
+  linkedin?: string;
+  is_featured?: boolean;
 }
 
 export interface CohortSession {
@@ -27,6 +29,7 @@ export interface CohortSession {
   keyTakeaways: string[];
   sessionPhotos: SessionPhoto[];
   resources?: { name: string; type: string; url: string }[];
+  is_featured?: boolean;
 }
 
 export const COHORT_1_SESSIONS: CohortSession[] = [

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { EventCard } from "@/components/ui/EventCard";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 interface Event {
   id: string;
@@ -12,6 +12,7 @@ interface Event {
   description: string;
   date: string;
   image: string;
+  location?: string;
 }
 
 export const EventsSection: React.FC = () => {
@@ -27,16 +28,16 @@ export const EventsSection: React.FC = () => {
           setEvents(data.events);
         } else {
           setEvents([
-            { id: "1", title: "Startup Pitch Competition 2026", date: "2026-03-25", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities with leading investors." },
-            { id: "2", title: "Tech Skills & AI Bootcamp", date: "2026-04-10", image: "/events/event-slide-2.jpg", description: "Intensive bootcamp covering web development, mobile apps, and AI fundamentals." },
-            { id: "3", title: "Community Earth & Social Impact Summit", date: "2026-04-20", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to discuss sustainable community solutions." }
+            { id: "1", title: "Startup Pitch Competition 2026", date: "2026-03-25", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities with leading industry executives.", location: "Faisalabad" },
+            { id: "2", title: "Tech Skills & AI Masterclass", date: "2026-04-10", image: "/events/event-slide-2.jpg", description: "Intensive training covering web development, modern cloud tooling, and AI fundamentals.", location: "Lahore / Online" },
+            { id: "3", title: "Community Youth Impact Summit", date: "2026-04-20", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to build scalable local community initiatives.", location: "Islamabad" }
           ]);
         }
       } catch {
         setEvents([
-          { id: "1", title: "Startup Pitch Competition 2026", date: "2026-03-25", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities with leading investors." },
-          { id: "2", title: "Tech Skills & AI Bootcamp", date: "2026-04-10", image: "/events/event-slide-2.jpg", description: "Intensive bootcamp covering web development, mobile apps, and AI fundamentals." },
-          { id: "3", title: "Community Earth & Social Impact Summit", date: "2026-04-20", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to discuss sustainable community solutions." }
+          { id: "1", title: "Startup Pitch Competition 2026", date: "2026-03-25", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities with leading industry executives.", location: "Faisalabad" },
+          { id: "2", title: "Tech Skills & AI Masterclass", date: "2026-04-10", image: "/events/event-slide-2.jpg", description: "Intensive training covering web development, modern cloud tooling, and AI fundamentals.", location: "Lahore / Online" },
+          { id: "3", title: "Community Youth Impact Summit", date: "2026-04-20", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to build scalable local community initiatives.", location: "Islamabad" }
         ]);
       } finally {
         setLoading(false);
@@ -46,12 +47,9 @@ export const EventsSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="bg-[#08170d] py-20 md:py-28 border-t border-[#1a3a24] text-white relative overflow-hidden">
-      {/* Background glow */}
-      <div 
-        className="absolute bottom-0 right-1/4 w-[500px] h-[300px] bg-[#0ae448]/5 blur-[120px] pointer-events-none rounded-full" 
-        aria-hidden="true" 
-      />
+    <section id="events" className="bg-[#0a2012] py-20 md:py-28 border-t border-[#1d442a] text-white relative overflow-hidden">
+      {/* Background subtle grid */}
+      <div className="absolute inset-0 bg-grid-subtle opacity-30 pointer-events-none" />
 
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
@@ -65,28 +63,29 @@ export const EventsSection: React.FC = () => {
           <div>
             <div className="mb-3">
               <span className="annotation-curly">
-                &#123; Upcoming Events &#125;
+                Upcoming Events
               </span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 tracking-tight leading-[1.08]">
+            <h2 className="font-serif-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 tracking-tight leading-[1.08]">
               Upcoming{" "}
-              <span className="text-[#0ae448] underline decoration-[#0ae448]/40 underline-offset-8">
+              <span className="text-[#389456] italic">
                 Events!
               </span>
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl leading-relaxed text-[#8ea896] max-w-lg font-normal">
-              Join us for exciting events, workshops, and community opportunities across Pakistan.
+            <p className="text-base sm:text-lg leading-relaxed text-[#a3caad] max-w-lg font-normal">
+              Join us for exciting masterclasses, fellowship meetups, and leadership opportunities across Pakistan.
             </p>
           </div>
-          <Link href="/events" className="btn-gsap-ghost flex-shrink-0 self-start sm:self-auto">
-            View All Events <ArrowRight size={16} />
+          <Link href="/events" className="btn-gsap-ghost flex-shrink-0 self-start sm:self-auto !rounded-xl">
+            <span>View All Events</span>
+            <ArrowUpRight size={16} className="text-[#f3ae29]" />
           </Link>
         </motion.div>
 
         {/* Events Grid */}
         {loading ? (
           <div className="text-center py-16">
-            <p className="font-mono text-sm text-[#a8d5b5]/60 animate-pulse">Loading events...</p>
+            <p className="font-mono text-sm text-[#a3caad]/70 animate-pulse">Loading events...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -97,6 +96,7 @@ export const EventsSection: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="h-full"
               >
                 <EventCard
                   image={event.image}
@@ -107,6 +107,7 @@ export const EventsSection: React.FC = () => {
                     day: "numeric",
                   })}
                   description={event.description}
+                  location={event.location}
                 />
               </motion.div>
             ))}

@@ -1,11 +1,13 @@
 import React from "react";
 import Image from "next/image";
+import { Calendar } from "lucide-react";
 
 interface EventCardProps {
   image: string;
   title: string;
   date: string;
   description: string;
+  location?: string;
 }
 
 export const EventCard: React.FC<EventCardProps> = ({
@@ -13,11 +15,12 @@ export const EventCard: React.FC<EventCardProps> = ({
   title,
   date,
   description,
+  location,
 }) => {
   return (
-    <div className="group bg-[#0e2417] rounded-xl overflow-hidden border border-[#1a3a24] flex flex-col transition-all duration-300 hover:border-[#0ae448]/50 hover:shadow-[0_0_25px_rgba(10,228,72,0.12)]">
-      {/* Image */}
-      <div className="relative w-full h-52 overflow-hidden flex-shrink-0 bg-[#08170d]">
+    <div className="group bg-[#0c2616] rounded-2xl overflow-hidden border border-[#1d442a] flex flex-col transition-all duration-300 hover:border-[#389456] hover:shadow-[0_8px_30px_rgba(45,122,70,0.18)] h-full">
+      {/* Event Image */}
+      <div className="relative w-full h-52 overflow-hidden flex-shrink-0 bg-[#0a2012]">
         <Image
           src={image}
           alt={title}
@@ -25,27 +28,36 @@ export const EventCard: React.FC<EventCardProps> = ({
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0e2417] via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0c2616] via-transparent to-transparent opacity-75" />
       </div>
 
       {/* Content */}
-      <div className="p-6 flex flex-col gap-3 flex-1 text-white">
-        {/* Monospaced Date Pill */}
-        <div className="self-start">
-          <span className="font-mono text-xs px-2.5 py-1 rounded-full border border-[#0ae448]/30 bg-[#08170d] text-[#0ae448] font-medium tracking-wide">
-            {date}
-          </span>
+      <div className="p-6 flex flex-col justify-between flex-1 text-white">
+        <div>
+          {/* Date Tag with Naked Calendar Icon (Soft Rounded Rectangle) */}
+          <div className="self-start mb-3">
+            <span className="inline-flex items-center gap-1.5 font-mono text-xs px-3 py-1 rounded-md border border-[#275836] bg-[#0a2012] text-[#f3ae29] font-medium tracking-wide">
+              <Calendar size={13} className="text-[#f3ae29]" />
+              {date}
+            </span>
+          </div>
+
+          {/* Title in Playfair Display serif */}
+          <h3 className="font-serif-heading text-xl font-bold leading-snug tracking-tight text-white group-hover:text-[#d1e7d8] transition-colors duration-200 mb-2.5">
+            {title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-sm leading-relaxed text-[#a3caad] line-clamp-3 mb-4">
+            {description}
+          </p>
         </div>
 
-        {/* Title */}
-        <h3 className="text-xl font-bold leading-snug tracking-tight text-white group-hover:text-[#0ae448] transition-colors duration-200">
-          {title}
-        </h3>
-
-        {/* Description */}
-        <p className="text-sm leading-relaxed text-[#a8d5b5] line-clamp-3">
-          {description}
-        </p>
+        {location && (
+          <div className="pt-3 border-t border-[#1d442a] text-xs font-mono text-[#a3caad]">
+            📍 {location}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,11 +1,23 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { ChevronLeft, ChevronRight, Quote, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const testimonials = [
+export interface TestimonialItem {
+  id?: string;
+  name: string;
+  role?: string;
+  company?: string;
+  avatar_url?: string | null;
+  rating?: number;
+  feedback?: string;
+  text?: string;
+}
+
+const defaultTestimonials: TestimonialItem[] = [
   {
     name: "Ahmed Khan",
     role: "Software Engineer",
@@ -37,8 +49,26 @@ const testimonials = [
 ];
 
 export default function TestimonialCarousel() {
+  const [items, setItems] = useState<TestimonialItem[]>(defaultTestimonials);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    async function loadTestimonials() {
+      try {
+        const res = await fetch("/api/testimonials");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.testimonials && data.testimonials.length > 0) {
+            setItems(data.testimonials);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load testimonials:", err);
+      }
+    }
+    loadTestimonials();
+  }, []);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -50,87 +80,128 @@ export default function TestimonialCarousel() {
     onSelect();
     const interval = setInterval(() => emblaApi.scrollNext(), 6000);
     return () => { emblaApi.off("select", onSelect); clearInterval(interval); };
-  }, [emblaApi]);
+  }, [emblaApi, items]);
 
   return (
     <div className="relative">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className="flex-[0_0_100%] md:flex-[0_0_85%] lg:flex-[0_0_75%] min-w-0 px-3">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="bg-[#0e2417] rounded-2xl p-6 sm:p-10 md:p-12 border border-[#1a3a24] shadow-xl relative overflow-hidden"
-              >
-                {/* Quote Icon */}
-                <div className="mb-6 text-[#0ae448]/80">
-                  <Quote size={36} strokeWidth={1.5} />
-                </div>
+          {items.map((testimonial, index) => {
+            const feedbackText = testimonial.feedback || testimonial.text || "";
+            const ratingCount = testimonial.rating ?? 5;
+            const initials = testimonial.name
+              ? testimonial.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .slice(0, 2)
+                  .join("")
+                  .toUpperCase()
+              : "HK";
 
-                {/* Rating Pills */}
-                <div className="flex gap-2 mb-6">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <span
-                      key={i}
-                      className="w-2 h-2 rounded-full bg-[#0ae448] inline-block shadow-[0_0_6px_#0ae448]"
-                    />
-                  ))}
-                </div>
-
-                {/* Testimonial text */}
-                <p className="mb-8 text-base sm:text-lg md:text-xl font-normal leading-relaxed text-white">
-                  &ldquo;{testimonial.text}&rdquo;
-                </p>
-
-                {/* Author Details */}
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-[#08170d] border border-[#0ae448]/40 text-[#0ae448] flex items-center justify-center flex-shrink-0 font-mono text-sm font-bold shadow-[0_0_10px_rgba(10,228,72,0.15)]">
-                    {testimonial.name.split(" ").map((n) => n[0]).join("")}
+            return (
+              <div key={testimonial.id || index} className="flex-[0_0_100%] md:flex-[0_0_85%] lg:flex-[0_0_80%] min-w-0 px-3">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="bg-[#0c2616] rounded-2xl p-6 sm:p-10 md:p-12 border border-[#1d442a] shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[340px]"
+                >
+                  {/* Urdu Calligraphy Background Watermark */}
+                  <div
+                    className="absolute -right-6 -bottom-8 font-urdu text-8xl sm:text-9xl text-[#2d7a46]/10 select-none pointer-events-none"
+                    dir="rtl"
+                  >
+                    ہمت کار
                   </div>
+
                   <div>
-                    <h4 className="text-base sm:text-lg font-bold text-white tracking-tight">
-                      {testimonial.name}
-                    </h4>
-                    <p className="font-mono text-xs text-[#a8d5b5] mt-0.5">
-                      {testimonial.role} · {testimonial.company}
+                    {/* Top Row: Naked Quote Icon & Verified Member Badge */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="text-[#389456]">
+                        <Quote size={36} strokeWidth={1.5} />
+                      </div>
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#0a2012] border border-[#275836] font-mono text-xs text-[#a3caad]">
+                        <CheckCircle2 size={13} className="text-[#389456]" />
+                        VERIFIED MEMBER
+                      </span>
+                    </div>
+
+                    {/* Rating indicators (Amber soft squares) */}
+                    <div className="flex gap-1.5 mb-6">
+                      {[...Array(ratingCount)].map((_, i) => (
+                        <span
+                          key={i}
+                          className="w-2.5 h-2.5 rounded-sm bg-[#f3ae29] inline-block"
+                        />
+                      ))}
+                    </div>
+
+                    {/* Testimonial text in Playfair Display serif or clean typography */}
+                    <p className="mb-8 text-base sm:text-lg md:text-xl font-normal leading-relaxed text-[#d1e7d8]">
+                      &ldquo;{feedbackText}&rdquo;
                     </p>
                   </div>
-                </div>
-              </motion.div>
-            </div>
-          ))}
+
+                  {/* Author Credentials */}
+                  <div className="flex items-center gap-4 pt-4 border-t border-[#1d442a]">
+                    {testimonial.avatar_url ? (
+                      <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-[#275836] flex-shrink-0 bg-[#0a2012]">
+                        <Image
+                          src={testimonial.avatar_url}
+                          alt={testimonial.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-xl bg-[#0a2012] border border-[#275836] text-[#389456] flex items-center justify-center flex-shrink-0 font-mono text-sm font-bold">
+                        {initials}
+                      </div>
+                    )}
+                    <div>
+                      <h4 className="font-serif-heading text-lg font-bold text-white tracking-tight">
+                        {testimonial.name}
+                      </h4>
+                      {(testimonial.role || testimonial.company) && (
+                        <p className="font-mono text-xs text-[#a3caad] mt-0.5">
+                          {testimonial.role}{testimonial.role && testimonial.company ? " · " : ""}{testimonial.company}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows (Soft Rounded Rectangles) */}
       <button
         onClick={scrollPrev}
-        className="absolute left-1 md:-left-5 top-1/2 -translate-y-1/2 rounded-full p-3 bg-[#0e2417] border border-[#1a3a24] text-white hover:text-[#0ae448] hover:border-[#0ae448]/60 transition-all z-10 shadow-lg"
+        className="absolute left-1 md:-left-5 top-1/2 -translate-y-1/2 rounded-xl p-3 bg-[#0c2616] border border-[#1d442a] text-[#d1e7d8] hover:text-white hover:border-[#389456] hover:bg-[#10321e] transition-all z-10 shadow-xl"
         aria-label="Previous testimonial"
       >
         <ChevronLeft size={20} />
       </button>
       <button
         onClick={scrollNext}
-        className="absolute right-1 md:-right-5 top-1/2 -translate-y-1/2 rounded-full p-3 bg-[#0e2417] border border-[#1a3a24] text-white hover:text-[#0ae448] hover:border-[#0ae448]/60 transition-all z-10 shadow-lg"
+        className="absolute right-1 md:-right-5 top-1/2 -translate-y-1/2 rounded-xl p-3 bg-[#0c2616] border border-[#1d442a] text-[#d1e7d8] hover:text-white hover:border-[#389456] hover:bg-[#10321e] transition-all z-10 shadow-xl"
         aria-label="Next testimonial"
       >
         <ChevronRight size={20} />
       </button>
 
-      {/* Dot indicators */}
+      {/* Amber/Gold Indicators */}
       <div className="flex justify-center gap-2 mt-8">
-        {testimonials.map((_, index) => (
+        {items.map((_, index) => (
           <button
             key={index}
             onClick={() => emblaApi && emblaApi.scrollTo(index)}
-            className="h-1.5 rounded-full transition-all duration-300"
+            className="h-2 rounded-sm transition-all duration-300"
             style={{
-              width: index === selectedIndex ? "32px" : "8px",
-              background: index === selectedIndex ? "#0ae448" : "#1a3a24",
-              boxShadow: index === selectedIndex ? "0 0 8px rgba(10, 228, 72, 0.4)" : "none",
+              width: index === selectedIndex ? "28px" : "8px",
+              background: index === selectedIndex ? "#f3ae29" : "#1d442a",
             }}
             aria-label={`Go to testimonial ${index + 1}`}
           />
@@ -139,4 +210,3 @@ export default function TestimonialCarousel() {
     </div>
   );
 }
-
