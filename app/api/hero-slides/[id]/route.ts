@@ -11,7 +11,16 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { section, title, image, display_order } = body;
+    const { section = 'home', title, image, display_order } = body;
+
+    const defaultFallbackImage =
+      section === 'home'
+        ? '/home-page-carosel/1.jpg'
+        : section === 'team'
+        ? '/team-slides/team-slide-1.jpg'
+        : '/launchpad-slides/launchpad-slide-1-v2.jpg';
+
+    const finalImage = (image && image.trim()) ? image.trim() : defaultFallbackImage;
 
     try {
       const { data, error } = await supabaseAdmin
@@ -19,7 +28,7 @@ export async function PUT(
         .update({
           section,
           title,
-          image,
+          image: finalImage,
           display_order,
         })
         .eq('id', id)
@@ -34,7 +43,7 @@ export async function PUT(
     }
 
     return NextResponse.json({
-      slide: { id, section, title, image, display_order }
+      slide: { id, section, title, image: finalImage, display_order }
     });
   } catch (error) {
     console.error('Error updating hero slide:', error);

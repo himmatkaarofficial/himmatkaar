@@ -2,20 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Plus, Trash2, Edit3, Image as ImageIcon, Loader2, Sparkles, Layers, RefreshCw, X, Check } from "lucide-react";
+import { Plus, Trash2, Edit3, Image as ImageIcon, Loader2, Layers, RefreshCw, X, Check } from "lucide-react";
 
 export interface HeroSlide {
   id: string;
-  section: "team" | "launchpad";
+  section: "home" | "team" | "launchpad";
   title?: string;
-  image: string;
+  image?: string;
   display_order?: number;
 }
 
 export default function AdminHeroSlidesManager() {
   const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"all" | "team" | "launchpad">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "home" | "team" | "launchpad">("all");
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +23,7 @@ export default function AdminHeroSlidesManager() {
   
   // Form fields
   const [formData, setFormData] = useState({
-    section: "team" as "team" | "launchpad",
+    section: "home" as "home" | "team" | "launchpad",
     title: "",
     image: "",
   });
@@ -57,7 +57,7 @@ export default function AdminHeroSlidesManager() {
   const handleOpenAddModal = () => {
     setEditingSlide(null);
     setFormData({
-      section: activeTab === "launchpad" ? "launchpad" : "team",
+      section: activeTab === "all" ? "home" : activeTab,
       title: "",
       image: "",
     });
@@ -69,17 +69,13 @@ export default function AdminHeroSlidesManager() {
     setFormData({
       section: slide.section,
       title: slide.title || "",
-      image: slide.image,
+      image: slide.image || "",
     });
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.image.trim()) {
-      showFeedback("error", "Please provide an image URL or path.");
-      return;
-    }
 
     setSubmitting(true);
     try {
@@ -152,7 +148,7 @@ export default function AdminHeroSlidesManager() {
             Hero Section Slides Management
           </h2>
           <p className="text-sm text-slate-500 mt-1">
-            Manage background carousel slides for Team and Launchpad hero sections.
+            Manage background carousel slides for Main Home, Team, and Launchpad hero sections.
           </p>
         </div>
 
@@ -191,7 +187,7 @@ export default function AdminHeroSlidesManager() {
       )}
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-2">
         <button
           onClick={() => setActiveTab("all")}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
@@ -204,6 +200,17 @@ export default function AdminHeroSlidesManager() {
         </button>
 
         <button
+          onClick={() => setActiveTab("home")}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            activeTab === "home"
+              ? "bg-[var(--color-courage-green)] text-white shadow-sm"
+              : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+          }`}
+        >
+          Home Page Slides ({slides.filter((s) => s.section === "home").length})
+        </button>
+
+        <button
           onClick={() => setActiveTab("team")}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             activeTab === "team"
@@ -211,7 +218,7 @@ export default function AdminHeroSlidesManager() {
               : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
           }`}
         >
-          Team Hero Slides ({slides.filter((s) => s.section === "team").length})
+          Team Page Slides ({slides.filter((s) => s.section === "team").length})
         </button>
 
         <button
@@ -222,7 +229,7 @@ export default function AdminHeroSlidesManager() {
               : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
           }`}
         >
-          Launchpad Hero Slides ({slides.filter((s) => s.section === "launchpad").length})
+          Launchpad Slides ({slides.filter((s) => s.section === "launchpad").length})
         </button>
       </div>
 
@@ -236,7 +243,7 @@ export default function AdminHeroSlidesManager() {
           <ImageIcon className="mx-auto text-slate-300 mb-3" size={48} />
           <h3 className="text-base font-bold text-slate-800">No Hero Slides Found</h3>
           <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-            Add your first background image slide for this section to display it dynamically on the website.
+            Add your first background image slide for this section.
           </p>
           <button
             onClick={handleOpenAddModal}
@@ -254,16 +261,26 @@ export default function AdminHeroSlidesManager() {
             >
               <div>
                 <div className="relative h-44 w-full bg-slate-900 overflow-hidden">
-                  <Image
-                    src={slide.image}
-                    alt={slide.title || "Hero Slide"}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="400px"
-                  />
+                  {slide.image ? (
+                    <Image
+                      src={slide.image}
+                      alt={slide.title || "Hero Slide"}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="400px"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-slate-500 font-mono text-xs">
+                      No Image Provided (Default Fallback Active)
+                    </div>
+                  )}
                   <span
                     className={`absolute top-3 left-3 text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-md text-white shadow-md ${
-                      slide.section === "team" ? "bg-emerald-700" : "bg-amber-600"
+                      slide.section === "home"
+                        ? "bg-blue-700"
+                        : slide.section === "team"
+                        ? "bg-emerald-700"
+                        : "bg-amber-600"
                     }`}
                   >
                     • {slide.section.toUpperCase()} HERO SLIDE
@@ -272,10 +289,10 @@ export default function AdminHeroSlidesManager() {
 
                 <div className="p-4">
                   <h4 className="font-bold text-sm text-slate-900 mb-1">
-                    {slide.title || `${slide.section === "team" ? "Team" : "Launchpad"} Background Slide`}
+                    {slide.title || `${slide.section.toUpperCase()} Background Slide`}
                   </h4>
-                  <p className="text-[11px] font-mono text-slate-500 truncate" title={slide.image}>
-                    {slide.image}
+                  <p className="text-[11px] font-mono text-slate-500 truncate" title={slide.image || "Default fallback"}>
+                    {slide.image || "(Default image will be used)"}
                   </p>
                 </div>
               </div>
@@ -328,10 +345,11 @@ export default function AdminHeroSlidesManager() {
                 <select
                   value={formData.section}
                   onChange={(e) =>
-                    setFormData({ ...formData, section: e.target.value as "team" | "launchpad" })
+                    setFormData({ ...formData, section: e.target.value as "home" | "team" | "launchpad" })
                   }
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-courage-green)] text-sm font-medium"
                 >
+                  <option value="home">Main Home Page Hero Carousel</option>
                   <option value="team">Team & Core-Team Hero Carousel</option>
                   <option value="launchpad">LaunchPad Fellowship Hero Carousel</option>
                 </select>
@@ -339,11 +357,11 @@ export default function AdminHeroSlidesManager() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Slide Label / Title
+                  Slide Label / Title (Optional)
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Executive Team Slide 1"
+                  placeholder="e.g. Home Banner Slide 1"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-courage-green)] text-sm font-medium"
@@ -352,18 +370,17 @@ export default function AdminHeroSlidesManager() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Image Path / URL *
+                  Image Path / URL (Optional)
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. /team-slides/team-slide-1.jpg or https://..."
+                  placeholder="e.g. /home-page-carosel/1.jpg or https://..."
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-courage-green)] text-sm font-medium"
-                  required
                 />
                 <p className="text-[11px] text-slate-500 mt-1">
-                  Enter local path (e.g. <code>/team-slides/team-slide-1.jpg</code>) or a direct public image URL.
+                  Optional. If left empty, default background image for the selected section will be automatically assigned.
                 </p>
               </div>
 

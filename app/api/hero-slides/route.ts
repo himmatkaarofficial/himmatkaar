@@ -6,14 +6,19 @@ export const revalidate = 0;
 
 export interface HeroSlide {
   id: string;
-  section: 'team' | 'launchpad';
+  section: 'home' | 'team' | 'launchpad';
   title?: string;
-  image: string;
+  image?: string;
   display_order?: number;
   created_at?: string;
 }
 
 let memoryHeroSlides: HeroSlide[] = [
+  { id: 'home-1', section: 'home', title: 'Community Slide 1', image: '/home-page-carosel/1.jpg', display_order: 1 },
+  { id: 'home-2', section: 'home', title: 'Community Slide 2', image: '/home-page-carosel/2.jpg', display_order: 2 },
+  { id: 'home-3', section: 'home', title: 'Community Slide 3', image: '/home-page-carosel/3.jpg', display_order: 3 },
+  { id: 'home-4', section: 'home', title: 'Community Slide 4', image: '/home-page-carosel/4.jpeg', display_order: 4 },
+  { id: 'home-5', section: 'home', title: 'Community Slide 5', image: '/home-page-carosel/5.jpeg', display_order: 5 },
   { id: 'team-1', section: 'team', title: 'Executive Team Showcase 1', image: '/team-slides/team-slide-1.jpg', display_order: 1 },
   { id: 'team-2', section: 'team', title: 'Executive Team Showcase 2', image: '/team-slides/team-slide-2.jpg', display_order: 2 },
   { id: 'team-3', section: 'team', title: 'Executive Team Showcase 3', image: '/team-slides/team-slide-3.jpg', display_order: 3 },
@@ -46,7 +51,7 @@ export async function GET(request: Request) {
         dbSlides = data as HeroSlide[];
       }
     } catch {
-      // Supabase table might not exist yet, fallback to memory
+      // Supabase table fallback
     }
 
     let slides = dbSlides || memoryHeroSlides;
@@ -64,17 +69,22 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { section = 'team', title = '', image } = body;
+    const { section = 'home', title = '', image = '' } = body;
 
-    if (!image) {
-      return NextResponse.json({ error: 'Image URL is required' }, { status: 400 });
-    }
+    const defaultFallbackImage =
+      section === 'home'
+        ? '/home-page-carosel/1.jpg'
+        : section === 'team'
+        ? '/team-slides/team-slide-1.jpg'
+        : '/launchpad-slides/launchpad-slide-1-v2.jpg';
+
+    const finalImage = (image && image.trim()) ? image.trim() : defaultFallbackImage;
 
     const newSlide: HeroSlide = {
       id: `slide-${Date.now()}`,
       section,
-      title: title || `${section === 'team' ? 'Team' : 'Launchpad'} Slide`,
-      image,
+      title: title || `${section.toUpperCase()} Hero Slide`,
+      image: finalImage,
       display_order: memoryHeroSlides.length + 1,
       created_at: new Date().toISOString(),
     };
@@ -95,7 +105,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ slide: data }, { status: 201 });
       }
     } catch {
-      // Fallback to memory
+      // Fallback
     }
 
     memoryHeroSlides.push(newSlide);

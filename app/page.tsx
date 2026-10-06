@@ -64,19 +64,36 @@ export default function Home() {
     fetchPartnerLogos();
   }, []);
 
+  const [homeHeroImages, setHomeHeroImages] = useState<string[]>([
+    "/home-page-carosel/1.jpg",
+    "/home-page-carosel/2.jpg",
+    "/home-page-carosel/3.jpg",
+    "/home-page-carosel/4.jpeg",
+    "/home-page-carosel/5.jpeg"
+  ]);
+
+  useEffect(() => {
+    async function fetchHomeHeroSlides() {
+      try {
+        const res = await fetch("/api/hero-slides?section=home");
+        const data = await res.json();
+        if (data.slides && data.slides.length > 0) {
+          setHomeHeroImages(data.slides.map((s: { image?: string }) => s.image || "/home-page-carosel/1.jpg"));
+        }
+      } catch (err) {
+        console.error("Failed to fetch home hero slides:", err);
+      }
+    }
+    fetchHomeHeroSlides();
+  }, []);
+
   // Hero Section Data
   const heroData = {
     headline: "Evolve Your Future with Himmatkaar!",
     urduHeadline: "ہمت کار",
     primaryCTA: { text: "Apply for Himmatkaar LaunchPad" },
     secondaryCTA: { text: "Learn More", href: "/about" },
-    heroImages: [
-      "/home-page-carosel/1.jpg",
-      "/home-page-carosel/2.jpg",
-      "/home-page-carosel/3.jpg",
-      "/home-page-carosel/4.jpeg",
-      "/home-page-carosel/5.jpeg"
-    ]
+    heroImages: homeHeroImages
   };
 
   // About Section Data
