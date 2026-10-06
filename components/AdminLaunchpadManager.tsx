@@ -2,10 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Plus, Edit, Trash2, Rocket, X, Loader2, ChevronDown, ChevronUp,
   GraduationCap, Save, AlertCircle, CheckCircle, Upload, Linkedin, Camera
 } from "lucide-react";
+import AdminImageUploader from "./AdminImageUploader";
 
 interface SessionPhoto {
   url: string;
@@ -189,51 +191,31 @@ function PhotoUploadRow({
   };
 
   return (
-    <div className="flex gap-3 items-start bg-slate-50 rounded-xl p-3 border border-slate-200">
-      {/* Preview */}
-      <div className="relative w-20 h-14 rounded-lg overflow-hidden border border-slate-200 bg-white shrink-0 flex items-center justify-center">
-        {photo.url ? (
-          <Image src={photo.url} alt={`Photo ${index + 1}`} fill className="object-cover" />
-        ) : (
-          <Camera size={16} className="text-slate-300" />
-        )}
-      </div>
-
-      <div className="flex-1 space-y-1.5">
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/jpeg,image/jpg,image/png,image/webp"
-          className="hidden"
-          onChange={handleFile}
-        />
-        <button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          disabled={uploading}
-          className="flex items-center gap-2 px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 hover:border-[#39894c] hover:text-[#39894c] hover:bg-[#39894c]/5 transition-all disabled:opacity-50 w-full justify-center"
-        >
-          {uploading ? (
-            <><Loader2 size={12} className="animate-spin" /> Uploading...</>
-          ) : (
-            <><Upload size={12} /> {photo.url ? "Change Photo" : `Upload Photo ${index + 1}`}</>
-          )}
-        </button>
+    <div className="bg-slate-50 rounded-xl p-3 border border-slate-200 space-y-2">
+      <AdminImageUploader
+        label={`Photo ${index + 1}`}
+        imageUrl={photo.url}
+        uploadType="launchpad"
+        defaultAspect="16:9"
+        onChange={(url) => onChange("url", url)}
+        helpText="Crop session photo with 16:9 or 4:3 ratio."
+      />
+      <div className="flex items-center gap-2">
         <input
           value={photo.caption}
           onChange={(e) => onChange("caption", e.target.value)}
           placeholder={`Caption for photo ${index + 1} (optional)`}
-          className="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+          className="flex-1 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
         />
+        <button
+          type="button"
+          onClick={onRemove}
+          className="p-2 text-red-500 hover:bg-red-50 rounded-lg text-xs font-semibold"
+          title="Remove Photo"
+        >
+          <X size={16} />
+        </button>
       </div>
-
-      <button
-        type="button"
-        onClick={onRemove}
-        className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg transition-all"
-      >
-        <X size={14} />
-      </button>
     </div>
   );
 }
@@ -392,9 +374,17 @@ export default function AdminLaunchpadManager() {
           <h2 className="text-2xl font-bold text-slate-900">Launchpad Sessions</h2>
           <p className="text-sm text-slate-500 mt-1">Manage cohort sessions, mentors, and archives</p>
         </div>
-        <button onClick={openAdd} className="flex items-center gap-2 px-5 py-2.5 bg-[#39894c] text-white rounded-xl font-bold hover:bg-[#2d7040] transition-all shadow-md">
-          <Plus size={18} /> Add Session
-        </button>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/admin/mentors"
+            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-50 text-[#39894c] border border-emerald-200 rounded-xl font-bold hover:bg-emerald-100 transition-all text-xs sm:text-sm"
+          >
+            <GraduationCap size={18} /> Manage Mentors Directly
+          </Link>
+          <button onClick={openAdd} className="flex items-center gap-2 px-5 py-2.5 bg-[#39894c] text-white rounded-xl font-bold hover:bg-[#2d7040] transition-all shadow-md text-xs sm:text-sm">
+            <Plus size={18} /> Add Session
+          </button>
+        </div>
       </div>
 
       {/* ⭐ Featured One-on-One Mentorship Dedicated Manager Section */}
@@ -665,14 +655,15 @@ export default function AdminLaunchpadManager() {
                   <GraduationCap size={12} /> Mentor Details
                 </p>
 
-                {/* Photo Upload */}
+                {/* Photo Upload & Crop */}
                 <div className="mb-3">
-                  <ImageUploadBtn
-                    currentUrl={formData.mentor_photo_url}
-                    onUploaded={(url) => setFormData({ ...formData, mentor_photo_url: url })}
-                    label="Mentor Photo"
+                  <AdminImageUploader
+                    label="Mentor Photo *"
+                    imageUrl={formData.mentor_photo_url}
                     uploadType="launchpad"
-                    round
+                    defaultAspect="1:1"
+                    onChange={(url) => setFormData((prev) => ({ ...prev, mentor_photo_url: url }))}
+                    helpText="Crop mentor portrait picture with 1:1 ratio."
                   />
                 </div>
 

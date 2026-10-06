@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from 'next/image';
 import TeamCardImage from "@/components/TeamCardImage";
+import AdminImageUploader from "./AdminImageUploader";
 import { 
   Plus, Edit, Trash2, Upload, Loader2, X, Filter, Linkedin, MapPin
 } from "lucide-react";
@@ -274,7 +275,7 @@ export default function AdminAmbassadorsManager() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                   placeholder="Zainab Tariq"
                 />
               </div>
@@ -286,7 +287,7 @@ export default function AdminAmbassadorsManager() {
                   required
                   value={formData.role}
                   onChange={(e) => setFormData({...formData, role: e.target.value})}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                   placeholder="Campus Ambassador"
                 />
               </div>
@@ -298,7 +299,7 @@ export default function AdminAmbassadorsManager() {
                   required
                   value={formData.city}
                   onChange={(e) => setFormData({...formData, city: e.target.value})}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                   placeholder="Karachi"
                 />
               </div>
@@ -310,7 +311,7 @@ export default function AdminAmbassadorsManager() {
                   required
                   value={formData.university}
                   onChange={(e) => setFormData({...formData, university: e.target.value})}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                   placeholder="University of Karachi"
                 />
               </div>
@@ -322,7 +323,7 @@ export default function AdminAmbassadorsManager() {
                   value={formData.bio}
                   onChange={(e) => setFormData({...formData, bio: e.target.value})}
                   rows={4}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                   placeholder="Brief bio about the ambassador..."
                 />
               </div>
@@ -333,7 +334,7 @@ export default function AdminAmbassadorsManager() {
                   type="url"
                   value={formData.linkedin}
                   onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                   placeholder="https://linkedin.com/in/username"
                 />
               </div>
@@ -345,35 +346,19 @@ export default function AdminAmbassadorsManager() {
                   min="0"
                   value={formData.display_order}
                   onChange={(e) => setFormData({...formData, display_order: parseInt(e.target.value)})}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Profile Image *</label>
-                <div className="space-y-3">
-                  {formData.image && (
-                    <div className="relative w-full h-48 rounded-lg overflow-hidden border border-slate-300">
-                      <Image src={formData.image} alt="Preview" fill className="object-cover" />
-                    </div>
-                  )}
-                  <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-all cursor-pointer font-medium">
-                      <Upload size={18} />
-                      {uploading ? 'Uploading...' : 'Upload Image'}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        disabled={uploading}
-                        className="hidden"
-                      />
-                    </label>
-                    {uploading && <Loader2 className="animate-spin text-[#39894c]" size={20} />}
-                  </div>
-                  <p className="text-xs text-slate-500">Max 5MB. Supported: JPEG, PNG, WebP</p>
-                </div>
-              </div>
+              {/* Profile Image Upload & Crop */}
+              <AdminImageUploader
+                label="Profile Image *"
+                imageUrl={formData.image}
+                uploadType="ambassador"
+                defaultAspect="4:3"
+                onChange={(url: string) => setFormData((prev) => ({ ...prev, image: url }))}
+                helpText="Crop ambassador picture with 4:3 or 1:1 ratio for campus card display."
+              />
 
               <div className="flex gap-3 pt-4">
                 <button

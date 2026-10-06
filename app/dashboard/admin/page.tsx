@@ -343,7 +343,7 @@ export default function AdminDashboard() {
                       value={newAdminName}
                       onChange={(e) => setNewAdminName(e.target.value)}
                       placeholder="Full name (optional)"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     />
                     <input
                       type="email"
@@ -351,7 +351,7 @@ export default function AdminDashboard() {
                       value={newAdminEmail}
                       onChange={(e) => setNewAdminEmail(e.target.value)}
                       placeholder="admin@example.com"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     />
                     <input
                       type="password"
@@ -360,7 +360,7 @@ export default function AdminDashboard() {
                       value={newAdminPassword}
                       onChange={(e) => setNewAdminPassword(e.target.value)}
                       placeholder="Temporary password (min 6 chars)"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     />
                     <button
                       type="submit"
@@ -382,7 +382,7 @@ export default function AdminDashboard() {
                       value={promoteEmail}
                       onChange={(e) => setPromoteEmail(e.target.value)}
                       placeholder="existing-user@example.com"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     />
                     <button
                       type="submit"

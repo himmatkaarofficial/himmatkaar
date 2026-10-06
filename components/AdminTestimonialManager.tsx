@@ -15,6 +15,7 @@ import {
   AlertCircle,
   MessageSquareQuote
 } from "lucide-react";
+import AdminImageUploader from "./AdminImageUploader";
 
 export interface Testimonial {
   id: string;
@@ -365,84 +366,15 @@ export default function AdminTestimonialManager() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Avatar Upload */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2 font-body">
-                  Member Photo / Picture (Optional)
-                </label>
-                <div className="flex items-center gap-4">
-                  <div className="relative w-16 h-16 rounded-full overflow-hidden bg-slate-100 border-2 border-slate-200 flex-shrink-0 flex items-center justify-center">
-                    {formData.avatar_url ? (
-                      <Image
-                        src={formData.avatar_url}
-                        alt="Preview"
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-[#08170d] text-[#0ae448] flex items-center justify-center text-xs font-bold font-mono">
-                        {formData.name
-                          ? formData.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .slice(0, 2)
-                              .join("")
-                              .toUpperCase()
-                          : "PHOTO"}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex-1 space-y-2">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleImageUpload}
-                      accept="image/jpeg,image/png,image/webp"
-                      className="hidden"
-                    />
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={uploadingImage}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors"
-                      >
-                        {uploadingImage ? (
-                          <>
-                            <Loader2 size={14} className="animate-spin" />
-                            Uploading...
-                          </>
-                        ) : (
-                          <>
-                            <Upload size={14} />
-                            Upload Photo
-                          </>
-                        )}
-                      </button>
-
-                      {formData.avatar_url && (
-                        <button
-                          type="button"
-                          onClick={() => setFormData((prev) => ({ ...prev, avatar_url: "" }))}
-                          className="px-2 py-1.5 text-xs text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          Remove Photo
-                        </button>
-                      )}
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="Or enter direct image URL"
-                      value={formData.avatar_url}
-                      onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, avatar_url: e.target.value }))
-                      }
-                      className="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:border-[var(--color-courage-green)]"
-                    />
-                  </div>
-                </div>
-              </div>
+              {/* Member Avatar Upload & Crop */}
+              <AdminImageUploader
+                label="Member Photo / Avatar *"
+                imageUrl={formData.avatar_url}
+                uploadType="testimonial"
+                defaultAspect="1:1"
+                onChange={(url) => setFormData((prev) => ({ ...prev, avatar_url: url }))}
+                helpText="Crop profile picture with 1:1 Square or Custom ratio."
+              />
 
               {/* Name */}
               <div>

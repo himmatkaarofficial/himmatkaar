@@ -539,3 +539,34 @@ html {
 .blog-content em {
   font-style: italic;
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   GLOBAL FORM INPUT TEXT COLOR FIX (ADMIN & MODALS)
+   Prevents white-on-white invisible text in input/textarea/select controls
+   ───────────────────────────────────────────────────────────────── */
+input, textarea, select {
+  color: #0f172a;
+}
+
+.bg-white input:not([class*="text-white"]):not([class*="text-emerald"]),
+.bg-white textarea:not([class*="text-white"]):not([class*="text-emerald"]),
+.bg-white select:not([class*="text-white"]):not([class*="text-emerald"]),
+.bg-slate-50 input:not([class*="text-white"]):not([class*="text-emerald"]),
+.bg-slate-50 textarea:not([class*="text-white"]):not([class*="text-emerald"]),
+.bg-slate-50 select:not([class*="text-white"]):not([class*="text-emerald"]),
+form input:not([class*="text-white"]):not([class*="text-emerald"]),
+form textarea:not([class*="text-white"]):not([class*="text-emerald"]),
+form select:not([class*="text-white"]):not([class*="text-emerald"]) {
+  color: #0f172a !important;
+}
+
+select option {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #64748b !important;
+}
+

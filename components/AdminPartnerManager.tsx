@@ -16,6 +16,7 @@ import {
   Layers,
   ExternalLink
 } from "lucide-react";
+import AdminImageUploader from "./AdminImageUploader";
 
 export interface Partner {
   id: string;
@@ -537,70 +538,15 @@ export default function AdminPartnerManager() {
                 />
               </div>
 
-              {/* Logo Upload */}
-              <div>
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 block font-body">
-                  Partner Logo Image *
-                </label>
-
-                <div className="space-y-3">
-                  {/* Upload Box */}
-                  <div className="flex gap-4 items-center p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                    <div className="relative w-28 h-18 bg-white rounded-xl border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
-                      {formData.logo_url ? (
-                        <Image
-                          src={formData.logo_url}
-                          alt="Logo Preview"
-                          fill
-                          className="object-contain p-2"
-                        />
-                      ) : (
-                        <span className="text-xs text-slate-400 font-mono">No Logo</span>
-                      )}
-                    </div>
-
-                    <div className="flex-1">
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml"
-                        className="hidden"
-                        onChange={handleFileUpload}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={uploading}
-                        className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:border-[#39894c] hover:text-[#39894c] transition-all shadow-sm disabled:opacity-50 cursor-pointer"
-                      >
-                        {uploading ? (
-                          <>
-                            <Loader2 size={14} className="animate-spin" /> Uploading...
-                          </>
-                        ) : (
-                          <>
-                            <Upload size={14} /> {formData.logo_url ? "Change Logo" : "Upload Logo Image"}
-                          </>
-                        )}
-                      </button>
-                      <p className="text-[10px] text-slate-400 mt-1 text-center">
-                        PNG, JPG, SVG, WebP (Transparent background recommended)
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Or Manual URL */}
-                  <div>
-                    <input
-                      type="url"
-                      value={formData.logo_url}
-                      onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-                      placeholder="Or paste Logo Image URL (https://...)"
-                      className="w-full border border-slate-200 rounded-xl px-4 py-2 text-xs text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
-                    />
-                  </div>
-                </div>
-              </div>
+              {/* Logo Upload & Crop */}
+              <AdminImageUploader
+                label="Partner Logo Image *"
+                imageUrl={formData.logo_url}
+                uploadType="partner"
+                defaultAspect="1:1"
+                onChange={(url) => setFormData((prev) => ({ ...prev, logo_url: url }))}
+                helpText="Crop logo with 1:1 Square ratio or custom ratio for optimal marquee alignment."
+              />
 
               {/* Display Order */}
               <div>

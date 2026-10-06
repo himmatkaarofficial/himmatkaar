@@ -15,7 +15,8 @@ import {
   FileText,
   Rocket,
   Building2,
-  MessageSquareQuote
+  MessageSquareQuote,
+  GraduationCap
 } from "lucide-react";
 import { signOut } from "@/lib/auth";
 
@@ -116,6 +117,18 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
           >
             <Rocket size={20} className={isActive('/dashboard/admin/launchpad') ? '' : 'group-hover:text-[var(--color-courage-green)] transition-colors'} />
             <span className="text-sm">Launchpad</span>
+          </Link>
+
+          <Link 
+            href="/dashboard/admin/mentors" 
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group font-body ${
+              isActive('/dashboard/admin/mentors') 
+                ? 'bg-[var(--color-courage-green)] text-white font-semibold shadow-md' 
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <GraduationCap size={20} className={isActive('/dashboard/admin/mentors') ? '' : 'group-hover:text-[var(--color-courage-green)] transition-colors'} />
+            <span className="text-sm">Mentors & Facilitators</span>
           </Link>
 
           <Link 

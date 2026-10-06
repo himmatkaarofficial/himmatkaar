@@ -212,6 +212,101 @@ function SessionModal({ session, onClose }: { session: DbSession; onClose: () =>
   );
 }
 
+// ── Mentor Detail Modal ───────────────────────────────────────────────────
+export interface MentorDetail {
+  name: string;
+  role: string;
+  photo_url?: string;
+  bio?: string;
+  linkedin?: string;
+}
+
+function MentorModal({ mentor, onClose }: { mentor: MentorDetail; onClose: () => void }) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      >
+        <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" />
+        <motion.div
+          className="relative z-10 w-full max-w-lg bg-[#0c2616] border border-[#1d442a] rounded-2xl shadow-2xl overflow-hidden text-white p-6 sm:p-8"
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header & Close */}
+          <div className="flex justify-between items-center mb-6">
+            <span className="font-mono text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-[#10321e] text-[#389456] border border-[#1d442a]">
+              Mentor Profile
+            </span>
+            <button
+              onClick={onClose}
+              className="p-2 text-[#a3caad] hover:text-white hover:bg-[#10321e] rounded-xl transition-all font-mono text-sm cursor-pointer"
+            >
+              ✕ Close
+            </button>
+          </div>
+
+          {/* Mentor Profile Details */}
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 mb-6 text-center sm:text-left">
+            <div className="relative w-24 h-24 rounded-2xl overflow-hidden border-2 border-[#2d7a46] shrink-0 shadow-lg">
+              {mentor.photo_url ? (
+                <Image src={mentor.photo_url} alt={mentor.name} fill className="object-cover" />
+              ) : (
+                <div className="w-full h-full bg-[#10321e] flex items-center justify-center text-[#389456] font-bold text-3xl">
+                  {mentor.name.charAt(0)}
+                </div>
+              )}
+            </div>
+            <div className="flex-1">
+              <h3 className="font-serif-heading text-2xl font-bold text-white mb-1">{mentor.name}</h3>
+              <p className="text-xs font-mono text-[#389456] uppercase tracking-wider font-semibold mb-3">
+                {mentor.role}
+              </p>
+              {mentor.linkedin && (
+                <a
+                  href={mentor.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#0a66c2] hover:bg-[#084e96] text-white rounded-xl text-xs font-bold transition-all shadow-md"
+                >
+                  <Linkedin size={16} /> View LinkedIn Profile
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Mentor Bio */}
+          {mentor.bio && (
+            <div className="bg-[#10321e]/60 border border-[#1d442a] rounded-xl p-4 sm:p-5">
+              <p className="text-xs font-mono text-[#f3ae29] uppercase tracking-widest mb-2 font-bold">About Mentor</p>
+              <p className="text-sm text-[#d1e7d8] leading-relaxed">{mentor.bio}</p>
+            </div>
+          )}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 // ── Hero Images ────────────────────────────────────────────────────────────
 const LAUNCHPAD_HERO_IMAGES = [
   "/launchpad-slides/launchpad-slide-1-v2.jpg",
@@ -232,6 +327,7 @@ function LaunchpadContent() {
   const [sessions, setSessions] = useState<DbSession[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
   const [selectedSession, setSelectedSession] = useState<DbSession | null>(null);
+  const [selectedMentor, setSelectedMentor] = useState<MentorDetail | null>(null);
 
   const [isNextCohortModalOpen, setIsNextCohortModalOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -690,7 +786,14 @@ function LaunchpadContent() {
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true }}
                           transition={{ delay: index * 0.04 }}
-                          className="bg-[#f8faf7] rounded-2xl p-6 border border-[#d8e6db] hover:border-[#2d7a46] hover:bg-[#f0f6f2] transition-all duration-300 flex flex-col justify-between shadow-md"
+                          onClick={() => setSelectedMentor({
+                            name: session.mentor_name,
+                            role: session.mentor_role,
+                            photo_url: session.mentor_photo_url,
+                            bio: session.mentor_bio,
+                            linkedin: session.mentor_linkedin,
+                          })}
+                          className="bg-[#f8faf7] rounded-2xl p-6 border border-[#d8e6db] hover:border-[#2d7a46] hover:bg-[#f0f6f2] transition-all duration-300 flex flex-col justify-between shadow-md cursor-pointer group"
                         >
                           <div>
                             <div className="flex items-center justify-between mb-4">
@@ -708,6 +811,7 @@ function LaunchpadContent() {
                                   href={session.mentor_linkedin}
                                   target="_blank"
                                   rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
                                   className="p-2.5 rounded-xl bg-white border border-[#d8e6db] text-[#4a6b53] hover:text-[#0a66c2] hover:border-[#0a66c2] transition-all"
                                   title={`${session.mentor_name}'s LinkedIn`}
                                 >
@@ -715,21 +819,11 @@ function LaunchpadContent() {
                                 </a>
                               )}
                             </div>
-                            <h3 className="font-serif-heading text-lg font-bold text-[#07190e] mb-1">{session.mentor_name}</h3>
+                            <h3 className="font-serif-heading text-lg font-bold text-[#07190e] mb-1 group-hover:text-[#2d7a46] transition-colors">{session.mentor_name}</h3>
                             <p className="text-[11px] font-mono text-[#2d7a46] uppercase tracking-wider mb-3 font-semibold">{session.mentor_role}</p>
                             {session.mentor_bio && (
-                              <p className="text-xs text-[#3a5342] leading-relaxed line-clamp-3 mb-3">{session.mentor_bio}</p>
+                              <p className="text-xs text-[#3a5342] leading-relaxed line-clamp-3">{session.mentor_bio}</p>
                             )}
-                            <p className="text-xs text-[#4a6b53]/80 italic">Topic: {session.title}</p>
-                          </div>
-                          <div className="pt-4 mt-4 border-t border-[#e2ede4] flex items-center justify-between">
-                            <button
-                              onClick={() => setSelectedSession(session)}
-                              className="text-xs font-mono font-bold text-[#2d7a46] hover:text-[#07190e] flex items-center gap-1 uppercase tracking-wider transition-colors cursor-pointer"
-                            >
-                              <span>Session Details</span>
-                              <ArrowUpRight size={14} className="text-[#f3ae29]" />
-                            </button>
                           </div>
                         </motion.div>
                       ))
@@ -859,6 +953,11 @@ function LaunchpadContent() {
           </div>
         </div>
       </section>
+
+      {/* Mentor Profile Modal */}
+      {selectedMentor && (
+        <MentorModal mentor={selectedMentor} onClose={() => setSelectedMentor(null)} />
+      )}
 
       {/* Session Detail Modal */}
       {selectedSession && (
