@@ -8,6 +8,7 @@ import { ArrowLeft, Linkedin, MapPin, Loader2, ArrowRight, Sparkles, CheckCircle
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TeamCardImage from "@/components/TeamCardImage";
+import TeamMemberDetailModal, { TeamMemberDetail } from "@/components/TeamMemberDetailModal";
 
 interface Ambassador {
   id: string;
@@ -62,6 +63,7 @@ export default function Ambassadors() {
   const [ambassadors, setAmbassadors] = useState<Ambassador[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAmbassadorId, setSelectedAmbassadorId] = useState<string>("1");
+  const [selectedAmbassadorForModal, setSelectedAmbassadorForModal] = useState<TeamMemberDetail | null>(null);
 
   useEffect(() => {
     const fetchAmbassadors = async () => {
@@ -161,7 +163,19 @@ export default function Ambassadors() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: idx * 0.08 }}
-                      onClick={() => setSelectedAmbassadorId(ambassador.id)}
+                      onClick={() => {
+                        setSelectedAmbassadorId(ambassador.id);
+                        setSelectedAmbassadorForModal({
+                          id: ambassador.id,
+                          name: ambassador.name,
+                          role: ambassador.role,
+                          city: ambassador.city,
+                          bio: ambassador.bio,
+                          image: ambassador.image,
+                          linkedin: ambassador.linkedin,
+                          type: "ambassador",
+                        });
+                      }}
                       className={`cursor-pointer rounded-2xl p-4 border transition-all duration-300 flex flex-col justify-between group ${
                         isSelected
                           ? "bg-[#0c2616] text-white border-[#2d7a46] shadow-xl ring-2 ring-[#2d7a46]/40 scale-[1.02]"
@@ -283,6 +297,10 @@ export default function Ambassadors() {
 
       </main>
       <Footer />
+      <TeamMemberDetailModal
+        member={selectedAmbassadorForModal}
+        onClose={() => setSelectedAmbassadorForModal(null)}
+      />
     </div>
   );
 }

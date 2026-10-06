@@ -8,6 +8,7 @@ import { ArrowLeft, Linkedin, Loader2, ChevronLeft, ChevronRight, Sparkles, Chec
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TeamCardImage from "@/components/TeamCardImage";
+import TeamMemberDetailModal, { TeamMemberDetail } from "@/components/TeamMemberDetailModal";
 
 interface TeamMember {
   id: string;
@@ -84,6 +85,7 @@ export default function CoreTeamPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedMemberId, setSelectedMemberId] = useState<string>("1");
+  const [selectedMemberForModal, setSelectedMemberForModal] = useState<TeamMemberDetail | null>(null);
 
   // Background carousel auto-slide
   useEffect(() => {
@@ -272,7 +274,18 @@ export default function CoreTeamPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: idx * 0.06 }}
-                        onClick={() => setSelectedMemberId(member.id)}
+                        onClick={() => {
+                          setSelectedMemberId(member.id);
+                          setSelectedMemberForModal({
+                            id: member.id,
+                            name: member.name,
+                            role: member.role,
+                            bio: member.bio,
+                            image: member.image,
+                            linkedin: member.linkedin,
+                            type: "core-team",
+                          });
+                        }}
                         className={`cursor-pointer rounded-2xl p-5 border transition-all duration-300 flex flex-col justify-between group ${
                           isSelected
                             ? "bg-[#0c2616] text-white border-[#2d7a46] shadow-xl ring-2 ring-[#2d7a46]/40 scale-[1.02]"
@@ -419,6 +432,10 @@ export default function CoreTeamPage() {
 
       </main>
       <Footer />
+      <TeamMemberDetailModal
+        member={selectedMemberForModal}
+        onClose={() => setSelectedMemberForModal(null)}
+      />
     </div>
   );
 }

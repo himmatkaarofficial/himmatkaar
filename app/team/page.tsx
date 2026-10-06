@@ -8,6 +8,7 @@ import { ArrowLeft, Linkedin, Loader2, ArrowUpRight, ChevronLeft, ChevronRight, 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TeamCardImage from "@/components/TeamCardImage";
+import TeamMemberDetailModal, { TeamMemberDetail } from "@/components/TeamMemberDetailModal";
 
 interface TeamMember {
   id: string;
@@ -131,6 +132,7 @@ export default function Team() {
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedAmbassadorIndex, setSelectedAmbassadorIndex] = useState<number | null>(0);
+  const [selectedMemberForModal, setSelectedMemberForModal] = useState<TeamMemberDetail | null>(null);
 
   // Background carousel auto-slide
   useEffect(() => {
@@ -296,7 +298,18 @@ export default function Team() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.08 }}
-                    className="bg-[#0c2616] rounded-2xl border border-[#1d442a] hover:border-[#389456] hover:bg-[#10321e] transition-all duration-300 overflow-hidden flex flex-col justify-between group shadow-xl"
+                    onClick={() =>
+                      setSelectedMemberForModal({
+                        id: member.id,
+                        name: member.name,
+                        role: member.role,
+                        bio: member.bio,
+                        image: member.image,
+                        linkedin: member.linkedin,
+                        type: "core-team",
+                      })
+                    }
+                    className="bg-[#0c2616] rounded-2xl border border-[#1d442a] hover:border-[#389456] hover:bg-[#10321e] transition-all duration-300 overflow-hidden flex flex-col justify-between group shadow-xl cursor-pointer"
                   >
                     <div className="m-4 rounded-xl overflow-hidden relative h-60 border border-[#1d442a] bg-[#0a2012]">
                       <TeamCardImage
@@ -310,6 +323,7 @@ export default function Team() {
                           href={member.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className="absolute bottom-3 right-3 w-9 h-9 rounded-xl bg-[#0c2616]/90 border border-[#2d7a46] flex items-center justify-center text-[#f3ae29] hover:bg-[#2d7a46] hover:text-white transition-all z-10 shadow-lg"
                           aria-label={`${member.name} LinkedIn`}
                         >
@@ -373,7 +387,19 @@ export default function Team() {
                   return (
                     <motion.div
                       key={idx}
-                      onClick={() => setSelectedAmbassadorIndex(idx)}
+                      onClick={() => {
+                        setSelectedAmbassadorIndex(idx);
+                        setSelectedMemberForModal({
+                          id: member.id,
+                          name: member.name,
+                          role: member.role,
+                          city: member.city,
+                          bio: member.bio,
+                          image: member.image,
+                          linkedin: member.linkedin,
+                          type: "ambassador",
+                        });
+                      }}
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
@@ -459,6 +485,10 @@ export default function Team() {
 
       </main>
       <Footer />
+      <TeamMemberDetailModal
+        member={selectedMemberForModal}
+        onClose={() => setSelectedMemberForModal(null)}
+      />
     </div>
   );
 }
