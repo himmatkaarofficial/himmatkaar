@@ -130,6 +130,9 @@ export default function Team() {
   const [coreTeam, setCoreTeam] = useState<TeamMember[]>([]);
   const [ambassadors, setAmbassadors] = useState<Ambassador[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedAmbassadorIndex, setSelectedAmbassadorIndex] = useState<number | null>(0);
+  const [selectedMemberForModal, setSelectedMemberForModal] = useState<TeamMemberDetail | null>(null);
   const [heroImages, setHeroImages] = useState<string[]>(DEFAULT_TEAM_HERO_IMAGES);
 
   // Background carousel auto-slide
