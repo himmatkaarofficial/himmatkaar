@@ -48,6 +48,8 @@ export async function POST(request: Request) {
         logo_url: body.logo_url,
         category: body.category || 'managing', // 'managing' or 'tech'
         display_order: body.display_order ?? 0,
+        description: body.description || '',
+        website_url: body.website_url || '',
       }])
       .select()
       .single();

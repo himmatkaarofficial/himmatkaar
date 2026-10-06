@@ -1,31 +1,63 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
+import PartnerDetailModal, { PartnerDetail } from "@/components/PartnerDetailModal";
+
+export interface PartnerItem {
+  id?: string;
+  name: string;
+  logo_url: string;
+  category?: "managing" | "tech";
+  description?: string;
+  website_url?: string;
+}
 
 interface PartnerMarqueeProps {
   title?: string;
-  logos: string[];
+  logos?: string[];
+  partnersData?: PartnerItem[];
+  category?: "managing" | "tech";
   reverse?: boolean;
 }
 
 const DEFAULT_PARTNERS = [
-  "DEVSINC",
-  "TECH CORP",
-  "ANALYTICS PRO",
-  "BIRCLE",
-  "KM KAY & EMMIS GLOBAL",
-  "NETSOL"
+  { name: "The Cabinet", logo: "/partners/the-cabinet.png" },
+  { name: "Cybergen", logo: "/partners/tech1.png" },
+  { name: "Tech Partner", logo: "/partners/tech2.png" },
+  { name: "Executive Partner", logo: "/partners/partner2.png" },
 ];
 
 export const PartnerMarquee: React.FC<PartnerMarqueeProps> = ({ 
   title = "Our Collaborative Partners", 
-  logos,
+  logos = [],
+  partnersData,
+  category,
   reverse = false 
 }) => {
-  const hasLogos = logos && logos.length > 0;
-  const infiniteLogos = hasLogos ? [...logos, ...logos, ...logos, ...logos] : [];
-  const infinitePartners = [...DEFAULT_PARTNERS, ...DEFAULT_PARTNERS, ...DEFAULT_PARTNERS];
+  const [selectedPartner, setSelectedPartner] = useState<PartnerDetail | null>(null);
+
+  // Normalize partner objects
+  let items: PartnerDetail[] = [];
+  if (partnersData && partnersData.length > 0) {
+    items = partnersData;
+  } else if (logos && logos.length > 0) {
+    items = logos.map((url, idx) => ({
+      id: `p-${idx}`,
+      name: url.includes("cabinet") ? "The Cabinet" : url.includes("tech") ? "Tech Partner" : "Partner",
+      logo_url: url,
+      category: category || "managing",
+    }));
+  } else {
+    items = DEFAULT_PARTNERS.map((p, idx) => ({
+      id: `def-${idx}`,
+      name: p.name,
+      logo_url: p.logo,
+      category: category || "managing",
+    }));
+  }
+
+  const infiniteItems = [...items, ...items, ...items, ...items];
 
   return (
     <div className="w-full overflow-hidden py-10 bg-[#0a2012] border-b border-[#1d442a] relative">
@@ -36,7 +68,7 @@ export const PartnerMarquee: React.FC<PartnerMarqueeProps> = ({
       </div>
 
       <div className="relative">
-        {/* Gradient Edge Masks for Smooth Fade */}
+        {/* Gradient Edge Masks */}
         <div
           className="absolute left-0 top-0 bottom-0 w-24 sm:w-48 z-10 pointer-events-none"
           style={{ background: "linear-gradient(to right, #0a2012, transparent)" }}
@@ -48,39 +80,33 @@ export const PartnerMarquee: React.FC<PartnerMarqueeProps> = ({
 
         {/* Marquee Track */}
         <div className={`flex items-center ${reverse ? "animate-marquee-reverse" : "animate-marquee-infinite"}`}>
-          {hasLogos ? (
-            infiniteLogos.map((logo, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 mx-4 sm:mx-6 flex items-center justify-center p-4 bg-[#0c2616] rounded-xl border border-[#1d442a] hover:border-[#389456] transition-all hover:scale-105 shadow-md"
-                style={{ width: "160px", height: "80px" }}
-              >
-                <div className="relative w-full h-full">
-                  <Image
-                    src={logo}
-                    alt={`Partner ${(index % logos.length) + 1}`}
-                    fill
-                    className="object-contain filter brightness-90 contrast-125"
-                    sizes="160px"
-                  />
-                </div>
+          {infiniteItems.map((item, index) => (
+            <div
+              key={index}
+              onClick={() => setSelectedPartner(item)}
+              className="flex-shrink-0 mx-3 sm:mx-5 flex items-center justify-center p-3 sm:p-4 bg-white rounded-2xl border border-[#d8e6db] hover:border-[#2d7a46] hover:shadow-xl transition-all hover:scale-105 cursor-pointer shadow-md group"
+              style={{ width: "170px", height: "85px" }}
+              title={`Click to view ${item.name} details`}
+            >
+              <div className="relative w-full h-full">
+                <Image
+                  src={item.logo_url}
+                  alt={item.name}
+                  fill
+                  className="object-contain p-1 transition-transform group-hover:scale-105"
+                  sizes="170px"
+                />
               </div>
-            ))
-          ) : (
-            infinitePartners.map((partner, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 mx-3 sm:mx-4 flex items-center justify-center px-6 py-4 bg-[#0c2616] rounded-xl border border-[#1d442a] hover:border-[#389456] transition-all hover:scale-105 shadow-md"
-                style={{ height: "64px" }}
-              >
-                <span className="font-mono text-sm font-bold text-[#d1e7d8] tracking-wider uppercase whitespace-nowrap">
-                  {partner}
-                </span>
-              </div>
-            ))
-          )}
+            </div>
+          ))}
         </div>
       </div>
+
+      {/* Partner Detail Modal */}
+      <PartnerDetailModal
+        partner={selectedPartner}
+        onClose={() => setSelectedPartner(null)}
+      />
 
       <style jsx>{`
         @keyframes marquee-infinite {

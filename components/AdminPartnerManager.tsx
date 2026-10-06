@@ -24,6 +24,8 @@ export interface Partner {
   logo_url: string;
   category: "managing" | "tech";
   display_order: number;
+  description?: string;
+  website_url?: string;
   created_at?: string;
 }
 
@@ -43,11 +45,15 @@ export default function AdminPartnerManager() {
     logo_url: string;
     category: "managing" | "tech";
     display_order: number;
+    description: string;
+    website_url: string;
   }>({
     name: "",
     logo_url: "",
     category: "managing",
     display_order: 0,
+    description: "",
+    website_url: "",
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -81,6 +87,8 @@ export default function AdminPartnerManager() {
       logo_url: "",
       category,
       display_order: partners.filter((p) => p.category === category).length + 1,
+      description: "",
+      website_url: "",
     });
     setShowModal(true);
   };
@@ -92,6 +100,8 @@ export default function AdminPartnerManager() {
       logo_url: partner.logo_url,
       category: partner.category,
       display_order: partner.display_order ?? 0,
+      description: partner.description || "",
+      website_url: partner.website_url || "",
     });
     setShowModal(true);
   };
@@ -547,6 +557,34 @@ export default function AdminPartnerManager() {
                 onChange={(url) => setFormData((prev) => ({ ...prev, logo_url: url }))}
                 helpText="Crop logo with 1:1 Square ratio or custom ratio for optimal marquee alignment."
               />
+
+              {/* Website URL */}
+              <div>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 block font-body">
+                  Website URL (Optional)
+                </label>
+                <input
+                  type="url"
+                  value={formData.website_url}
+                  onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
+                  placeholder="e.g. https://thecabinet.pk"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                />
+              </div>
+
+              {/* Partner Description / Bio */}
+              <div>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 block font-body">
+                  Partner Details / Description (Optional)
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Provide background info, collaboration highlights, or description of this partner..."
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] resize-none"
+                />
+              </div>
 
               {/* Display Order */}
               <div>

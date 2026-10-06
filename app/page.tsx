@@ -29,16 +29,18 @@ import {
   TestimonialsSection,
   NewsletterSection
 } from "@/components/sections";
+import { PartnerItem } from "@/components/sections/PartnerMarquee";
 
 export default function Home() {
-  const [partnerLogos, setPartnerLogos] = useState<string[]>([
-    "/partners/the-cabinet.png",
-    "/partners/partner2.png"
+
+  const [managingPartners, setManagingPartners] = useState<PartnerItem[]>([
+    { name: "The Cabinet", logo_url: "/partners/the-cabinet.png", category: "managing" },
+    { name: "Executive Partner", logo_url: "/partners/partner2.png", category: "managing" }
   ]);
 
-  const [techPartnerLogos, setTechPartnerLogos] = useState<string[]>([
-    "/partners/tech1.png",
-    "/partners/tech2.png"
+  const [techPartners, setTechPartners] = useState<PartnerItem[]>([
+    { name: "Cybergen", logo_url: "/partners/tech1.png", category: "tech" },
+    { name: "Tech Partner", logo_url: "/partners/tech2.png", category: "tech" }
   ]);
 
   useEffect(() => {
@@ -47,15 +49,11 @@ export default function Home() {
         const res = await fetch("/api/partners", { cache: "no-store" });
         const data = await res.json();
         if (data.partners && data.partners.length > 0) {
-          const managing = data.partners
-            .filter((p: any) => p.category === "managing" && p.logo_url)
-            .map((p: any) => p.logo_url);
-          const tech = data.partners
-            .filter((p: any) => p.category === "tech" && p.logo_url)
-            .map((p: any) => p.logo_url);
+          const managing = data.partners.filter((p: any) => p.category === "managing" && p.logo_url);
+          const tech = data.partners.filter((p: any) => p.category === "tech" && p.logo_url);
 
-          if (managing.length > 0) setPartnerLogos(managing);
-          if (tech.length > 0) setTechPartnerLogos(tech);
+          if (managing.length > 0) setManagingPartners(managing);
+          if (tech.length > 0) setTechPartners(tech);
         }
       } catch (err) {
         console.error("Failed to fetch partner logos:", err);
@@ -186,8 +184,8 @@ export default function Home() {
         <HeroSection {...heroData} onPrimaryClick={() => setIsNextCohortModalOpen(true)} />
 
         {/* Partner Marquees */}
-        <PartnerMarquee title="Our Managing Partners" logos={partnerLogos} />
-        <PartnerMarquee title="Our Tech Partners" logos={techPartnerLogos} reverse={true} />
+        <PartnerMarquee title="Our Managing Partners" partnersData={managingPartners} category="managing" />
+        <PartnerMarquee title="Our Tech Partners" partnersData={techPartners} category="tech" reverse={true} />
 
         {/* About Section */}
         <AboutSection {...aboutData} />
