@@ -7,18 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Calendar, MapPin, Users, ArrowUpRight, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  location: string;
-  type: string;
-  image: string;
-  status: string;
-}
+import EventDetailModal, { EventDetail } from "@/components/EventDetailModal";
 
 const EVENT_HERO_IMAGES = [
   "/events/event-slide-1.jpg",
@@ -28,9 +17,10 @@ const EVENT_HERO_IMAGES = [
 ];
 
 export default function Events() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<EventDetail[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedEvent, setSelectedEvent] = useState<EventDetail | null>(null);
 
   // Background carousel auto-slide
   useEffect(() => {
@@ -51,7 +41,7 @@ export default function Events() {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch('/api/events?status=past', { cache: 'no-store' });
+        const response = await fetch('/api/events?status=all', { cache: 'no-store' });
         const data = await response.json();
         if (response.ok && data.events && data.events.length > 0) {
           setEvents(data.events);
@@ -76,7 +66,11 @@ export default function Events() {
   }, []);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    } catch {
+      return dateString;
+    }
   };
 
   return (
@@ -87,7 +81,6 @@ export default function Events() {
 
         {/* ── Page Hero with Animated Background Carousel ── */}
         <section className="relative text-white flex items-center overflow-hidden min-h-[550px] py-16 sm:py-20">
-          {/* Full-bleed Animated Image Carousel */}
           <AnimatePresence mode="sync">
             <motion.div
               key={currentImageIndex}
@@ -108,36 +101,38 @@ export default function Events() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Refined Dark Forest Green Gradient Vignette Overlay */}
-          <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#07190e]/80 via-[#0a2012]/50 to-[#0c2616]/25" />
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0a2012]/90 via-transparent to-black/20" />
-          <div className="absolute inset-0 z-10 bg-radial-grid opacity-30 pointer-events-none" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#07190e]/85 via-[#0a2012]/60 to-[#0c2616]/30" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0a2012] via-transparent to-black/30" />
+          <div className="absolute inset-0 z-10 bg-grid-subtle opacity-40 pointer-events-none" />
 
-          {/* Hero Text Content */}
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 relative z-20 w-full">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 relative z-20 w-full">
             <Link href="/" className="inline-flex items-center gap-2 mb-6 text-sm font-mono text-[#a3caad] hover:text-white transition-colors">
               <ArrowLeft size={16} /> Back to Home
             </Link>
-            
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
               <div className="mb-4">
-                <span className="badge-category-green !rounded-md !px-3 !py-1 !text-xs">
-                  • Our Events
+                <span className="annotation-curly">
+                  Himmatkaar Events Showcase
                 </span>
               </div>
-              <h1 className="font-serif-heading mb-4 text-white font-bold leading-[1.08] tracking-tight max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
-                Our Events{" "}
-                <span className="text-[#389456] italic">
-                  Journey!
-                </span>
+              <h1 className="font-serif-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6 leading-[1.08]">
+                Empowering Conferences,{" "}
+                <span className="text-[#389456] italic">Summits &amp; Workshops!</span>
               </h1>
-              <p className="text-base sm:text-lg lg:text-xl leading-relaxed text-[#d1e7d8] max-w-2xl font-normal">
-                Explore the impactful masterclasses, leadership conclaves, and community forums we organize to bridge industry talent and foster changemakers.
+              <p className="text-base sm:text-xl text-[#d1e7d8] font-normal leading-relaxed mb-8">
+                Explore our past impact summits and upcoming masterclasses designed to build real-world leadership and skills across Pakistan. Click any event card to view full details.
               </p>
+              <div className="flex flex-wrap items-center gap-4">
+                <Link href="/events/upcoming" className="btn-gsap-cta flex items-center gap-2 !rounded-xl !py-3.5 !px-7">
+                  <span>Explore Upcoming Events</span>
+                  <ArrowUpRight size={18} className="text-[#f3ae29]" />
+                </Link>
+              </div>
             </motion.div>
           </div>
 
-          {/* Carousel Prev Arrow */}
+          {/* Controls */}
           <button
             onClick={prevImage}
             className="hidden sm:flex absolute left-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-xl border border-[#1d442a] bg-[#0c2616]/80 hover:bg-[#10321e] hover:border-[#389456] transition-all backdrop-blur-md"
@@ -145,8 +140,6 @@ export default function Events() {
           >
             <ChevronLeft size={22} className="text-[#e8f5ec]" />
           </button>
-
-          {/* Carousel Next Arrow */}
           <button
             onClick={nextImage}
             className="hidden sm:flex absolute right-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-xl border border-[#1d442a] bg-[#0c2616]/80 hover:bg-[#10321e] hover:border-[#389456] transition-all backdrop-blur-md"
@@ -155,7 +148,6 @@ export default function Events() {
             <ChevronRight size={22} className="text-[#e8f5ec]" />
           </button>
 
-          {/* Carousel Dot Indicators (Amber/Gold Soft Rectangles) */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
             {EVENT_HERO_IMAGES.map((_, index) => (
               <button
@@ -181,49 +173,55 @@ export default function Events() {
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {events.map((event, idx) => (
-                  <motion.div
-                    key={event.id || idx}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.08 }}
-                    className="bg-[#0c2616] rounded-2xl overflow-hidden border border-[#1d442a] hover:border-[#389456] transition-all duration-300 shadow-xl flex flex-col justify-between group"
-                  >
-                    <div>
-                      <div className="relative h-52 w-full overflow-hidden bg-[#0a2012]">
-                        <Image src={event.image} alt={event.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="400px" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0c2616] via-transparent to-transparent opacity-75" />
-                        <span className="badge-category-green absolute top-3 right-3 !bg-[#0a2012]/90 !text-[10px] !py-1 !px-2.5 !rounded-md">
-                          Past Event
+                {events.map((event, idx) => {
+                  const isUpcoming = (event.status || "").toLowerCase() === "upcoming";
+                  return (
+                    <motion.div
+                      key={event.id || idx}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.08 }}
+                      onClick={() => setSelectedEvent(event)}
+                      className="bg-[#0c2616] rounded-2xl overflow-hidden border border-[#1d442a] hover:border-[#389456] transition-all duration-300 shadow-xl flex flex-col justify-between group cursor-pointer"
+                    >
+                      <div>
+                        <div className="relative h-52 w-full overflow-hidden bg-[#0a2012]">
+                          <Image src={event.image} alt={event.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="400px" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#0c2616] via-transparent to-transparent opacity-75" />
+                          <span className={`absolute top-3 right-3 !text-[10px] !py-1 !px-2.5 !rounded-md font-mono font-bold uppercase ${
+                            isUpcoming ? "badge-category-green" : "bg-[#0a2012]/90 text-[#a3caad] border border-[#1d442a]"
+                          }`}>
+                            {isUpcoming ? "Upcoming Event" : "Past Event"}
+                          </span>
+                        </div>
+                        
+                        <div className="p-6">
+                          <h3 className="font-serif-heading text-xl font-bold text-white mb-2.5 group-hover:text-[#d1e7d8] transition-colors">
+                            {event.title}
+                          </h3>
+                          <p className="text-sm leading-relaxed text-[#a3caad] line-clamp-3 mb-4">
+                            {event.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="px-6 pb-6 pt-3 border-t border-[#1d442a]/80 flex items-center justify-between text-xs font-mono">
+                        <div className="space-y-1">
+                          <p className="flex items-center gap-2 text-[#d1e7d8]">
+                            <Calendar size={13} className="text-[#f3ae29]" /> {formatDate(event.date)}
+                          </p>
+                          <p className="flex items-center gap-2 text-[#a3caad]">
+                            <MapPin size={13} className="text-[#389456]" /> {event.location}
+                          </p>
+                        </div>
+                        <span className="text-[#389456] group-hover:text-[#f3ae29] font-bold uppercase tracking-wider flex items-center gap-0.5 transition-colors">
+                          Details <ArrowUpRight size={13} />
                         </span>
                       </div>
-                      
-                      <div className="p-6">
-                        <h3 className="font-serif-heading text-xl font-bold text-white mb-2.5 group-hover:text-[#d1e7d8] transition-colors">
-                          {event.title}
-                        </h3>
-                        <p className="text-sm leading-relaxed text-[#a3caad] mb-4">
-                          {event.description}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="px-6 pb-6 pt-2 border-t border-[#1d442a]/80 space-y-2">
-                      <p className="flex items-center gap-2 text-xs font-mono text-[#d1e7d8]">
-                        <Calendar size={13} className="text-[#f3ae29]" /> {formatDate(event.date)}
-                      </p>
-                      <p className="flex items-center gap-2 text-xs font-mono text-[#a3caad]">
-                        <MapPin size={13} className="text-[#389456]" /> {event.location}
-                      </p>
-                      {(event as any).attendees && (
-                        <p className="flex items-center gap-2 text-xs font-mono text-[#a3caad]">
-                          <Users size={13} className="text-[#389456]" /> {(event as any).attendees} Attendees
-                        </p>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -247,17 +245,21 @@ export default function Events() {
               <p className="text-base leading-relaxed text-[#a3caad] max-w-lg mb-8">
                 Reserve your seat for upcoming webinars, leadership workshops, and pitch competitions across Pakistan.
               </p>
-              <Link href="/events/upcoming">
-                <button className="btn-gsap-cta !rounded-xl">
-                  <span>View Upcoming Events</span>
-                  <ArrowUpRight size={16} className="text-[#f3ae29]" />
-                </button>
+              <Link href="/events/upcoming" className="btn-gsap-cta inline-flex items-center gap-2 !rounded-xl !py-3.5 !px-8">
+                <span>View All Upcoming Events</span>
+                <ArrowUpRight size={18} className="text-[#f3ae29]" />
               </Link>
             </motion.div>
           </div>
         </section>
 
       </main>
+
+      {/* Event Detail Modal */}
+      {selectedEvent && (
+        <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+      )}
+
       <Footer />
     </div>
   );

@@ -5,19 +5,12 @@ import { motion } from "framer-motion";
 import { EventCard } from "@/components/ui/EventCard";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  image: string;
-  location?: string;
-}
+import EventDetailModal, { EventDetail } from "@/components/EventDetailModal";
 
 export const EventsSection: React.FC = () => {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<EventDetail[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState<EventDetail | null>(null);
 
   useEffect(() => {
     async function fetchEvents() {
@@ -28,16 +21,16 @@ export const EventsSection: React.FC = () => {
           setEvents(data.events);
         } else {
           setEvents([
-            { id: "1", title: "Startup Pitch Competition 2026", date: "2026-03-25", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities with leading industry executives.", location: "Faisalabad" },
-            { id: "2", title: "Tech Skills & AI Masterclass", date: "2026-04-10", image: "/events/event-slide-2.jpg", description: "Intensive training covering web development, modern cloud tooling, and AI fundamentals.", location: "Lahore / Online" },
-            { id: "3", title: "Community Youth Impact Summit", date: "2026-04-20", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to build scalable local community initiatives.", location: "Islamabad" }
+            { id: "1", title: "Startup Pitch Competition 2026", date: "2026-03-25", time: "10:00 AM - 5:00 PM", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities with leading industry executives.", location: "Faisalabad Expo Center", status: "upcoming", type: "Competition" },
+            { id: "2", title: "Tech Skills & AI Masterclass", date: "2026-04-10", time: "2:00 PM - 6:00 PM", image: "/events/event-slide-2.jpg", description: "Intensive training covering web development, modern cloud tooling, and AI fundamentals.", location: "Lahore Tech Hub", status: "upcoming", type: "Workshop" },
+            { id: "3", title: "Community Youth Impact Summit", date: "2026-04-20", time: "11:00 AM - 4:00 PM", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to build scalable local community initiatives.", location: "Islamabad Convention Hall", status: "upcoming", type: "Summit" }
           ]);
         }
       } catch {
         setEvents([
-          { id: "1", title: "Startup Pitch Competition 2026", date: "2026-03-25", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities with leading industry executives.", location: "Faisalabad" },
-          { id: "2", title: "Tech Skills & AI Masterclass", date: "2026-04-10", image: "/events/event-slide-2.jpg", description: "Intensive training covering web development, modern cloud tooling, and AI fundamentals.", location: "Lahore / Online" },
-          { id: "3", title: "Community Youth Impact Summit", date: "2026-04-20", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to build scalable local community initiatives.", location: "Islamabad" }
+          { id: "1", title: "Startup Pitch Competition 2026", date: "2026-03-25", time: "10:00 AM - 5:00 PM", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities with leading industry executives.", location: "Faisalabad Expo Center", status: "upcoming", type: "Competition" },
+          { id: "2", title: "Tech Skills & AI Masterclass", date: "2026-04-10", time: "2:00 PM - 6:00 PM", image: "/events/event-slide-2.jpg", description: "Intensive training covering web development, modern cloud tooling, and AI fundamentals.", location: "Lahore Tech Hub", status: "upcoming", type: "Workshop" },
+          { id: "3", title: "Community Youth Impact Summit", date: "2026-04-20", time: "11:00 AM - 4:00 PM", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to build scalable local community initiatives.", location: "Islamabad Convention Hall", status: "upcoming", type: "Summit" }
         ]);
       } finally {
         setLoading(false);
@@ -45,6 +38,16 @@ export const EventsSection: React.FC = () => {
     }
     fetchEvents();
   }, []);
+
+  const formatDate = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    } catch {
+      return dateStr;
+    }
+  };
 
   return (
     <section id="events" className="bg-[#0a2012] py-20 md:py-28 border-t border-[#1d442a] text-white relative overflow-hidden">
@@ -73,7 +76,7 @@ export const EventsSection: React.FC = () => {
               </span>
             </h2>
             <p className="text-base sm:text-lg leading-relaxed text-[#a3caad] max-w-lg font-normal">
-              Join us for exciting masterclasses, fellowship meetups, and leadership opportunities across Pakistan.
+              Join us for exciting masterclasses, fellowship meetups, and leadership opportunities across Pakistan. Click any card for details.
             </p>
           </div>
           <Link href="/events" className="btn-gsap-ghost flex-shrink-0 self-start sm:self-auto !rounded-xl">
@@ -101,20 +104,21 @@ export const EventsSection: React.FC = () => {
                 <EventCard
                   image={event.image}
                   title={event.title}
-                  date={new Date(event.date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                  date={formatDate(event.date)}
                   description={event.description}
                   location={event.location}
+                  onClick={() => setSelectedEvent(event)}
                 />
               </motion.div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Event Detail Modal */}
+      {selectedEvent && (
+        <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+      )}
     </section>
   );
 };
-
