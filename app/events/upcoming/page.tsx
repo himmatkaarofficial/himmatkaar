@@ -205,13 +205,10 @@ export default function UpcomingEvents() {
                         )}
                       </div>
                       
-                      <div className="p-6">
-                        <h3 className="font-serif-heading text-xl font-bold text-[#07190e] group-hover:text-[#2d7a46] transition-colors mb-2.5">
+                      <div className="p-5">
+                        <h3 className="font-serif-heading text-lg font-bold text-[#07190e] group-hover:text-[#2d7a46] transition-colors">
                           {event.title}
                         </h3>
-                        <p className="text-sm leading-relaxed text-[#3a5342] line-clamp-3 mb-4">
-                          {event.description}
-                        </p>
                       </div>
                     </div>
 

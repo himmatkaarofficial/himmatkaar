@@ -821,9 +821,7 @@ function LaunchpadContent() {
                             </div>
                             <h3 className="font-serif-heading text-lg font-bold text-[#07190e] mb-1 group-hover:text-[#2d7a46] transition-colors">{session.mentor_name}</h3>
                             <p className="text-[11px] font-mono text-[#2d7a46] uppercase tracking-wider mb-3 font-semibold">{session.mentor_role}</p>
-                            {session.mentor_bio && (
-                              <p className="text-xs text-[#3a5342] leading-relaxed line-clamp-3">{session.mentor_bio}</p>
-                            )}
+
                           </div>
                         </motion.div>
                       ))

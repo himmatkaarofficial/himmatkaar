@@ -196,13 +196,10 @@ export default function Events() {
                           </span>
                         </div>
                         
-                        <div className="p-6">
-                          <h3 className="font-serif-heading text-xl font-bold text-white mb-2.5 group-hover:text-[#d1e7d8] transition-colors">
+                        <div className="p-5">
+                          <h3 className="font-serif-heading text-lg font-bold text-white group-hover:text-[#d1e7d8] transition-colors">
                             {event.title}
                           </h3>
-                          <p className="text-sm leading-relaxed text-[#a3caad] line-clamp-3 mb-4">
-                            {event.description}
-                          </p>
                         </div>
                       </div>
 
