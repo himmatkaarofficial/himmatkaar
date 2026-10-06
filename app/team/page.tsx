@@ -311,7 +311,7 @@ export default function Team() {
                     }
                     className="bg-[#0c2616] rounded-2xl border border-[#1d442a] hover:border-[#389456] hover:bg-[#10321e] transition-all duration-300 overflow-hidden flex flex-col justify-between group shadow-xl cursor-pointer"
                   >
-                    <div className="m-4 rounded-xl overflow-hidden relative h-60 border border-[#1d442a] bg-[#0a2012]">
+                    <div className="m-4 rounded-xl overflow-hidden relative h-48 border border-[#1d442a] bg-[#0a2012]">
                       <TeamCardImage
                         src={member.image}
                         alt={member.name}
@@ -332,10 +332,16 @@ export default function Team() {
                       )}
                     </div>
                     
-                    <div className="p-6 pt-1">
-                      <h3 className="font-serif-heading text-xl font-bold text-white mb-1 group-hover:text-[#d1e7d8] transition-colors">{member.name}</h3>
-                      <p className="text-xs font-mono text-[#389456] font-semibold uppercase tracking-wider mb-3">{member.role}</p>
-                      <p className="text-sm leading-relaxed text-[#a3caad] font-normal">{member.bio}</p>
+                    <div className="p-5 pt-1">
+                      <h3 className="font-serif-heading text-lg font-bold text-white mb-1 group-hover:text-[#d1e7d8] transition-colors">{member.name}</h3>
+                      <p className="text-xs font-mono text-[#389456] font-semibold uppercase tracking-wider mb-2">{member.role}</p>
+                    </div>
+
+                    <div className="px-5 pb-4 pt-3 border-t border-[#1d442a] flex items-center justify-between text-[11px] font-mono text-[#a3caad]">
+                      <span>HimmatKaar Leadership</span>
+                      <span className="text-[#389456] font-semibold flex items-center gap-1">
+                        View Profile →
+                      </span>
                     </div>
                   </motion.div>
                 ))}
@@ -412,7 +418,7 @@ export default function Team() {
                           : "bg-[#f8faf7] text-[#07190e] border-[#d8e6db] hover:border-[#2d7a46] hover:bg-[#f0f6f2]"
                       }`}
                     >
-                      <div className="m-4 rounded-xl overflow-hidden relative h-48 border border-[#d8e6db] bg-white">
+                      <div className="m-4 rounded-xl overflow-hidden relative h-40 border border-[#d8e6db] bg-white">
                         <TeamCardImage
                           src={member.image}
                           alt={member.name}
@@ -426,30 +432,25 @@ export default function Team() {
                         </span>
                       </div>
                       
-                      <div className="p-5 pt-1 flex-1">
-                        <h3 className={`font-serif-heading text-lg font-bold mb-1 ${
+                      <div className="p-4 pt-1 flex-1">
+                        <h3 className={`font-serif-heading text-base font-bold mb-1 ${
                           isSelected ? "text-white" : "text-[#07190e]"
                         }`}>
                           {member.name}
                         </h3>
-                        <p className={`text-xs font-mono font-semibold uppercase tracking-wider mb-2 ${
+                        <p className={`text-[11px] font-mono font-semibold uppercase tracking-wider ${
                           isSelected ? "text-[#f3ae29]" : "text-[#2d7a46]"
                         }`}>
                           {member.role}
                         </p>
-                        <p className={`text-xs leading-relaxed ${
-                          isSelected ? "text-[#d1e7d8]" : "text-[#4a6b53]"
-                        }`}>
-                          {member.bio}
-                        </p>
                       </div>
 
-                      <div className={`px-5 pb-4 pt-3 border-t text-xs font-mono flex items-center justify-between ${
+                      <div className={`px-4 pb-3 pt-3 border-t text-xs font-mono flex items-center justify-between ${
                         isSelected ? "border-[#1d442a] text-[#f3ae29]" : "border-[#e2ede4] text-[#4a6b53]"
                       }`}>
-                        <span>{isSelected ? "✓ Selected Ambassador" : "Click to select"}</span>
+                        <span>Campus Lead</span>
                         <span className={`text-[10px] font-bold ${isSelected ? "text-[#f3ae29]" : "text-[#2d7a46]"}`}>
-                          {isSelected ? "ACTIVE" : "SELECT →"}
+                          View Details →
                         </span>
                       </div>
                     </motion.div>

@@ -77,7 +77,7 @@ const DEFAULT_CORE_TEAM: TeamMember[] = [
   },
 ];
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 9;
 
 export default function CoreTeamPage() {
   const [members, setMembers] = useState<TeamMember[]>([]);
@@ -294,7 +294,7 @@ export default function CoreTeamPage() {
                       >
                         <div>
                           {/* Image container */}
-                          <div className="rounded-xl overflow-hidden relative h-56 w-full border border-black/5 mb-4">
+                          <div className="rounded-xl overflow-hidden relative h-48 w-full border border-black/5 mb-3">
                             <TeamCardImage
                               src={member.image}
                               alt={member.name}
@@ -308,9 +308,9 @@ export default function CoreTeamPage() {
                             )}
                           </div>
 
-                          <div className="flex items-start justify-between gap-2 mb-2">
+                          <div className="flex items-start justify-between gap-2 mb-1">
                             <div>
-                              <h3 className={`font-serif-heading text-xl font-bold transition-colors ${
+                              <h3 className={`font-serif-heading text-lg font-bold transition-colors ${
                                 isSelected ? "text-white" : "text-[#0c2616] group-hover:text-[#2d7a46]"
                               }`}>
                                 {member.name}
@@ -327,31 +327,25 @@ export default function CoreTeamPage() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={(e) => e.stopPropagation()}
-                                className={`p-2 rounded-lg border transition-colors ${
+                                className={`p-2 rounded-lg border transition-colors shrink-0 ${
                                   isSelected 
                                     ? "bg-[#163e24] border-[#2d7a46] text-[#f3ae29] hover:bg-[#2d7a46] hover:text-white"
                                     : "bg-[#f8faf7] border-[#e2ede4] text-[#2d7a46] hover:bg-[#e8f5ec]"
                                 }`}
                                 aria-label={`${member.name} LinkedIn`}
                               >
-                                <Linkedin size={15} />
+                                <Linkedin size={14} />
                               </a>
                             )}
                           </div>
-
-                          <p className={`text-xs leading-relaxed mt-2 line-clamp-3 ${
-                            isSelected ? "text-[#d1e7d8]" : "text-slate-600"
-                          }`}>
-                            {member.bio}
-                          </p>
                         </div>
 
-                        <div className={`mt-5 pt-3 border-t flex items-center justify-between text-[11px] font-mono ${
+                        <div className={`mt-4 pt-3 border-t flex items-center justify-between text-[11px] font-mono ${
                           isSelected ? "border-[#1d442a] text-[#a3caad]" : "border-slate-100 text-slate-500"
                         }`}>
-                          <span>HimmatKaar Leadership</span>
-                          <span className={isSelected ? "text-[#f3ae29] font-bold" : "text-[#2d7a46]"}>
-                            {isSelected ? "Selected" : "Click to select"}
+                          <span>HimmatKaar Core Team</span>
+                          <span className={`font-semibold flex items-center gap-1 ${isSelected ? "text-[#f3ae29]" : "text-[#2d7a46]"}`}>
+                            View Profile →
                           </span>
                         </div>
                       </motion.div>
