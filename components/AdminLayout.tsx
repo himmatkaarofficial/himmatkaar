@@ -108,6 +108,18 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
           </Link>
 
           <Link 
+            href="/dashboard/admin/hero-slides" 
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group font-body ${
+              isActive('/dashboard/admin/hero-slides') 
+                ? 'bg-[var(--color-courage-green)] text-white font-semibold shadow-md' 
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Rocket size={20} className={isActive('/dashboard/admin/hero-slides') ? '' : 'group-hover:text-[var(--color-courage-green)] transition-colors'} />
+            <span className="text-sm">Hero Slides</span>
+          </Link>
+
+          <Link 
             href="/dashboard/admin/launchpad" 
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group font-body ${
               isActive('/dashboard/admin/launchpad') 

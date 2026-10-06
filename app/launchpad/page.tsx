@@ -308,7 +308,7 @@ function MentorModal({ mentor, onClose }: { mentor: MentorDetail; onClose: () =>
 }
 
 // ── Hero Images ────────────────────────────────────────────────────────────
-const LAUNCHPAD_HERO_IMAGES = [
+const DEFAULT_LAUNCHPAD_HERO_IMAGES = [
   "/launchpad-slides/launchpad-slide-1-v2.jpg",
   "/launchpad-slides/launchpad-slide-2.jpg",
   "/launchpad-slides/launchpad-slide-3.jpg",
@@ -334,6 +334,7 @@ function LaunchpadContent() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeObjectiveIndex, setActiveObjectiveIndex] = useState<number>(0);
+  const [heroImages, setHeroImages] = useState<string[]>(DEFAULT_LAUNCHPAD_HERO_IMAGES);
 
   // Fetch sessions from Supabase via API
   useEffect(() => {
@@ -355,13 +356,28 @@ function LaunchpadContent() {
   // Hero carousel
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % LAUNCHPAD_HERO_IMAGES.length);
+      setCurrentImageIndex((prev) => (prev + 1) % (heroImages.length || 1));
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [heroImages.length]);
 
-  const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % LAUNCHPAD_HERO_IMAGES.length);
-  const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + LAUNCHPAD_HERO_IMAGES.length) % LAUNCHPAD_HERO_IMAGES.length);
+  const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % (heroImages.length || 1));
+  const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + (heroImages.length || 1)) % (heroImages.length || 1));
+
+  useEffect(() => {
+    async function fetchHeroSlides() {
+      try {
+        const res = await fetch("/api/hero-slides?section=launchpad");
+        const data = await res.json();
+        if (data.slides && data.slides.length > 0) {
+          setHeroImages(data.slides.map((s: { image: string }) => s.image));
+        }
+      } catch (err) {
+        console.error("Failed to fetch launchpad hero slides:", err);
+      }
+    }
+    fetchHeroSlides();
+  }, []);
 
   // Sync tab with URL
   useEffect(() => {
@@ -408,7 +424,7 @@ function LaunchpadContent() {
             className="absolute inset-0 z-0"
           >
             <Image
-              src={LAUNCHPAD_HERO_IMAGES[currentImageIndex]}
+              src={heroImages[currentImageIndex] || DEFAULT_LAUNCHPAD_HERO_IMAGES[0]}
               alt={`Himmatkaar LaunchPad Slide ${currentImageIndex + 1}`}
               fill
               priority={currentImageIndex === 0}
@@ -506,7 +522,7 @@ function LaunchpadContent() {
         </button>
 
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
-          {LAUNCHPAD_HERO_IMAGES.map((_, index) => (
+          {heroImages.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentImageIndex(index)}

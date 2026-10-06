@@ -19,7 +19,7 @@ interface TeamMember {
   linkedin: string;
 }
 
-const TEAM_HERO_IMAGES = [
+const DEFAULT_TEAM_HERO_IMAGES = [
   "/team-slides/team-slide-1.jpg",
   "/team-slides/team-slide-2.jpg",
   "/team-slides/team-slide-3.jpg",
@@ -86,21 +86,22 @@ export default function CoreTeamPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedMemberId, setSelectedMemberId] = useState<string>("1");
   const [selectedMemberForModal, setSelectedMemberForModal] = useState<TeamMemberDetail | null>(null);
+  const [heroImages, setHeroImages] = useState<string[]>(DEFAULT_TEAM_HERO_IMAGES);
 
   // Background carousel auto-slide
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % TEAM_HERO_IMAGES.length);
+      setCurrentImageIndex((prev) => (prev + 1) % (heroImages.length || 1));
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [heroImages.length]);
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % TEAM_HERO_IMAGES.length);
+    setCurrentImageIndex((prev) => (prev + 1) % (heroImages.length || 1));
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + TEAM_HERO_IMAGES.length) % TEAM_HERO_IMAGES.length);
+    setCurrentImageIndex((prev) => (prev - 1 + (heroImages.length || 1)) % (heroImages.length || 1));
   };
 
   useEffect(() => {
@@ -110,6 +111,12 @@ export default function CoreTeamPage() {
         const data = await response.json();
         const fetched = data.members && data.members.length > 0 ? data.members : DEFAULT_CORE_TEAM;
         setMembers(fetched);
+
+        const heroRes = await fetch('/api/hero-slides?section=team');
+        const heroData = await heroRes.json();
+        if (heroData.slides && heroData.slides.length > 0) {
+          setHeroImages(heroData.slides.map((s: { image: string }) => s.image));
+        }
       } catch (error) {
         console.error("Error fetching team members, using default:", error);
         setMembers(DEFAULT_CORE_TEAM);
@@ -155,7 +162,7 @@ export default function CoreTeamPage() {
               className="absolute inset-0 z-0"
             >
               <Image
-                src={TEAM_HERO_IMAGES[currentImageIndex]}
+                src={heroImages[currentImageIndex] || DEFAULT_TEAM_HERO_IMAGES[0]}
                 alt={`Himmatkaar Team Slide ${currentImageIndex + 1}`}
                 fill
                 priority={currentImageIndex === 0}
@@ -217,7 +224,7 @@ export default function CoreTeamPage() {
 
           {/* Carousel Indicators */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
-            {TEAM_HERO_IMAGES.map((_, index) => (
+            {heroImages.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentImageIndex(index)}
