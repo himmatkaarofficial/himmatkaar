@@ -15,7 +15,7 @@ export const EventsSection: React.FC = () => {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch("/api/events?limit=3&status=upcoming");
+        const response = await fetch("/api/events?limit=50&status=upcoming");
         const data = await response.json();
         if (response.ok && data.events && data.events.length > 0) {
           setEvents(data.events);
