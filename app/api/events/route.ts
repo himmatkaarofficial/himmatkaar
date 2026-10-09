@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     let query = supabase
       .from('events')
       .select('*')
-      .order('date', { ascending: true });
+      .order('date', { ascending: false });
 
     // Only filter by status if not 'all'
     if (status !== 'all') {
