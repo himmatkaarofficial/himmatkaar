@@ -109,15 +109,6 @@ export default function AdminImageUploader({
           <p className="text-[10px] text-slate-500 font-mono">
             {helpText}
           </p>
-
-          {/* Optional Direct URL Input */}
-          <input
-            type="url"
-            value={imageUrl}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="Or paste direct image URL (https://...)"
-            className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
-          />
         </div>
       </div>
 

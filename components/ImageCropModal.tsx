@@ -68,16 +68,10 @@ export default function ImageCropModal({
     };
   }, [imageSrc]);
 
-  // Set default aspect ratio based on upload type if not specified
+  // Set aspect ratio from defaultAspect prop (always respect the caller's choice)
   useEffect(() => {
-    if (uploadType === "partner" || uploadType === "testimonial") {
-      setAspect("1:1");
-    } else if (uploadType === "event" || uploadType === "launchpad") {
-      setAspect("16:9");
-    } else {
-      setAspect("4:3");
-    }
-  }, [uploadType]);
+    setAspect(defaultAspect);
+  }, [defaultAspect]);
 
   // Draw main interactive canvas
   const drawCanvas = useCallback(() => {
