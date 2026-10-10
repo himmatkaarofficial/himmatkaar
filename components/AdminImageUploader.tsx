@@ -2,15 +2,16 @@
 
 import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { Upload, Image as ImageIcon, Loader2, X, CheckCircle } from "lucide-react";
+import { Upload, Crop, Image as ImageIcon, Loader2, X, CheckCircle } from "lucide-react";
+import ImageCropModal, { AspectRatioOption } from "./ImageCropModal";
 
 interface AdminImageUploaderProps {
   label?: string;
   imageUrl: string;
   uploadType?: string;
-  defaultAspect?: string; // kept for API compatibility, not used
+  defaultAspect?: AspectRatioOption;
   onChange: (url: string) => void;
-  aspectOptions?: string[]; // kept for API compatibility, not used
+  aspectOptions?: AspectRatioOption[];
   helpText?: string;
 }
 
@@ -18,14 +19,23 @@ export default function AdminImageUploader({
   label = "Upload Image",
   imageUrl,
   uploadType = "event",
+  defaultAspect = "4:3",
   onChange,
-  helpText = "Select any image — it will upload instantly as-is.",
+  helpText,
 }: AdminImageUploaderProps) {
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploadDone, setUploadDone] = useState<boolean>(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // For crop flow
+  const [selectedSrc, setSelectedSrc] = useState<string | null>(null);
+  const [isCropOpen, setIsCropOpen] = useState<boolean>(false);
+
+  // Two separate file inputs — one for direct, one for crop
+  const directInputRef = useRef<HTMLInputElement>(null);
+  const cropInputRef = useRef<HTMLInputElement>(null);
+
+  // ── Direct Upload (no crop) ──────────────────────────────────────────────
+  const handleDirectUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -51,8 +61,25 @@ export default function AdminImageUploader({
       alert("Upload failed. Please check your connection and try again.");
     } finally {
       setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (directInputRef.current) directInputRef.current.value = "";
     }
+  };
+
+  // ── Crop Flow — open crop modal after file select ────────────────────────
+  const handleCropSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setSelectedSrc(reader.result);
+        setIsCropOpen(true);
+      }
+    };
+    reader.readAsDataURL(file);
+
+    if (cropInputRef.current) cropInputRef.current.value = "";
   };
 
   return (
@@ -63,14 +90,13 @@ export default function AdminImageUploader({
         </label>
       )}
 
-      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-4">
+      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-4">
 
         {/* Preview */}
         <div className="relative w-20 h-20 bg-white rounded-lg border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
           {imageUrl ? (
             <>
               <Image src={imageUrl} alt="Preview" fill className="object-cover" />
-              {/* Remove button */}
               <button
                 type="button"
                 onClick={() => onChange("")}
@@ -88,47 +114,88 @@ export default function AdminImageUploader({
           )}
         </div>
 
-        {/* Upload button area */}
-        <div className="flex-1 space-y-1.5">
+        {/* Buttons */}
+        <div className="flex-1 space-y-2">
+
+          {/* Hidden file inputs */}
           <input
-            ref={fileInputRef}
+            ref={directInputRef}
             type="file"
             accept="image/png,image/jpeg,image/jpg,image/webp"
             className="hidden"
-            onChange={handleFileSelect}
+            onChange={handleDirectUpload}
+          />
+          <input
+            ref={cropInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/jpg,image/webp"
+            className="hidden"
+            onChange={handleCropSelect}
           />
 
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer disabled:opacity-50 border ${
-              uploadDone
-                ? "bg-green-50 border-green-300 text-green-700"
-                : "bg-white border-slate-200 text-slate-700 hover:border-[#39894c] hover:text-[#39894c]"
-            }`}
-          >
-            {uploading ? (
-              <>
-                <Loader2 size={14} className="animate-spin text-[#39894c]" />
-                <span>Uploading...</span>
-              </>
-            ) : uploadDone ? (
-              <>
-                <CheckCircle size={14} className="text-green-600" />
-                <span>Uploaded Successfully!</span>
-              </>
-            ) : (
-              <>
-                <Upload size={14} className="text-[#39894c]" />
-                <span>{imageUrl ? "Change Image" : "Upload Image"}</span>
-              </>
-            )}
-          </button>
+          {/* Row: Upload + Crop buttons */}
+          <div className="flex gap-2">
+            {/* Direct Upload Button */}
+            <button
+              type="button"
+              onClick={() => directInputRef.current?.click()}
+              disabled={uploading}
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer disabled:opacity-50 border ${
+                uploadDone
+                  ? "bg-green-50 border-green-300 text-green-700"
+                  : "bg-white border-slate-200 text-slate-700 hover:border-[#39894c] hover:text-[#39894c]"
+              }`}
+            >
+              {uploading ? (
+                <>
+                  <Loader2 size={13} className="animate-spin text-[#39894c]" />
+                  <span>Uploading...</span>
+                </>
+              ) : uploadDone ? (
+                <>
+                  <CheckCircle size={13} className="text-green-600" />
+                  <span>Uploaded!</span>
+                </>
+              ) : (
+                <>
+                  <Upload size={13} className="text-[#39894c]" />
+                  <span>{imageUrl ? "Change" : "Upload"}</span>
+                </>
+              )}
+            </button>
 
-          <p className="text-[10px] text-slate-400 font-mono">{helpText}</p>
+            {/* Crop & Upload Button */}
+            <button
+              type="button"
+              onClick={() => cropInputRef.current?.click()}
+              disabled={uploading}
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border border-slate-200 bg-white text-slate-700 hover:border-[#f3ae29] hover:text-[#c98a10] transition-all shadow-sm cursor-pointer disabled:opacity-50"
+            >
+              <Crop size={13} className="text-[#f3ae29]" />
+              <span>{imageUrl ? "Crop & Replace" : "Upload & Crop"}</span>
+            </button>
+          </div>
+
+          <p className="text-[10px] text-slate-400 font-mono leading-relaxed">
+            {helpText || "Upload as-is  •  OR  •  Upload & Crop to adjust before saving"}
+          </p>
         </div>
       </div>
+
+      {/* Crop Modal */}
+      <ImageCropModal
+        isOpen={isCropOpen}
+        imageSrc={selectedSrc}
+        uploadType={uploadType}
+        defaultAspect={defaultAspect}
+        onClose={() => setIsCropOpen(false)}
+        onCropComplete={(croppedUrl) => {
+          onChange(croppedUrl);
+          setIsCropOpen(false);
+          setUploadDone(true);
+          setTimeout(() => setUploadDone(false), 2500);
+        }}
+      />
     </div>
   );
 }
