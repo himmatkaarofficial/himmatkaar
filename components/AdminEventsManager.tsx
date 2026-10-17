@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
-  Plus, Edit, Trash2, Calendar, MapPin, Clock, UserPlus,
-  X, Upload, Loader2, Link2, Copy, Check, Lock, Unlock, Sparkles, AlertCircle, ExternalLink
+  Plus, Edit, Trash2, Calendar, MapPin, Clock,
+  X, Loader2, Link2, Copy, Check, Lock, Unlock, Sparkles, ExternalLink
 } from "lucide-react";
+import AdminImageUploader from "./AdminImageUploader";
 
 interface Event {
   id: string;
@@ -28,7 +29,6 @@ export default function AdminEventsManager() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [activeTab, setActiveTab] = useState<"upcoming" | "past" | "all">("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
@@ -68,34 +68,6 @@ export default function AdminEventsManager() {
       showToast("error", "Failed to fetch events");
     } fontually: {
       setLoading(false);
-    }
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    const fd = new FormData();
-    fd.append("file", file);
-
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: fd,
-      });
-      const data = await response.json();
-
-      if (response.ok) {
-        setFormData((prev) => ({ ...prev, image: data.url }));
-      } else {
-        alert(data.error || "Failed to upload image");
-      }
-    } catch (error) {
-      console.error("Upload error:", error);
-      alert("Failed to upload image");
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -740,40 +712,20 @@ export default function AdminEventsManager() {
 
               {/* Event Image Upload */}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">
-                  Event Banner Image *
-                </label>
-                <div className="space-y-3">
-                  {formData.image && (
-                    <div className="relative w-full h-44 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
-                      <Image src={formData.image} alt="Preview" fill className="object-cover" />
-                    </div>
-                  )}
-                  <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-all cursor-pointer font-medium text-xs">
-                      <Upload size={16} />
-                      {uploading ? "Uploading..." : "Upload Event Banner"}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        disabled={uploading}
-                        className="hidden"
-                      />
-                    </label>
-                    {uploading && <Loader2 className="animate-spin text-[#39894c]" size={18} />}
-                  </div>
-                  <p className="text-[11px] text-slate-500">
-                    Max 5MB. Recommended resolution: 16:9 ratio (1200x675).
-                  </p>
-                </div>
+                <AdminImageUploader
+                  label="Event Banner Image"
+                  imageUrl={formData.image}
+                  uploadType="event"
+                  defaultAspect="free"
+                  onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
+                  helpText="Koi bhi size/ratio upload kar saktay hain • Crop & Replace se adjust karein"
+                />
               </div>
 
               {/* Form Actions */}
               <div className="flex gap-3 pt-4 border-t border-slate-100">
                 <button
                   type="submit"
-                  disabled={uploading}
                   className="flex-1 px-6 py-3 bg-[#39894c] text-white rounded-xl hover:bg-[#2d5f3d] transition-all font-bold disabled:opacity-50 shadow-md text-sm cursor-pointer"
                 >
                   {editingEvent ? "Update Event" : "Create Event"}

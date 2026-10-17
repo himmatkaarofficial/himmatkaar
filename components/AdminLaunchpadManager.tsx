@@ -61,7 +61,7 @@ const EMPTY_FORM: Omit<LaunchpadSession, "id"> = {
   mentor_linkedin: "",
   summary: "",
   key_takeaways: [""],
-  session_photos: [{ url: "", caption: "" }, { url: "", caption: "" }],
+  session_photos: [],
   is_featured: false,
 };
 
@@ -152,70 +152,124 @@ function ImageUploadBtn({
   );
 }
 
-// ─── Session Photo Upload Row ──────────────────────────────────────────────
-function PhotoUploadRow({
-  photo,
-  index,
-  onChange,
+// ─── Bulk Session Photo Uploader ──────────────────────────────────────────────
+const MAX_PHOTOS = 7;
+
+function BulkPhotoUploader({
+  photos,
+  onAdd,
   onRemove,
+  onCaptionChange,
 }: {
-  photo: SessionPhoto;
-  index: number;
-  onChange: (field: "url" | "caption", value: string) => void;
-  onRemove: () => void;
+  photos: SessionPhoto[];
+  onAdd: (newPhotos: SessionPhoto[]) => void;
+  onRemove: (index: number) => void;
+  onCaptionChange: (index: number, caption: string) => void;
 }) {
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("type", "launchpad");
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (res.ok) {
-        onChange("url", data.url);
-      } else {
-        alert(data.error || "Upload failed");
-      }
-    } catch {
-      alert("Upload failed");
-    } finally {
-      setUploading(false);
-      if (inputRef.current) inputRef.current.value = "";
+  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    const remaining = MAX_PHOTOS - photos.length;
+    if (remaining <= 0) {
+      alert(`Maximum ${MAX_PHOTOS} photos allowed.`);
+      return;
     }
+    const toUpload = files.slice(0, remaining);
+    if (files.length > remaining) {
+      alert(`Only ${remaining} more photo(s) can be added (max ${MAX_PHOTOS}). Uploading first ${remaining}.`);
+    }
+
+    setUploading(true);
+    const uploaded: SessionPhoto[] = [];
+    for (const file of toUpload) {
+      try {
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("type", "launchpad");
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        const data = await res.json();
+        if (res.ok) {
+          uploaded.push({ url: data.url, caption: "" });
+        } else {
+          alert(`Upload failed for ${file.name}: ${data.error}`);
+        }
+      } catch {
+        alert(`Upload failed for ${file.name}`);
+      }
+    }
+    setUploading(false);
+    if (inputRef.current) inputRef.current.value = "";
+    if (uploaded.length) onAdd(uploaded);
   };
 
   return (
-    <div className="bg-slate-50 rounded-xl p-3 border border-slate-200 space-y-2">
-      <AdminImageUploader
-        label={`Photo ${index + 1}`}
-        imageUrl={photo.url}
-        uploadType="launchpad"
-        defaultAspect="16:9"
-        onChange={(url) => onChange("url", url)}
-        helpText="Crop session photo with 16:9 or 4:3 ratio."
-      />
-      <div className="flex items-center gap-2">
-        <input
-          value={photo.caption}
-          onChange={(e) => onChange("caption", e.target.value)}
-          placeholder={`Caption for photo ${index + 1} (optional)`}
-          className="flex-1 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
-        />
-        <button
-          type="button"
-          onClick={onRemove}
-          className="p-2 text-red-500 hover:bg-red-50 rounded-lg text-xs font-semibold"
-          title="Remove Photo"
-        >
-          <X size={16} />
-        </button>
-      </div>
+    <div className="space-y-4">
+      {/* Upload Button */}
+      {photos.length < MAX_PHOTOS && (
+        <div>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            multiple
+            className="hidden"
+            onChange={handleFiles}
+          />
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-slate-300 rounded-xl text-sm font-semibold text-slate-600 hover:border-[#39894c] hover:text-[#39894c] hover:bg-[#39894c]/5 transition-all disabled:opacity-50"
+          >
+            {uploading ? (
+              <><Loader2 size={16} className="animate-spin" /> Uploading photos...</>
+            ) : (
+              <><Upload size={16} /> Select Photos ({photos.length}/{MAX_PHOTOS} uploaded) — Choose up to {MAX_PHOTOS - photos.length} more</>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Uploaded Photos Grid */}
+      {photos.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {photos.map((photo, i) => (
+            <div key={i} className="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+              {/* Image Preview */}
+              <div className="relative aspect-[4/3] bg-slate-100">
+                <Image src={photo.url} alt={photo.caption || `Photo ${i + 1}`} fill className="object-cover" />
+                <button
+                  type="button"
+                  onClick={() => onRemove(i)}
+                  className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-md transition-all"
+                >
+                  <X size={12} />
+                </button>
+                <span className="absolute bottom-1.5 left-1.5 bg-black/60 text-white text-[10px] font-mono px-1.5 py-0.5 rounded">
+                  {i + 1}/{photos.length}
+                </span>
+              </div>
+              {/* Caption */}
+              <div className="p-2">
+                <input
+                  value={photo.caption}
+                  onChange={(e) => onCaptionChange(i, e.target.value)}
+                  placeholder={`Caption (optional)`}
+                  className="w-full border border-slate-200 rounded-lg px-2 py-1 text-xs text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {photos.length === MAX_PHOTOS && (
+        <p className="text-xs text-amber-600 font-medium text-center">Maximum {MAX_PHOTOS} photos reached. Remove a photo to add more.</p>
+      )}
     </div>
   );
 }
@@ -276,9 +330,7 @@ export default function AdminLaunchpadManager() {
       mentor_linkedin: session.mentor_linkedin || "",
       summary: session.summary || "",
       key_takeaways: session.key_takeaways?.length ? session.key_takeaways : [""],
-      session_photos: session.session_photos?.length
-        ? session.session_photos
-        : [{ url: "", caption: "" }, { url: "", caption: "" }],
+      session_photos: session.session_photos?.length ? session.session_photos : [],
       is_featured: !!session.is_featured,
     });
     setShowModal(true);
@@ -343,13 +395,15 @@ export default function AdminLaunchpadManager() {
     setFormData({ ...formData, key_takeaways: updated.length ? updated : [""] });
   };
 
-  const updatePhoto = (i: number, field: "url" | "caption", value: string) => {
+  const addPhotos = (newPhotos: SessionPhoto[]) => {
+    setFormData({ ...formData, session_photos: [...formData.session_photos, ...newPhotos].slice(0, MAX_PHOTOS) });
+  };
+  const removePhoto = (i: number) => setFormData({ ...formData, session_photos: formData.session_photos.filter((_, idx) => idx !== i) });
+  const updatePhotoCaption = (i: number, caption: string) => {
     const updated = [...formData.session_photos];
-    updated[i] = { ...updated[i], [field]: value };
+    updated[i] = { ...updated[i], caption };
     setFormData({ ...formData, session_photos: updated });
   };
-  const addPhoto = () => setFormData({ ...formData, session_photos: [...formData.session_photos, { url: "", caption: "" }] });
-  const removePhoto = (i: number) => setFormData({ ...formData, session_photos: formData.session_photos.filter((_, idx) => idx !== i) });
 
   const inputCls = "w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]";
 
@@ -712,49 +766,20 @@ export default function AdminLaunchpadManager() {
                     className={`${inputCls} resize-none`} />
                 </div>
 
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs font-semibold text-slate-600">Key Takeaways</label>
-                    <button type="button" onClick={addTakeaway} className="text-xs text-[#39894c] font-bold hover:underline flex items-center gap-1">
-                      <Plus size={12} /> Add
-                    </button>
-                  </div>
-                  <div className="space-y-2">
-                    {formData.key_takeaways.map((t, i) => (
-                      <div key={i} className="flex gap-2">
-                        <input value={t} onChange={(e) => updateTakeaway(i, e.target.value)}
-                          placeholder={`Takeaway ${i + 1}`}
-                          className={`flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]`} />
-                        {formData.key_takeaways.length > 1 && (
-                          <button type="button" onClick={() => removeTakeaway(i)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg"><X size={14} /></button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
 
               {/* ── SECTION: Session Photos ── */}
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                    <Camera size={12} /> Session Photos
-                  </p>
-                  <button type="button" onClick={addPhoto} className="text-xs text-[#39894c] font-bold hover:underline flex items-center gap-1">
-                    <Plus size={12} /> Add Photo
-                  </button>
-                </div>
-                <div className="space-y-3">
-                  {formData.session_photos.map((photo, i) => (
-                    <PhotoUploadRow
-                      key={i}
-                      photo={photo}
-                      index={i}
-                      onChange={(field, value) => updatePhoto(i, field, value)}
-                      onRemove={() => removePhoto(i)}
-                    />
-                  ))}
-                </div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <Camera size={12} /> Session Photos
+                  <span className="font-normal normal-case text-slate-400 ml-1">(max {MAX_PHOTOS} photos)</span>
+                </p>
+                <BulkPhotoUploader
+                  photos={formData.session_photos}
+                  onAdd={addPhotos}
+                  onRemove={removePhoto}
+                  onCaptionChange={updatePhotoCaption}
+                />
                 <p className="text-[11px] text-slate-400 mt-2">Upload JPEG, PNG or WebP images. Max 5MB each.</p>
               </div>
 

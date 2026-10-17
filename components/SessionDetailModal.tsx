@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -13,7 +13,9 @@ import {
   BookOpen,
   Sparkles,
   Maximize2,
-  Linkedin
+  Linkedin,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { CohortSession, SessionPhoto } from "@/lib/cohort1-data";
 
@@ -28,17 +30,34 @@ export default function SessionDetailModal({
   isOpen,
   onClose,
 }: SessionDetailModalProps) {
-  const [selectedPhoto, setSelectedPhoto] = useState<SessionPhoto | null>(null);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const photos = session?.sessionPhotos || [];
+  const selectedPhoto = selectedPhotoIndex !== null ? photos[selectedPhotoIndex] : null;
+
+  const openPhoto = (index: number) => setSelectedPhotoIndex(index);
+  const closePhoto = () => setSelectedPhotoIndex(null);
+  const goNext = useCallback(() => {
+    if (selectedPhotoIndex === null) return;
+    setSelectedPhotoIndex((selectedPhotoIndex + 1) % photos.length);
+  }, [selectedPhotoIndex, photos.length]);
+  const goPrev = useCallback(() => {
+    if (selectedPhotoIndex === null) return;
+    setSelectedPhotoIndex((selectedPhotoIndex - 1 + photos.length) % photos.length);
+  }, [selectedPhotoIndex, photos.length]);
 
   // Close on ESC key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        if (selectedPhoto) {
-          setSelectedPhoto(null);
+        if (selectedPhotoIndex !== null) {
+          closePhoto();
         } else {
           onClose();
         }
+      } else if (e.key === "ArrowRight" && selectedPhotoIndex !== null) {
+        goNext();
+      } else if (e.key === "ArrowLeft" && selectedPhotoIndex !== null) {
+        goPrev();
       }
     };
     if (isOpen) {
@@ -51,7 +70,7 @@ export default function SessionDetailModal({
       document.body.style.overflow = "unset";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, onClose, selectedPhoto]);
+  }, [isOpen, onClose, selectedPhotoIndex, goNext, goPrev]);
 
   if (!session) return null;
 
@@ -207,7 +226,7 @@ export default function SessionDetailModal({
                   {session.sessionPhotos.map((photo) => (
                     <div
                       key={photo.id}
-                      onClick={() => setSelectedPhoto(photo)}
+                    onClick={() => openPhoto(session.sessionPhotos.indexOf(photo))}
                       className="group relative overflow-hidden cursor-pointer aspect-[4/3] bg-[#0e2417] rounded-xl border border-[#1a3a24] hover:border-[#0ae448] transition-all duration-300 shadow-md"
                     >
                       <Image
@@ -252,11 +271,11 @@ export default function SessionDetailModal({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onClick={() => setSelectedPhoto(null)}
+              onClick={closePhoto}
                 className="fixed inset-0 z-60 bg-[#08170d]/95 backdrop-blur-2xl flex items-center justify-center p-4"
               >
                 <button
-                  onClick={() => setSelectedPhoto(null)}
+                  onClick={closePhoto}
                   className="absolute top-6 right-6 text-white bg-[#0e2417] hover:bg-[#132f1f] p-2.5 rounded-full border border-[#1a3a24] hover:border-[#0ae448]"
                 >
                   <X size={22} />
@@ -265,17 +284,56 @@ export default function SessionDetailModal({
                   onClick={(e) => e.stopPropagation()}
                   className="max-w-4xl w-full bg-[#08170d] border border-[#1a3a24] rounded-2xl overflow-hidden shadow-2xl"
                 >
+                  {/* Photo Counter */}
+                  <div className="flex items-center justify-between px-4 pt-3 pb-1">
+                    <span className="font-mono text-xs text-[#8ea896]">
+                      {selectedPhotoIndex !== null ? selectedPhotoIndex + 1 : 0} / {photos.length}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      {photos.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setSelectedPhotoIndex(i)}
+                          className={`w-1.5 h-1.5 rounded-full transition-all ${
+                            i === selectedPhotoIndex ? "bg-[#0ae448] w-4" : "bg-[#1a3a24] hover:bg-[#0ae448]/50"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="relative aspect-[16/10] w-full bg-[#08170d]">
                     <Image
-                      src={selectedPhoto.url}
-                      alt={selectedPhoto.caption}
+                      src={selectedPhoto!.url}
+                      alt={selectedPhoto!.caption}
                       fill
                       className="object-contain"
                     />
+
+                    {/* Prev Button */}
+                    {photos.length > 1 && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); goPrev(); }}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#08170d]/80 hover:bg-[#0ae448]/20 border border-[#1a3a24] hover:border-[#0ae448] text-white rounded-full flex items-center justify-center transition-all backdrop-blur-sm"
+                      >
+                        <ChevronLeft size={20} />
+                      </button>
+                    )}
+
+                    {/* Next Button */}
+                    {photos.length > 1 && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); goNext(); }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#08170d]/80 hover:bg-[#0ae448]/20 border border-[#1a3a24] hover:border-[#0ae448] text-white rounded-full flex items-center justify-center transition-all backdrop-blur-sm"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                    )}
                   </div>
+
                   <div className="p-4 text-center bg-[#0e2417] border-t border-[#1a3a24]">
                     <p className="text-white font-medium text-sm sm:text-base">
-                      {selectedPhoto.caption}
+                      {selectedPhoto!.caption}
                     </p>
                   </div>
                 </div>
