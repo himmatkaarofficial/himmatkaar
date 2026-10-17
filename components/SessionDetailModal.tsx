@@ -223,10 +223,10 @@ export default function SessionDetailModal({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {session.sessionPhotos.map((photo) => (
+                  {session.sessionPhotos.map((photo, idx) => (
                     <div
-                      key={photo.id}
-                    onClick={() => openPhoto(session.sessionPhotos.indexOf(photo))}
+                      key={photo.id || idx}
+                      onClick={() => openPhoto(idx)}
                       className="group relative overflow-hidden cursor-pointer aspect-[4/3] bg-[#0e2417] rounded-xl border border-[#1a3a24] hover:border-[#0ae448] transition-all duration-300 shadow-md"
                     >
                       <Image
@@ -268,35 +268,38 @@ export default function SessionDetailModal({
           <AnimatePresence>
             {selectedPhoto && (
               <motion.div
+                key="session-lightbox-modal"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-              onClick={closePhoto}
-                className="fixed inset-0 z-60 bg-[#08170d]/95 backdrop-blur-2xl flex items-center justify-center p-4"
+                onClick={closePhoto}
+                className="fixed inset-0 z-[70] bg-[#08170d]/95 backdrop-blur-2xl flex items-center justify-center p-4"
               >
                 <button
                   onClick={closePhoto}
-                  className="absolute top-6 right-6 text-white bg-[#0e2417] hover:bg-[#132f1f] p-2.5 rounded-full border border-[#1a3a24] hover:border-[#0ae448]"
+                  className="absolute top-6 right-6 text-white bg-[#0e2417] hover:bg-[#132f1f] p-2.5 rounded-full border border-[#1a3a24] hover:border-[#0ae448] z-30 cursor-pointer transition-all"
+                  aria-label="Close photo preview"
                 >
                   <X size={22} />
                 </button>
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="max-w-4xl w-full bg-[#08170d] border border-[#1a3a24] rounded-2xl overflow-hidden shadow-2xl"
+                  className="max-w-4xl w-full bg-[#08170d] border border-[#1a3a24] rounded-2xl overflow-hidden shadow-2xl relative"
                 >
                   {/* Photo Counter */}
                   <div className="flex items-center justify-between px-4 pt-3 pb-1">
                     <span className="font-mono text-xs text-[#8ea896]">
                       {selectedPhotoIndex !== null ? selectedPhotoIndex + 1 : 0} / {photos.length}
                     </span>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       {photos.map((_, i) => (
                         <button
                           key={i}
                           onClick={() => setSelectedPhotoIndex(i)}
-                          className={`w-1.5 h-1.5 rounded-full transition-all ${
-                            i === selectedPhotoIndex ? "bg-[#0ae448] w-4" : "bg-[#1a3a24] hover:bg-[#0ae448]/50"
+                          className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                            i === selectedPhotoIndex ? "bg-[#0ae448] w-5" : "bg-[#1a3a24] w-1.5 hover:bg-[#0ae448]/50"
                           }`}
+                          aria-label={`Jump to photo ${i + 1}`}
                         />
                       ))}
                     </div>
@@ -314,9 +317,10 @@ export default function SessionDetailModal({
                     {photos.length > 1 && (
                       <button
                         onClick={(e) => { e.stopPropagation(); goPrev(); }}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#08170d]/80 hover:bg-[#0ae448]/20 border border-[#1a3a24] hover:border-[#0ae448] text-white rounded-full flex items-center justify-center transition-all backdrop-blur-sm"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 bg-[#08170d]/90 hover:bg-[#0ae448] hover:text-black border border-[#1a3a24] hover:border-[#0ae448] text-white rounded-full flex items-center justify-center transition-all backdrop-blur-sm cursor-pointer z-20 shadow-lg"
+                        aria-label="Previous photo"
                       >
-                        <ChevronLeft size={20} />
+                        <ChevronLeft size={22} />
                       </button>
                     )}
 
@@ -324,9 +328,10 @@ export default function SessionDetailModal({
                     {photos.length > 1 && (
                       <button
                         onClick={(e) => { e.stopPropagation(); goNext(); }}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#08170d]/80 hover:bg-[#0ae448]/20 border border-[#1a3a24] hover:border-[#0ae448] text-white rounded-full flex items-center justify-center transition-all backdrop-blur-sm"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 bg-[#08170d]/90 hover:bg-[#0ae448] hover:text-black border border-[#1a3a24] hover:border-[#0ae448] text-white rounded-full flex items-center justify-center transition-all backdrop-blur-sm cursor-pointer z-20 shadow-lg"
+                        aria-label="Next photo"
                       >
-                        <ChevronRight size={20} />
+                        <ChevronRight size={22} />
                       </button>
                     )}
                   </div>

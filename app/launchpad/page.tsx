@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -25,7 +25,8 @@ import {
   ChevronLeft,
   GraduationCap,
   Loader2,
-  Linkedin
+  Linkedin,
+  X
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -53,15 +54,30 @@ export interface DbSession {
 
 // ── Session Detail Modal ──────────────────────────────────────────────────
 function SessionModal({ session, onClose }: { session: DbSession; onClose: () => void }) {
-  const [selectedPhoto, setSelectedPhoto] = useState<{ url: string; caption: string } | null>(null);
+  const photos = session.session_photos || [];
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const selectedPhoto = selectedPhotoIndex !== null ? photos[selectedPhotoIndex] : null;
+
+  const openPhoto = (i: number) => setSelectedPhotoIndex(i);
+  const closePhoto = () => setSelectedPhotoIndex(null);
+  const goNext = useCallback(() => {
+    if (selectedPhotoIndex === null) return;
+    setSelectedPhotoIndex((selectedPhotoIndex + 1) % photos.length);
+  }, [selectedPhotoIndex, photos.length]);
+  const goPrev = useCallback(() => {
+    if (selectedPhotoIndex === null) return;
+    setSelectedPhotoIndex((selectedPhotoIndex - 1 + photos.length) % photos.length);
+  }, [selectedPhotoIndex, photos.length]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") selectedPhoto ? setSelectedPhoto(null) : onClose();
+      if (e.key === "Escape") selectedPhotoIndex !== null ? closePhoto() : onClose();
+      else if (e.key === "ArrowRight" && selectedPhotoIndex !== null) goNext();
+      else if (e.key === "ArrowLeft" && selectedPhotoIndex !== null) goPrev();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedPhoto, onClose]);
+  }, [selectedPhotoIndex, onClose, goNext, goPrev]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -71,6 +87,7 @@ function SessionModal({ session, onClose }: { session: DbSession; onClose: () =>
   return (
     <AnimatePresence>
       <motion.div
+        key="session-modal-overlay"
         className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto py-8 px-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -177,11 +194,14 @@ function SessionModal({ session, onClose }: { session: DbSession; onClose: () =>
                 {session.session_photos.map((photo, i) => (
                   <button
                     key={i}
-                    onClick={() => setSelectedPhoto(photo)}
+                    onClick={() => openPhoto(i)}
                     className="relative aspect-video rounded-xl overflow-hidden border border-[#1d442a] hover:border-[#389456] transition-all group"
                   >
                     <Image src={photo.url} alt={photo.caption || `Photo ${i + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all" />
+                    <span className="absolute bottom-1.5 right-1.5 bg-black/60 text-white text-[10px] font-mono px-1.5 py-0.5 rounded">
+                      {i + 1}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -193,15 +213,74 @@ function SessionModal({ session, onClose }: { session: DbSession; onClose: () =>
       {/* Lightbox */}
       {selectedPhoto && (
         <motion.div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4"
+          key="session-lightbox-overlay"
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/92 p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          onClick={() => setSelectedPhoto(null)}
+          exit={{ opacity: 0 }}
+          onClick={closePhoto}
         >
-          <div className="relative max-w-4xl w-full">
-            <div className="relative aspect-video rounded-2xl overflow-hidden border border-[#1d442a]">
-              <Image src={selectedPhoto.url} alt={selectedPhoto.caption} fill className="object-contain" />
+          {/* Close Button */}
+          <button
+            onClick={closePhoto}
+            className="absolute top-5 right-5 z-30 w-10 h-10 bg-black/70 hover:bg-[#389456] border border-white/20 hover:border-[#389456] text-white rounded-full flex items-center justify-center transition-all cursor-pointer shadow-lg"
+            aria-label="Close photo preview"
+          >
+            <X size={20} />
+          </button>
+
+          <div
+            className="relative max-w-4xl w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Counter + Dots */}
+            <div className="flex items-center justify-between mb-3 px-1">
+              <span className="font-mono text-xs text-white/60">
+                {selectedPhotoIndex !== null ? selectedPhotoIndex + 1 : 0} / {photos.length}
+              </span>
+              <div className="flex items-center gap-1.5">
+                {photos.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedPhotoIndex(i)}
+                    className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                      i === selectedPhotoIndex
+                        ? "bg-[#389456] w-5"
+                        : "bg-white/30 w-1.5 hover:bg-white/60"
+                    }`}
+                    aria-label={`Jump to photo ${i + 1}`}
+                  />
+                ))}
+              </div>
             </div>
+
+            {/* Image + Prev/Next */}
+            <div className="relative aspect-video rounded-2xl overflow-hidden border border-[#1d442a] bg-black/40">
+              <Image src={selectedPhoto.url} alt={selectedPhoto.caption || "Session Photo"} fill className="object-contain" />
+
+              {/* Prev */}
+              {photos.length > 1 && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); goPrev(); }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/75 hover:bg-[#389456] hover:text-white border border-white/20 hover:border-[#389456] text-white rounded-full flex items-center justify-center transition-all backdrop-blur-sm cursor-pointer z-20 shadow-lg"
+                  aria-label="Previous photo"
+                >
+                  <ChevronLeft size={22} />
+                </button>
+              )}
+
+              {/* Next */}
+              {photos.length > 1 && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); goNext(); }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/75 hover:bg-[#389456] hover:text-white border border-white/20 hover:border-[#389456] text-white rounded-full flex items-center justify-center transition-all backdrop-blur-sm cursor-pointer z-20 shadow-lg"
+                  aria-label="Next photo"
+                >
+                  <ChevronRight size={22} />
+                </button>
+              )}
+            </div>
+
             {selectedPhoto.caption && (
               <p className="text-center text-sm text-[#d1e7d8] mt-3 font-mono">{selectedPhoto.caption}</p>
             )}
