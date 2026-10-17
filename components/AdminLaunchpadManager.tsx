@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Plus, Edit, Trash2, Rocket, X, Loader2, ChevronDown, ChevronUp,
-  GraduationCap, Save, AlertCircle, CheckCircle, Upload, Linkedin, Camera
+  GraduationCap, Save, AlertCircle, CheckCircle, Upload, Linkedin, Camera,
+  GripVertical, ArrowLeft, ArrowRight
 } from "lucide-react";
 import AdminImageUploader from "./AdminImageUploader";
 
@@ -160,13 +161,17 @@ function BulkPhotoUploader({
   onAdd,
   onRemove,
   onCaptionChange,
+  onReorder,
 }: {
   photos: SessionPhoto[];
   onAdd: (newPhotos: SessionPhoto[]) => void;
   onRemove: (index: number) => void;
   onCaptionChange: (index: number, caption: string) => void;
+  onReorder: (newPhotos: SessionPhoto[]) => void;
 }) {
   const [uploading, setUploading] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -206,6 +211,43 @@ function BulkPhotoUploader({
     if (uploaded.length) onAdd(uploaded);
   };
 
+  const movePhoto = (from: number, to: number) => {
+    if (to < 0 || to >= photos.length || from === to) return;
+    const reordered = [...photos];
+    const [moved] = reordered.splice(from, 1);
+    reordered.splice(to, 0, moved);
+    onReorder(reordered);
+  };
+
+  // Drag and Drop handlers
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", index.toString());
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (dragOverIndex !== index) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex !== null && draggedIndex !== targetIndex) {
+      movePhoto(draggedIndex, targetIndex);
+    }
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
   return (
     <div className="space-y-4">
       {/* Upload Button */}
@@ -223,7 +265,7 @@ function BulkPhotoUploader({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-slate-300 rounded-xl text-sm font-semibold text-slate-600 hover:border-[#39894c] hover:text-[#39894c] hover:bg-[#39894c]/5 transition-all disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-slate-300 rounded-xl text-sm font-semibold text-slate-600 hover:border-[#39894c] hover:text-[#39894c] hover:bg-[#39894c]/5 transition-all disabled:opacity-50 cursor-pointer"
           >
             {uploading ? (
               <><Loader2 size={16} className="animate-spin" /> Uploading photos...</>
@@ -234,36 +276,103 @@ function BulkPhotoUploader({
         </div>
       )}
 
+      {/* Helpful Hint */}
+      {photos.length > 1 && (
+        <div className="flex items-center justify-between text-[11px] text-slate-500 bg-slate-50 border border-slate-200/80 rounded-lg px-3 py-1.5 font-mono">
+          <span className="flex items-center gap-1.5">
+            <GripVertical size={13} className="text-[#39894c]" />
+            Drag &amp; drop photos to reorder, or use the ◀ ▶ buttons
+          </span>
+          <span className="text-slate-400 font-sans">Slide order: 1 to {photos.length}</span>
+        </div>
+      )}
+
       {/* Uploaded Photos Grid */}
       {photos.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {photos.map((photo, i) => (
-            <div key={i} className="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
-              {/* Image Preview */}
-              <div className="relative aspect-[4/3] bg-slate-100">
-                <Image src={photo.url} alt={photo.caption || `Photo ${i + 1}`} fill className="object-cover" />
-                <button
-                  type="button"
-                  onClick={() => onRemove(i)}
-                  className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-md transition-all"
-                >
-                  <X size={12} />
-                </button>
-                <span className="absolute bottom-1.5 left-1.5 bg-black/60 text-white text-[10px] font-mono px-1.5 py-0.5 rounded">
-                  {i + 1}/{photos.length}
-                </span>
+          {photos.map((photo, i) => {
+            const isDragging = draggedIndex === i;
+            const isOver = dragOverIndex === i && draggedIndex !== i;
+
+            return (
+              <div
+                key={photo.url || i}
+                draggable
+                onDragStart={(e) => handleDragStart(e, i)}
+                onDragOver={(e) => handleDragOver(e, i)}
+                onDrop={(e) => handleDrop(e, i)}
+                onDragEnd={handleDragEnd}
+                className={`bg-slate-50 rounded-xl border transition-all duration-150 overflow-hidden select-none ${
+                  isDragging
+                    ? "opacity-30 scale-95 border-dashed border-[#39894c] ring-2 ring-[#39894c]/30"
+                    : isOver
+                    ? "ring-2 ring-[#39894c] border-[#39894c] scale-[1.02] bg-[#39894c]/5 shadow-md"
+                    : "border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                }`}
+              >
+                {/* Image Preview with Controls */}
+                <div className="relative aspect-[4/3] bg-slate-100 group">
+                  <Image src={photo.url} alt={photo.caption || `Photo ${i + 1}`} fill className="object-cover pointer-events-none" />
+
+                  {/* Drag Handle Overlay */}
+                  <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
+                    <span
+                      title="Drag to reorder"
+                      className="flex items-center gap-0.5 bg-black/75 hover:bg-[#39894c] text-white text-[11px] font-mono px-1.5 py-0.5 rounded cursor-grab active:cursor-grabbing transition-colors shadow"
+                    >
+                      <GripVertical size={12} />
+                      #{i + 1}
+                    </span>
+                  </div>
+
+                  {/* Remove Button */}
+                  <button
+                    type="button"
+                    onClick={() => onRemove(i)}
+                    title="Remove photo"
+                    className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-md transition-all cursor-pointer z-10"
+                  >
+                    <X size={12} />
+                  </button>
+
+                  {/* Reorder Arrow Buttons (Quick alternative to drag) */}
+                  {photos.length > 1 && (
+                    <div className="absolute bottom-1.5 right-1.5 flex items-center gap-1 bg-black/75 rounded-lg p-0.5 shadow">
+                      <button
+                        type="button"
+                        disabled={i === 0}
+                        onClick={() => movePhoto(i, i - 1)}
+                        title="Move left"
+                        className="w-5 h-5 flex items-center justify-center text-white hover:text-[#39894c] disabled:opacity-30 disabled:hover:text-white cursor-pointer disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ArrowLeft size={12} />
+                      </button>
+                      <span className="text-[10px] text-slate-300 font-mono px-0.5">|</span>
+                      <button
+                        type="button"
+                        disabled={i === photos.length - 1}
+                        onClick={() => movePhoto(i, i + 1)}
+                        title="Move right"
+                        className="w-5 h-5 flex items-center justify-center text-white hover:text-[#39894c] disabled:opacity-30 disabled:hover:text-white cursor-pointer disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ArrowRight size={12} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Caption Input */}
+                <div className="p-2">
+                  <input
+                    value={photo.caption}
+                    onChange={(e) => onCaptionChange(i, e.target.value)}
+                    placeholder="Caption (optional)"
+                    className="w-full border border-slate-200 rounded-lg px-2 py-1 text-xs text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                  />
+                </div>
               </div>
-              {/* Caption */}
-              <div className="p-2">
-                <input
-                  value={photo.caption}
-                  onChange={(e) => onCaptionChange(i, e.target.value)}
-                  placeholder={`Caption (optional)`}
-                  className="w-full border border-slate-200 rounded-lg px-2 py-1 text-xs text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
-                />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -403,6 +512,9 @@ export default function AdminLaunchpadManager() {
     const updated = [...formData.session_photos];
     updated[i] = { ...updated[i], caption };
     setFormData({ ...formData, session_photos: updated });
+  };
+  const reorderPhotos = (newPhotos: SessionPhoto[]) => {
+    setFormData({ ...formData, session_photos: newPhotos });
   };
 
   const inputCls = "w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]";
@@ -779,6 +891,7 @@ export default function AdminLaunchpadManager() {
                   onAdd={addPhotos}
                   onRemove={removePhoto}
                   onCaptionChange={updatePhotoCaption}
+                  onReorder={reorderPhotos}
                 />
                 <p className="text-[11px] text-slate-400 mt-2">Upload JPEG, PNG or WebP images. Max 5MB each.</p>
               </div>
