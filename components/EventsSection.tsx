@@ -28,7 +28,7 @@ export default function EventsSection() {
       try {
         const response = await fetch('/api/events?limit=3&status=upcoming');
         const data = await response.json();
-        
+
         if (response.ok) {
           setEvents(data.events || []);
         } else {
@@ -45,78 +45,70 @@ export default function EventsSection() {
     fetchEvents();
   }, []);
 
-  // Fallback events if no events in database
-  const fallbackEvents = [
-    { 
-      id: '1',
-      title: "Youth Leadership Summit", 
-      image: "/event-leadership.jpg", 
-      date: "2026-03-25",
-      time: "09:00 AM",
-      location: "Faisalabad",
-      type: "Summit",
-      description: "Join us for an inspiring leadership summit",
-      status: "upcoming"
-    },
-    { 
-      id: '2',
-      title: "Innovation Workshop", 
-      image: "/event-workshop.jpg", 
-      date: "2026-04-10",
-      time: "02:00 PM",
-      location: "Faisalabad",
-      type: "Workshop",
-      description: "Learn innovative skills and techniques",
-      status: "upcoming"
-    },
-    { 
-      id: '3',
-      title: "Community Open House", 
-      image: "/event-openhouse.jpg", 
-      date: "2026-04-20",
-      time: "10:00 AM",
-      location: "Faisalabad",
-      type: "Open House",
-      description: "Meet the community and explore opportunities",
-      status: "upcoming"
-    }
-  ];
-
-  const displayEvents = events.length > 0 ? events : fallbackEvents;
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   };
 
+  if (loading || events.length === 0) {
+    return null;
+  }
+
+  const displayEvents = events;
+
   return (
-    <section className="py-28 bg-white">
+    <section style={{ background: 'var(--color-canvas)', padding: '80px 0' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
+
+        {/* Section Header — left-aligned per July Fund convention */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-16"
         >
-          <span className="inline-block text-[#39894c] font-bold text-base uppercase tracking-wider mb-4">Events</span>
-          <h2 className="text-4xl lg:text-6xl font-bold text-slate-900 mb-4">Invent Your Future With Us</h2>
-          <p className="text-slate-600 text-xl max-w-2xl mx-auto">Join our upcoming events and connect with like-minded changemakers</p>
+          <span className="badge-gallery badge-emerald inline-flex mb-5">
+            Events
+          </span>
+          <h2
+            className="font-portrait"
+            style={{ fontSize: '40px', color: 'var(--color-text-primary)' }}
+          >
+            Invent Your Future With Us
+          </h2>
+          <p
+            className="mt-3"
+            style={{
+              fontSize: '15px',
+              lineHeight: 1.3,
+              color: 'var(--color-text-muted)',
+              fontFamily: 'var(--font-sans-gallery)',
+              maxWidth: '480px',
+            }}
+          >
+            Join our upcoming events and connect with like-minded changemakers
+          </p>
         </motion.div>
 
-        {loading ? (
-          <div className="grid md:grid-cols-3 gap-8">
+        {/* Loading skeleton */}
+        {loading && (
+          <div className="grid md:grid-cols-3 gap-5 mb-8">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-slate-100  rounded-2xl h-96 animate-pulse"></div>
+              <div
+                key={i}
+                style={{
+                  background: 'var(--color-charcoal)',
+                  borderRadius: 'var(--radius-cards)',
+                  height: '360px',
+                  opacity: 0.6,
+                }}
+              />
             ))}
           </div>
-        ) : error ? (
-          <div className="text-center py-12">
-            <p className="text-slate-600 mb-4">{error}</p>
-            <p className="text-sm text-slate-500">Showing default events</p>
-          </div>
-        ) : null}
+        )}
 
-        <div className="grid md:grid-cols-3 gap-8">
+        {/* Events Grid */}
+        <div className="grid md:grid-cols-3 gap-5">
           {displayEvents.slice(0, 3).map((event, idx) => (
             <motion.div
               key={event.id}
@@ -124,39 +116,76 @@ export default function EventsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className="group bg-white  rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all border border-slate-100"
+              style={{
+                background: 'var(--color-charcoal)',
+                borderRadius: 'var(--radius-cards)',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
             >
-              <div className="relative overflow-hidden">
-                <Image 
-                  src={event.image} 
-                  alt={event.title} 
-                  width={400}
-                  height={250}
-                  className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500" 
+              {/* Image tile — 12px radius inside the card */}
+              <div
+                style={{
+                  margin: '20px 20px 0',
+                  borderRadius: 'var(--radius-images)',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  height: '200px',
+                }}
+              >
+                <Image
+                  src={event.image}
+                  alt={event.title}
+                  fill
+                  className="object-cover"
+                  sizes="400px"
                 />
-                <div className="absolute top-4 right-4 bg-[#39894c] text-white px-3 py-1 rounded-full text-xs font-bold">
+                {/* Status badge overlay */}
+                <span
+                  className="badge-gallery badge-gold absolute top-3 right-3"
+                  style={{ fontSize: '8px', padding: '4px 10px' }}
+                >
                   {event.status === 'upcoming' ? 'Upcoming' : event.status}
-                </div>
+                </span>
               </div>
-              <div className="p-6">
-                <p className="text-base text-[#39894c] font-semibold mb-2">{formatDate(event.date)}</p>
-                <h3 className="text-2xl font-bold mb-4 text-slate-900">{event.title}</h3>
-                <Link href="/events">
-                  <button className="text-[#39894c] font-semibold text-lg hover:gap-2 flex items-center gap-1 transition-all group">
-                    Event Details <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </Link>
+
+              {/* Card body */}
+              <div style={{ padding: '20px 20px 28px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                {/* Date */}
+                <p
+                  className="label-gallery mb-3"
+                  style={{ color: 'var(--color-text-muted)' }}
+                >
+                  {formatDate(event.date)}
+                </p>
+
+                {/* Title */}
+                <h3
+                  className="font-portrait mb-3"
+                  style={{ fontSize: '26px', color: 'var(--color-text-primary)', flex: 1 }}
+                >
+                  {event.title}
+                </h3>
+
+                {/* Ghost pill button */}
+                <div className="mt-auto">
+                  <Link href="/events">
+                    <button className="btn-ghost-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      Event Details <ArrowRight size={11} />
+                    </button>
+                  </Link>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* View All Events Link */}
-        <div className="text-center mt-12">
+        {/* View All Events */}
+        <div className="mt-10">
           <Link href="/events">
-            <button className="inline-flex items-center gap-2 px-8 py-4 bg-[#39894c] hover:bg-[#2d5f3d] text-white text-lg font-semibold rounded-lg transition-colors shadow-lg">
-              View All Events
-              <ArrowRight size={20} />
+            <button className="btn-filled-pill">
+              View All Events <ArrowRight size={13} />
             </button>
           </Link>
         </div>
@@ -164,4 +193,3 @@ export default function EventsSection() {
     </section>
   );
 }
-

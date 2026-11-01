@@ -1,11 +1,23 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Quote, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const testimonials = [
+export interface TestimonialItem {
+  id?: string;
+  name: string;
+  role?: string;
+  company?: string;
+  avatar_url?: string | null;
+  rating?: number;
+  feedback?: string;
+  text?: string;
+}
+
+const defaultTestimonials: TestimonialItem[] = [
   {
     name: "Ahmed Khan",
     role: "Software Engineer",
@@ -18,7 +30,7 @@ const testimonials = [
     role: "Marketing Manager",
     company: "Digital Solutions",
     rating: 5,
-    text: "The confidence I gained through HimmatKaar is invaluable. The public speaking sessions and resume workshops prepared me for real-world challenges. I'm now leading a team of 10 people and couldn't be more grateful for this opportunity!"
+    text: "The confidence I gained through HimmatKaar is invaluable. The public speaking sessions and resume workshops prepared me for real-world challenges. I am now leading a team of 10 people and could not be more grateful for this opportunity!"
   },
   {
     name: "Hassan Raza",
@@ -37,120 +49,160 @@ const testimonials = [
 ];
 
 export default function TestimonialCarousel() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' });
+  const [items, setItems] = useState<TestimonialItem[]>(defaultTestimonials);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    async function loadTestimonials() {
+      try {
+        const res = await fetch("/api/testimonials");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.testimonials && data.testimonials.length > 0) {
+            setItems(data.testimonials);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load testimonials:", err);
+      }
+    }
+    loadTestimonials();
+  }, []);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
-
-    const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
-    };
-
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
     emblaApi.on("select", onSelect);
     onSelect();
-
-    // Auto-play
-    const interval = setInterval(() => {
-      emblaApi.scrollNext();
-    }, 6000);
-
-    return () => {
-      emblaApi.off("select", onSelect);
-      clearInterval(interval);
-    };
-  }, [emblaApi]);
+    const interval = setInterval(() => emblaApi.scrollNext(), 6000);
+    return () => { emblaApi.off("select", onSelect); clearInterval(interval); };
+  }, [emblaApi, items]);
 
   return (
     <div className="relative">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className="flex-[0_0_100%] md:flex-[0_0_90%] lg:flex-[0_0_80%] min-w-0 px-4">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="relative bg-gradient-to-br from-[var(--color-deep-sapphire)] to-[var(--color-deep-navy)] rounded-3xl p-10 shadow-2xl border border-[var(--color-courage-gold)]/20 overflow-hidden"
-              >
-                {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--color-courage-gold)]/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-40 h-40 bg-[var(--color-courage-green)]/10 rounded-full blur-3xl"></div>
+          {items.map((testimonial, index) => {
+            const feedbackText = testimonial.feedback || testimonial.text || "";
+            const ratingCount = testimonial.rating ?? 5;
+            const initials = testimonial.name
+              ? testimonial.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .slice(0, 2)
+                  .join("")
+                  .toUpperCase()
+              : "HK";
 
-                {/* Quote Icon */}
-                <div className="relative mb-6">
-                  <Quote className="text-[var(--color-courage-gold)]" size={56} strokeWidth={1.5} />
-                </div>
+            return (
+              <div key={testimonial.id || index} className="flex-[0_0_100%] md:flex-[0_0_85%] lg:flex-[0_0_80%] min-w-0 px-3">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="bg-[#0c2616] rounded-2xl p-6 sm:p-10 md:p-12 border border-[#1d442a] shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[340px]"
+                >
+                  {/* Urdu Calligraphy Background Watermark */}
+                  <div
+                    className="absolute -right-6 -bottom-8 font-urdu text-8xl sm:text-9xl text-[#2d7a46]/10 select-none pointer-events-none"
+                    dir="rtl"
+                  >
+                    ہمت کار
+                  </div>
 
-                {/* Rating Stars */}
-                <div className="flex gap-1 mb-6">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="text-[var(--color-courage-gold)] fill-[var(--color-courage-gold)]" size={20} />
-                  ))}
-                </div>
-
-                {/* Testimonial Text */}
-                <p className="text-white text-lg md:text-xl leading-relaxed mb-8 font-[var(--font-body)] relative z-10">
-                  "{testimonial.text}"
-                </p>
-
-                {/* Author Info */}
-                <div className="flex items-center gap-5 relative z-10">
-                  <div className="relative">
-                    <div className="w-20 h-20 rounded-full bg-[var(--color-courage-green)] flex items-center justify-center border-4 border-[var(--color-courage-green)] shadow-lg">
-                      <span className="text-white text-2xl font-bold">
-                        {testimonial.name.split(' ').map(n => n[0]).join('')}
+                  <div>
+                    {/* Top Row: Naked Quote Icon & Verified Member Badge */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="text-[#389456]">
+                        <Quote size={36} strokeWidth={1.5} />
+                      </div>
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#0a2012] border border-[#275836] font-mono text-xs text-[#a3caad]">
+                        <CheckCircle2 size={13} className="text-[#389456]" />
+                        VERIFIED MEMBER
                       </span>
                     </div>
-                    {/* Verified Badge */}
-                    <div className="absolute -bottom-1 -right-1 bg-[var(--color-courage-green)] rounded-full p-1.5 border-2 border-[var(--color-deep-navy)]">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
+
+                    {/* Rating indicators (Amber soft squares) */}
+                    <div className="flex gap-1.5 mb-6">
+                      {[...Array(ratingCount)].map((_, i) => (
+                        <span
+                          key={i}
+                          className="w-2.5 h-2.5 rounded-sm bg-[#f3ae29] inline-block"
+                        />
+                      ))}
+                    </div>
+
+                    {/* Testimonial text in Playfair Display serif or clean typography */}
+                    <p className="mb-8 text-base sm:text-lg md:text-xl font-normal leading-relaxed text-[#d1e7d8]">
+                      &ldquo;{feedbackText}&rdquo;
+                    </p>
+                  </div>
+
+                  {/* Author Credentials */}
+                  <div className="flex items-center gap-4 pt-4 border-t border-[#1d442a]">
+                    {testimonial.avatar_url ? (
+                      <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-[#275836] flex-shrink-0 bg-[#0a2012]">
+                        <Image
+                          src={testimonial.avatar_url}
+                          alt={testimonial.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-xl bg-[#0a2012] border border-[#275836] text-[#389456] flex items-center justify-center flex-shrink-0 font-mono text-sm font-bold">
+                        {initials}
+                      </div>
+                    )}
+                    <div>
+                      <h4 className="font-serif-heading text-lg font-bold text-white tracking-tight">
+                        {testimonial.name}
+                      </h4>
+                      {(testimonial.role || testimonial.company) && (
+                        <p className="font-mono text-xs text-[#a3caad] mt-0.5">
+                          {testimonial.role}{testimonial.role && testimonial.company ? " · " : ""}{testimonial.company}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-white text-xl font-[var(--font-display)] mb-1">{testimonial.name}</h4>
-                    <p className="text-[var(--color-courage-gold)] text-sm font-semibold font-[var(--font-body)]">{testimonial.role}</p>
-                    <p className="text-white/60 text-sm font-[var(--font-body)]">{testimonial.company}</p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          ))}
+                </motion.div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows (Soft Rounded Rectangles) */}
       <button
         onClick={scrollPrev}
-        className="absolute left-0 md:-left-6 top-1/2 -translate-y-1/2 bg-[var(--color-courage-green)] hover:bg-[var(--color-courage-green)]/80 text-white rounded-full p-4 shadow-2xl transition-all z-10 hover:scale-110"
+        className="absolute left-1 md:-left-5 top-1/2 -translate-y-1/2 rounded-xl p-3 bg-[#0c2616] border border-[#1d442a] text-[#d1e7d8] hover:text-white hover:border-[#389456] hover:bg-[#10321e] transition-all z-10 shadow-xl"
         aria-label="Previous testimonial"
       >
-        <ChevronLeft size={28} strokeWidth={2.5} />
+        <ChevronLeft size={20} />
       </button>
       <button
         onClick={scrollNext}
-        className="absolute right-0 md:-right-6 top-1/2 -translate-y-1/2 bg-[var(--color-courage-green)] hover:bg-[var(--color-courage-green)]/80 text-white rounded-full p-4 shadow-2xl transition-all z-10 hover:scale-110"
+        className="absolute right-1 md:-right-5 top-1/2 -translate-y-1/2 rounded-xl p-3 bg-[#0c2616] border border-[#1d442a] text-[#d1e7d8] hover:text-white hover:border-[#389456] hover:bg-[#10321e] transition-all z-10 shadow-xl"
         aria-label="Next testimonial"
       >
-        <ChevronRight size={28} strokeWidth={2.5} />
+        <ChevronRight size={20} />
       </button>
 
-      {/* Dots Indicator */}
-      <div className="flex justify-center gap-3 mt-10">
-        {testimonials.map((_, index) => (
+      {/* Amber/Gold Indicators */}
+      <div className="flex justify-center gap-2 mt-8">
+        {items.map((_, index) => (
           <button
             key={index}
             onClick={() => emblaApi && emblaApi.scrollTo(index)}
-            className={`h-2.5 rounded-full transition-all ${
-              index === selectedIndex 
-                ? "bg-[var(--color-courage-gold)] w-12" 
-                : "bg-white/30 w-2.5 hover:bg-white/50"
-            }`}
+            className="h-2 rounded-sm transition-all duration-300"
+            style={{
+              width: index === selectedIndex ? "28px" : "8px",
+              background: index === selectedIndex ? "#f3ae29" : "#1d442a",
+            }}
             aria-label={`Go to testimonial ${index + 1}`}
           />
         ))}
@@ -158,4 +210,3 @@ export default function TestimonialCarousel() {
     </div>
   );
 }
-

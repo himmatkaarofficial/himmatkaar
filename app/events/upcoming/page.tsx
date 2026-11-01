@@ -3,219 +3,246 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, MapPin, Users, Clock, ArrowRight, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Calendar, MapPin, Clock, ArrowUpRight, Loader2, ChevronLeft, ChevronRight, Lock } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import EventDetailModal, { EventDetail } from "@/components/EventDetailModal";
 
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  location: string;
-  type: string;
-  image: string;
-  status: string;
-}
+const EVENT_HERO_IMAGES = [
+  "/events/event-slide-1.jpg",
+  "/events/event-slide-2.jpg",
+  "/events/event-slide-3.jpg",
+  "/events/event-slide-4.jpg",
+];
 
 export default function UpcomingEvents() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<EventDetail[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedEvent, setSelectedEvent] = useState<EventDetail | null>(null);
+
+  // Background carousel auto-slide
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % EVENT_HERO_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % EVENT_HERO_IMAGES.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + EVENT_HERO_IMAGES.length) % EVENT_HERO_IMAGES.length);
+  };
 
   useEffect(() => {
     async function fetchEvents() {
       try {
         const response = await fetch('/api/events?status=upcoming', { cache: 'no-store' });
         const data = await response.json();
-        
-        if (response.ok) {
-          setEvents(data.events || []);
+        if (response.ok && data.events && data.events.length > 0) {
+          setEvents(data.events);
+        } else {
+          setEvents([]);
         }
-      } catch (err) {
-        console.error('Error fetching events:', err);
+      } catch {
+        setEvents([]);
       } finally {
         setLoading(false);
       }
     }
-
     fetchEvents();
   }, []);
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    } catch {
+      return dateString;
+    }
   };
 
-  const fallbackEvents = [
-    {
-      id: '1',
-      title: "Startup Pitch Competition 2026",
-      date: "2026-03-25",
-      time: "10:00 AM - 5:00 PM",
-      location: "Karachi Expo Center",
-      attendees: "Expected 600+",
-      image: "/event-leadership.jpg",
-      description: "Compete for seed funding and mentorship opportunities. Present your startup idea to leading investors and industry experts.",
-      status: "Registration Open",
-      type: "Competition"
-    },
-    {
-      id: '2',
-      title: "Tech Skills Bootcamp",
-      date: "2026-04-10",
-      time: "9:00 AM - 6:00 PM",
-      location: "Lahore Innovation Hub",
-      attendees: "Limited to 150",
-      image: "/event-workshop.jpg",
-      description: "Intensive 3-day bootcamp covering web development, mobile apps, and AI fundamentals with hands-on projects.",
-      status: "Early Bird",
-      type: "Bootcamp"
-    },
-    {
-      id: '3',
-      title: "Social Impact Summit",
-      date: "2026-04-20",
-      time: "2:00 PM - 8:00 PM",
-      location: "Islamabad Convention Hall",
-      attendees: "Expected 400+",
-      image: "/event-openhouse.jpg",
-      description: "Join social entrepreneurs and changemakers to discuss sustainable solutions for community challenges.",
-      status: "Coming Soon",
-      type: "Summit"
-    }
-  ];
-
-  const displayEvents = events.length > 0 ? events : fallbackEvents;
-
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#08170d] text-white overflow-x-hidden">
       <Navbar />
 
-      <main className="pt-32 pb-24">
-        {/* Header */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-16">
-          <Link href="/" className="inline-flex items-center gap-2 text-[#39894c] hover:underline mb-8 font-semibold">
-            <ArrowLeft size={20} /> Back to Home
-          </Link>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto"
+      <main className="pt-20">
+
+        {/* ── 1. Page Hero with Carousel (Dark Forest) ── */}
+        <section className="relative text-white flex items-center overflow-hidden py-16 sm:py-20 min-h-[520px]">
+          <AnimatePresence mode="sync">
+            <motion.div
+              key={currentImageIndex}
+              initial={{ opacity: 0, scale: 1.04 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.1, ease: 'easeInOut' }}
+              className="absolute inset-0 z-0"
+            >
+              <Image
+                src={EVENT_HERO_IMAGES[currentImageIndex]}
+                alt={`Himmatkaar Event Slide ${currentImageIndex + 1}`}
+                fill
+                priority={currentImageIndex === 0}
+                className="object-cover object-center"
+                sizes="100vw"
+              />
+            </motion.div>
+          </AnimatePresence>
+
+          <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#07190e]/80 via-[#0a2012]/50 to-[#0c2616]/25" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0a2012]/90 via-transparent to-black/20" />
+          <div className="absolute inset-0 z-10 bg-radial-grid opacity-30 pointer-events-none" />
+
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 relative z-20 w-full">
+            <Link href="/" className="inline-flex items-center gap-2 mb-6 text-sm font-mono text-[#a3caad] hover:text-white transition-colors">
+              <ArrowLeft size={16} /> Back to Home
+            </Link>
+
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
+              <div className="mb-4">
+                <span className="annotation-curly">
+                  Registration Open
+                </span>
+              </div>
+              <h1 className="font-serif-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6 leading-[1.08]">
+                Upcoming Himmatkaar{" "}
+                <span className="text-[#389456] italic">Events &amp; Summits!</span>
+              </h1>
+              <p className="text-base sm:text-xl text-[#d1e7d8] font-normal leading-relaxed mb-8">
+                Reserve your seat for upcoming masterclasses, pitch competitions, and fellowship conventions across Pakistan. Click any event card to view full schedule and register.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Controls */}
+          <button
+            onClick={prevImage}
+            className="hidden sm:flex absolute left-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-xl border border-[#1d442a] bg-[#0c2616]/80 hover:bg-[#10321e] hover:border-[#389456] transition-all backdrop-blur-md"
+            aria-label="Previous image"
           >
-            <span className="inline-block text-[#39894c] font-bold text-sm uppercase tracking-wider mb-4">What's Next</span>
-            <h1 className="text-4xl lg:text-6xl font-extrabold mb-6 text-slate-900">
-              Upcoming <span className="text-[#39894c]">Events</span>
-            </h1>
-            <p className="text-lg text-slate-600 leading-relaxed">
-              Don't miss out on these exciting opportunities to learn, network, and grow with Himmatkaar.
-            </p>
-          </motion.div>
+            <ChevronLeft size={22} className="text-[#e8f5ec]" />
+          </button>
+          <button
+            onClick={nextImage}
+            className="hidden sm:flex absolute right-5 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-xl border border-[#1d442a] bg-[#0c2616]/80 hover:bg-[#10321e] hover:border-[#389456] transition-all backdrop-blur-md"
+            aria-label="Next image"
+          >
+            <ChevronRight size={22} className="text-[#e8f5ec]" />
+          </button>
+
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+            {EVENT_HERO_IMAGES.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentImageIndex(index)}
+                className="h-2 rounded-sm transition-all duration-300"
+                style={{
+                  width: index === currentImageIndex ? '28px' : '8px',
+                  background: index === currentImageIndex ? '#f3ae29' : 'rgba(232,245,236,0.3)',
+                }}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </section>
 
-        {/* Loading State */}
-        {loading ? (
-          <section className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex items-center justify-center h-64">
-              <Loader2 className="animate-spin text-[#39894c]" size={48} />
+        {/* ── 2. Upcoming Events Grid Section ── */}
+        <section className="bg-white py-20 border-b border-[#e2ede4] text-[#07190e] relative">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="mb-14 max-w-3xl">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#e8f5ec] border border-[#a3caad] text-[#2d7a46] font-mono text-xs font-bold uppercase tracking-wider mb-3">
+                • Registrations Open
+              </span>
+              <h2 className="font-serif-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-[#07190e] tracking-tight leading-[1.08] mb-3">
+                Select An Upcoming{" "}
+                <span className="text-[#2d7a46] italic">Experience!</span>
+              </h2>
+              <p className="text-base sm:text-lg text-[#3a5342] font-normal leading-relaxed">
+                Click any event card to view full registration details and schedule.
+              </p>
             </div>
-          </section>
-        ) : (
-          <>
-            {/* Events Grid */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {displayEvents.map((event, idx) => (
+
+            {loading ? (
+              <div className="flex items-center justify-center h-64">
+                <Loader2 className="animate-spin text-[#2d7a46]" size={40} />
+              </div>
+            ) : events.length === 0 ? (
+              <div className="text-center py-20 px-4 bg-[#f8faf7] rounded-2xl border border-[#d8e6db]">
+                <Calendar size={48} className="mx-auto text-[#2d7a46]/50 mb-4" />
+                <h3 className="font-serif-heading text-2xl font-bold text-[#07190e] mb-2">No Upcoming Events Right Now</h3>
+                <p className="text-[#3a5342] max-w-md mx-auto mb-6 text-sm">
+                  We are actively planning exciting new masterclasses and fellowship meetups. Check back soon or explore our previous events!
+                </p>
+                <Link href="/events" className="btn-gsap-ghost inline-flex items-center gap-2 !rounded-xl !text-[#2d7a46] !border-[#2d7a46]">
+                  <span>Explore Past Events</span>
+                  <ArrowUpRight size={16} />
+                </Link>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                {events.map((event, idx) => (
                   <motion.div
-                    key={event.id}
+                    key={event.id || idx}
+                    onClick={() => setSelectedEvent(event)}
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: idx * 0.1, duration: 0.5 }}
-                    className="group bg-white  rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all border border-slate-100"
+                    transition={{ delay: idx * 0.08 }}
+                    className="bg-[#f8faf7] text-[#07190e] border border-[#d8e6db] hover:border-[#2d7a46] hover:bg-[#f0f6f2] rounded-2xl overflow-hidden transition-all duration-300 shadow-md flex flex-col justify-between cursor-pointer select-none group"
                   >
-                    <div className="relative overflow-hidden h-56">
-                      <Image 
-                        src={event.image} 
-                        alt={event.title} 
-                        width={400}
-                        height={250}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                      />
-                      <div className="absolute top-4 right-4 bg-[#39894c] text-white px-3 py-1 rounded-full text-xs font-bold">
-                        {event.status}
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold mb-3 text-slate-900">{event.title}</h3>
-                      <p className="text-slate-600 mb-4 leading-relaxed text-sm">{event.description}</p>
-                      
-                      <div className="space-y-2 mb-6">
-                        <p className="flex items-center gap-2 text-sm text-slate-600">
-                          <Calendar size={16} className="text-[#39894c]" />
-                          {formatDate(event.date)}
-                        </p>
-                        <p className="flex items-center gap-2 text-sm text-slate-600">
-                          <Clock size={16} className="text-[#39894c]" />
-                          {event.time}
-                        </p>
-                        <p className="flex items-center gap-2 text-sm text-slate-600">
-                          <MapPin size={16} className="text-[#39894c]" />
-                          {event.location}
-                        </p>
-                        {(event as any).attendees && (
-                          <p className="flex items-center gap-2 text-sm text-slate-600">
-                            <Users size={16} className="text-[#39894c]" />
-                            {(event as any).attendees}
-                          </p>
+                    <div>
+                      <div className="relative h-52 w-full overflow-hidden bg-[#0a2012]">
+                        <Image src={event.image} alt={event.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="400px" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
+                        {event.registration_closed ? (
+                          <span className="absolute top-3 right-3 font-mono text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-red-900/90 text-red-200 border border-red-700 flex items-center gap-1">
+                            <Lock size={11} /> Registration Closed
+                          </span>
+                        ) : (
+                          <span className="absolute top-3 right-3 font-mono text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-[#2d7a46] text-white border border-[#389456]">
+                            {event.type || "Upcoming"}
+                          </span>
                         )}
                       </div>
+                      
+                      <div className="p-5">
+                        <h3 className="font-serif-heading text-lg font-bold text-[#07190e] group-hover:text-[#2d7a46] transition-colors">
+                          {event.title}
+                        </h3>
+                      </div>
+                    </div>
 
-                      <Link href="/signup">
-                        <button className="w-full bg-[#39894c] text-white py-3 rounded-lg font-bold hover:bg-[#2d6f3d] transition-colors flex items-center justify-center gap-2">
-                          Register Now <ArrowRight size={18} />
-                        </button>
-                      </Link>
+                    <div className="px-6 pb-6 pt-3 border-t border-[#e2ede4] text-xs font-mono text-[#4a6b53] space-y-2">
+                      <p className="flex items-center gap-2 font-semibold">
+                        <Calendar size={13} className="text-[#2d7a46]" /> {formatDate(event.date)}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <MapPin size={13} className="text-[#2d7a46]" /> {event.location}
+                      </p>
+                      <div className="pt-2 flex items-center justify-between font-bold text-[#2d7a46] group-hover:text-[#07190e] transition-colors">
+                        <span>View Details</span>
+                        <ArrowUpRight size={14} className="text-[#f3ae29]" />
+                      </div>
                     </div>
                   </motion.div>
                 ))}
               </div>
-            </section>
-          </>
-        )}
-
-        {/* Newsletter CTA */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 mt-24">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-slate-50  rounded-3xl p-12 text-center border border-slate-200"
-          >
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-slate-900">Stay Updated</h2>
-            <p className="text-lg mb-8 text-slate-600">
-              Subscribe to our newsletter to get notified about upcoming events
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="flex-1 px-5 py-4 rounded-lg border-2 border-slate-200 bg-white  text-slate-900 focus:border-[#39894c] focus:outline-none"
-              />
-              <button className="bg-[#39894c] text-white px-8 py-4 rounded-lg font-bold hover:bg-[#2d6f3d] transition-colors">
-                Subscribe
-              </button>
-            </div>
-          </motion.div>
+            )}
+          </div>
         </section>
+
       </main>
+
+      {/* Event Detail Modal */}
+      {selectedEvent && (
+        <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+      )}
 
       <Footer />
     </div>
   );
 }
-
-

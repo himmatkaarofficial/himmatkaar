@@ -13,7 +13,7 @@ export interface FormInputProps {
   id?: string;
   required?: boolean;
   disabled?: boolean;
-  rows?: number; // For textarea
+  rows?: number;
 }
 
 export const FormInput: React.FC<FormInputProps> = ({
@@ -31,38 +31,21 @@ export const FormInput: React.FC<FormInputProps> = ({
 }) => {
   const inputId = id || name || `input-${label?.toLowerCase().replace(/\s+/g, '-')}`;
   const hasError = !!error;
-  const hasValue = value.length > 0;
-  const isSuccess = hasValue && !hasError;
-
-  // Base classes for all inputs
-  const baseClasses = `
-    w-full
-    px-4 py-3
-    bg-white
-    rounded-lg
-    font-sans
-    text-base
-    text-slate-900
-    placeholder:text-slate-400
-    transition-all
-    duration-300
-    outline-none
-    disabled:bg-slate-100
-    disabled:cursor-not-allowed
-    disabled:text-slate-500
-  `;
-
-  // Border and focus state classes
-  const stateClasses = hasError
-    ? 'border-2 border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-    : isSuccess
-    ? 'border-2 border-[var(--color-courage-green)] focus:border-[var(--color-courage-green)] focus:ring-2 focus:ring-[var(--color-courage-green)]/20'
-    : 'border-2 border-slate-200 focus:border-[var(--color-courage-green)] focus:ring-2 focus:ring-[var(--color-courage-green)]/20';
-
-  const inputClasses = `${baseClasses} ${stateClasses}`.trim().replace(/\s+/g, ' ');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onChange(e.target.value);
+  };
+
+  const style: React.CSSProperties = {
+    width: '100%',
+    padding: '12px 18px',
+    borderRadius: 'var(--radius-controls)',
+    border: hasError ? '1px solid #e07a73' : '1px solid var(--color-border)',
+    background: 'var(--color-espresso)',
+    color: 'var(--color-text-primary)',
+    fontSize: '13px',
+    fontFamily: 'var(--font-sans-gallery)',
+    outline: 'none',
   };
 
   return (
@@ -70,10 +53,10 @@ export const FormInput: React.FC<FormInputProps> = ({
       {label && (
         <label
           htmlFor={inputId}
-          className="block mb-2 text-sm font-medium text-slate-700 font-sans"
+          className="block mb-2 text-xs font-bold uppercase tracking-[0.20em] text-[var(--color-text-muted)] font-sans"
         >
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="text-[var(--color-badge-gold)] ml-1">*</span>}
         </label>
       )}
 
@@ -87,7 +70,7 @@ export const FormInput: React.FC<FormInputProps> = ({
           required={required}
           disabled={disabled}
           rows={rows}
-          className={inputClasses}
+          style={{ ...style, resize: 'none' }}
           aria-label={label || placeholder}
           aria-invalid={hasError}
           aria-describedby={hasError ? `${inputId}-error` : undefined}
@@ -102,7 +85,7 @@ export const FormInput: React.FC<FormInputProps> = ({
           placeholder={placeholder}
           required={required}
           disabled={disabled}
-          className={inputClasses}
+          style={style}
           aria-label={label || placeholder}
           aria-invalid={hasError}
           aria-describedby={hasError ? `${inputId}-error` : undefined}
@@ -112,7 +95,7 @@ export const FormInput: React.FC<FormInputProps> = ({
       {error && (
         <p
           id={`${inputId}-error`}
-          className="mt-2 text-sm text-red-500 font-sans"
+          className="mt-2 text-xs font-bold uppercase tracking-wider text-[#e07a73] font-sans"
           role="alert"
         >
           {error}
@@ -123,4 +106,3 @@ export const FormInput: React.FC<FormInputProps> = ({
 };
 
 export default FormInput;
-

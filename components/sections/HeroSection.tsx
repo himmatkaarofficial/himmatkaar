@@ -1,36 +1,36 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { PrimaryButton } from '@/components/ui/PrimaryButton';
-import { SecondaryButton } from '@/components/ui/SecondaryButton';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight, ArrowUpRight, Zap, Users, BookOpen } from "lucide-react";
 
 interface HeroSectionProps {
   badge?: string;
   headline: string;
   urduHeadline?: string;
-  primaryCTA: { text: string; href: string };
+  primaryCTA: { text: string; href?: string };
   secondaryCTA: { text: string; href: string };
   heroImages: string[];
+  onPrimaryClick?: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
-  badge = "Faisalabad's Leading Youth Empowerment Platform",
-  headline,
+  badge = "FAISALABAD'S LEADING YOUTH EMPOWERMENT PLATFORM",
+  headline = "Evolve Your Future with Himmatkaar!",
   urduHeadline = "ہمت کار",
   primaryCTA,
   secondaryCTA,
   heroImages,
+  onPrimaryClick,
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
+    }, 5500);
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
@@ -43,151 +43,161 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-[var(--color-deep-navy)] via-[var(--color-deep-navy)] to-[var(--color-deep-sapphire)] py-16 lg:py-24 overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-[var(--color-courage-green)]/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[var(--color-courage-gold)]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+    <section id="hero" className="relative min-h-[90vh] lg:min-h-[94vh] bg-[#0a2012] text-white flex items-center overflow-hidden pt-12 pb-16">
+      {/* Background Carousel with Smooth Crossfade */}
+      <AnimatePresence mode="sync">
+        <motion.div
+          key={currentImageIndex}
+          initial={{ opacity: 0, scale: 1.04 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+          className="absolute inset-0 z-0"
+        >
+          <Image
+            src={heroImages[currentImageIndex]}
+            alt={`Himmatkaar Community ${currentImageIndex + 1}`}
+            fill
+            priority={currentImageIndex === 0}
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Refined Forest Green Gradient Overlays (Clear Image Visibility) */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#07190e]/80 via-[#0a2012]/50 to-[#07190e]/30" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0a2012]/90 via-transparent to-black/20" />
+      <div className="absolute inset-0 z-10 bg-radial-grid opacity-30 pointer-events-none" />
+
+      {/* Urdu Calligraphy Watermark (Background Graphic) */}
+      <div 
+        className="absolute right-2 sm:right-6 lg:right-20 top-1/4 z-10 font-urdu text-7xl sm:text-9xl lg:text-[200px] text-[#2d7a46]/15 select-none pointer-events-none leading-none"
+        dir="rtl"
+      >
+        {urduHeadline}
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Column - Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="order-2 lg:order-1 space-y-6"
-          >
-            {/* Badge */}
-            {badge && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-                className="inline-block"
-              >
-                <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--color-courage-green)]/20 backdrop-blur-sm border border-[var(--color-courage-green)]/30 rounded-full text-sm font-semibold text-[var(--color-courage-gold)] font-[var(--font-body)]">
-                  {badge}
-                </span>
-              </motion.div>
-            )}
+      {/* Hero Content Container */}
+      <div className="relative z-20 max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-8 pb-12 sm:pt-12 sm:pb-16">
+        
+        {/* Top Eyebrow Badge (Soft Rounded Rectangle) */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-6 inline-flex"
+        >
+          <span className="badge-category-green !rounded-lg !px-3.5 !py-1.5 !text-xs !bg-[#0c2616]/90 !border-[#275836] !text-[#d1e7d8]">
+            <span className="w-1.5 h-1.5 rounded-sm bg-[#f3ae29] inline-block" />
+            {badge}
+          </span>
+        </motion.div>
 
-            {/* Combined Urdu + English Headline */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="space-y-2"
+        {/* Playfair Display Serif Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.65, delay: 0.15 }}
+          className="font-serif-heading mb-6 text-white font-bold leading-[1.08] tracking-tight max-w-4xl text-4xl sm:text-5xl lg:text-6xl xl:text-7xl"
+        >
+          Evolve Your Future with{" "}
+          <span className="text-[#389456] italic">
+            Himmatkaar!
+          </span>
+        </motion.h1>
+
+        {/* Quote Callout Box with Green Border */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.25 }}
+          className="max-w-2xl mb-8 p-4 sm:p-5 rounded-xl bg-[#0c2616]/80 border-l-4 border-l-[#389456] border border-[#1d442a] backdrop-blur-md"
+        >
+          <p className="text-base sm:text-lg leading-relaxed text-[#d1e7d8] font-normal">
+            &ldquo;We cultivate a powerful ecosystem of ambitious Pakistani youth, equipping them with professional mastery, high-impact mentorship, and industry career pathways.&rdquo;
+          </p>
+        </motion.div>
+
+        {/* Soft Rounded CTA Buttons (Strictly No Pill Shapes) */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.35 }}
+          className="flex flex-col sm:flex-row gap-3.5 sm:gap-4 items-stretch sm:items-center max-w-md sm:max-w-none mb-10"
+        >
+          {onPrimaryClick ? (
+            <button
+              onClick={onPrimaryClick}
+              className="btn-gsap-cta text-center justify-center cursor-pointer !rounded-xl"
             >
-              {/* Urdu Branding - Centered with English */}
-              <div className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[var(--color-courage-gold)] text-center lg:text-left"
-                style={{ fontFamily: 'var(--font-urdu), Noto Nastaliq Urdu, serif', direction: 'rtl' }}
-              >
-                {urduHeadline}
-              </div>
+              <span>{primaryCTA.text || "APPLY FOR LAUNCHPAD"}</span>
+              <ArrowUpRight size={18} className="text-[#f3ae29]" />
+            </button>
+          ) : (
+            <Link href={primaryCTA.href || "/launchpad"} className="btn-gsap-cta text-center justify-center !rounded-xl">
+              <span>{primaryCTA.text || "APPLY FOR LAUNCHPAD"}</span>
+              <ArrowUpRight size={18} className="text-[#f3ae29]" />
+            </Link>
+          )}
+          <Link href={secondaryCTA.href || "/about"} className="btn-gsap-ghost text-center justify-center !rounded-xl">
+            {secondaryCTA.text || "Learn More"}
+          </Link>
+        </motion.div>
 
-              {/* English Headline */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white font-[var(--font-display)] text-center lg:text-left">
-                {headline}
-              </h1>
-            </motion.div>
+        {/* Key Feature Badges (Naked Icons - No Circular Wrappers) */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.45 }}
+          className="flex items-center gap-6 sm:gap-8 flex-wrap pt-4 border-t border-[#1d442a]/80 text-xs sm:text-sm text-[#a3caad]"
+        >
+          <div className="flex items-center gap-2.5">
+            <Zap size={18} className="text-[#f3ae29] flex-shrink-0" />
+            <span className="font-medium text-[#e8f5ec]">12-Week Accelerator</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <Users size={18} className="text-[#389456] flex-shrink-0" />
+            <span className="font-medium text-[#e8f5ec]">Mentorship & Networking</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <BookOpen size={18} className="text-[#389456] flex-shrink-0" />
+            <span className="font-medium text-[#e8f5ec]">Technical Practical Workshops</span>
+          </div>
+        </motion.div>
+      </div>
 
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg sm:text-xl text-white/80 font-[var(--font-body)] leading-relaxed text-center lg:text-left"
-            >
-              Empowering youth with skills, mentorship, and opportunities to build a brighter future
-            </motion.p>
+      {/* Screen Edge Arrow Controls (Soft Rounded Rectangles) */}
+      <button
+        onClick={prevImage}
+        className="hidden sm:flex absolute left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-xl border border-[#1d442a] bg-[#0c2616]/80 hover:bg-[#10321e] hover:border-[#389456] transition-all backdrop-blur-md"
+        aria-label="Previous image"
+      >
+        <ChevronLeft size={22} className="text-[#e8f5ec]" />
+      </button>
 
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 pt-2 justify-center lg:justify-start"
-            >
-              <Link href={primaryCTA.href}>
-                <PrimaryButton text={primaryCTA.text} />
-              </Link>
-              <Link href={secondaryCTA.href}>
-                <SecondaryButton text={secondaryCTA.text} />
-              </Link>
-            </motion.div>
-          </motion.div>
+      <button
+        onClick={nextImage}
+        className="hidden sm:flex absolute right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 text-white p-3 rounded-xl border border-[#1d442a] bg-[#0c2616]/80 hover:bg-[#10321e] hover:border-[#389456] transition-all backdrop-blur-md"
+        aria-label="Next image"
+      >
+        <ChevronRight size={22} className="text-[#e8f5ec]" />
+      </button>
 
-          {/* Right Column - Image Carousel */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="order-1 lg:order-2 relative"
-          >
-            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-[var(--color-courage-green)]">
-              {/* Image Carousel */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentImageIndex}
-                  initial={{ opacity: 0, scale: 1.1 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.7 }}
-                  className="absolute inset-0"
-                >
-                  <Image
-                    src={heroImages[currentImageIndex]}
-                    alt={`Himmatkaar Community ${currentImageIndex + 1}`}
-                    fill
-                    className="object-cover"
-                    priority={currentImageIndex === 0}
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                </motion.div>
-              </AnimatePresence>
-
-              {/* Navigation Arrows */}
-              <button
-                onClick={prevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full transition-all z-10"
-                aria-label="Previous image"
-              >
-                <ChevronLeft size={24} />
-              </button>
-              <button
-                onClick={nextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full transition-all z-10"
-                aria-label="Next image"
-              >
-                <ChevronRight size={24} />
-              </button>
-
-              {/* Dots Indicator */}
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                {heroImages.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`w-2.5 h-2.5 rounded-full transition-all ${
-                      index === currentImageIndex
-                        ? 'bg-[var(--color-courage-gold)] w-8'
-                        : 'bg-white/50 hover:bg-white/70'
-                    }`}
-                    aria-label={`Go to image ${index + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Decorative Elements */}
-            <div className="absolute -top-6 -right-6 w-32 h-32 bg-[var(--color-courage-gold)]/20 rounded-full blur-2xl"></div>
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[var(--color-courage-green)]/20 rounded-full blur-2xl"></div>
-          </motion.div>
-        </div>
+      {/* Bottom Center Amber/Gold Indicators (Soft Rectangles) */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+        {heroImages.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentImageIndex(index)}
+            className="h-2 rounded-sm transition-all duration-300"
+            style={{
+              width: index === currentImageIndex ? "28px" : "10px",
+              background: index === currentImageIndex ? "#f3ae29" : "rgba(232, 245, 236, 0.25)",
+            }}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
     </section>
   );

@@ -12,7 +12,11 @@ import {
   Award,
   MessageSquare,
   LogOut,
-  FileText
+  FileText,
+  Rocket,
+  Building2,
+  MessageSquareQuote,
+  GraduationCap
 } from "lucide-react";
 import { signOut } from "@/lib/auth";
 
@@ -101,6 +105,66 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
           >
             <Award size={20} className={isActive('/dashboard/admin/ambassadors') ? '' : 'group-hover:text-[var(--color-courage-green)] transition-colors'} />
             <span className="text-sm">Ambassadors</span>
+          </Link>
+
+          <Link 
+            href="/dashboard/admin/hero-slides" 
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group font-body ${
+              isActive('/dashboard/admin/hero-slides') 
+                ? 'bg-[var(--color-courage-green)] text-white font-semibold shadow-md' 
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Rocket size={20} className={isActive('/dashboard/admin/hero-slides') ? '' : 'group-hover:text-[var(--color-courage-green)] transition-colors'} />
+            <span className="text-sm">Hero Slides</span>
+          </Link>
+
+          <Link 
+            href="/dashboard/admin/launchpad" 
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group font-body ${
+              isActive('/dashboard/admin/launchpad') 
+                ? 'bg-[var(--color-courage-green)] text-white font-semibold shadow-md' 
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Rocket size={20} className={isActive('/dashboard/admin/launchpad') ? '' : 'group-hover:text-[var(--color-courage-green)] transition-colors'} />
+            <span className="text-sm">Launchpad</span>
+          </Link>
+
+          <Link 
+            href="/dashboard/admin/mentors" 
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group font-body ${
+              isActive('/dashboard/admin/mentors') 
+                ? 'bg-[var(--color-courage-green)] text-white font-semibold shadow-md' 
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <GraduationCap size={20} className={isActive('/dashboard/admin/mentors') ? '' : 'group-hover:text-[var(--color-courage-green)] transition-colors'} />
+            <span className="text-sm">Mentors & Facilitators</span>
+          </Link>
+
+          <Link 
+            href="/dashboard/admin/partners" 
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group font-body ${
+              isActive('/dashboard/admin/partners') 
+                ? 'bg-[var(--color-courage-green)] text-white font-semibold shadow-md' 
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Building2 size={20} className={isActive('/dashboard/admin/partners') ? '' : 'group-hover:text-[var(--color-courage-green)] transition-colors'} />
+            <span className="text-sm">Partners</span>
+          </Link>
+
+          <Link 
+            href="/dashboard/admin/testimonials" 
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group font-body ${
+              isActive('/dashboard/admin/testimonials') 
+                ? 'bg-[var(--color-courage-green)] text-white font-semibold shadow-md' 
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <MessageSquareQuote size={20} className={isActive('/dashboard/admin/testimonials') ? '' : 'group-hover:text-[var(--color-courage-green)] transition-colors'} />
+            <span className="text-sm">Testimonials</span>
           </Link>
 
           <Link 

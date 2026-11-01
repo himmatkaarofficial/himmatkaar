@@ -12,7 +12,8 @@ import {
   Users,
   Mail,
   UserPlus,
-  ShieldCheck
+  ShieldCheck,
+  Rocket
 } from "lucide-react";
 
 interface Stats {
@@ -23,6 +24,7 @@ interface Stats {
   totalMessages: number;
   unreadMessages: number;
   totalSubscribers: number;
+  totalSessions: number;
 }
 
 export default function AdminDashboard() {
@@ -33,7 +35,8 @@ export default function AdminDashboard() {
     totalAmbassadors: 0,
     totalMessages: 0,
     unreadMessages: 0,
-    totalSubscribers: 0
+    totalSubscribers: 0,
+    totalSessions: 0
   });
   const [loading, setLoading] = useState(true);
   const [newAdminEmail, setNewAdminEmail] = useState("");
@@ -121,12 +124,13 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const [eventsRes, teamRes, ambassadorsRes, messagesRes, subscribersRes] = await Promise.all([
+      const [eventsRes, teamRes, ambassadorsRes, messagesRes, subscribersRes, sessionsRes] = await Promise.all([
         fetch('/api/events?limit=100'),
         fetch('/api/team'),
         fetch('/api/ambassadors'),
         fetch('/api/contact'),
-        fetch('/api/newsletter')
+        fetch('/api/newsletter'),
+        fetch('/api/launchpad')
       ]);
 
       const eventsData = await eventsRes.json();
@@ -134,6 +138,7 @@ export default function AdminDashboard() {
       const ambassadorsData = await ambassadorsRes.json();
       const messagesData = await messagesRes.json();
       const subscribersData = await subscribersRes.json();
+      const sessionsData = await sessionsRes.json();
 
       const events = eventsData.events || [];
       const upcomingEvents = events.filter((e: any) => e.status === 'upcoming').length;
@@ -147,7 +152,8 @@ export default function AdminDashboard() {
         totalAmbassadors: ambassadorsData.ambassadors?.length || 0,
         totalMessages: messages.length,
         unreadMessages,
-        totalSubscribers: subscribersData.subscribers?.length || 0
+        totalSubscribers: subscribersData.subscribers?.length || 0,
+        totalSessions: sessionsData.sessions?.length || 0
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -165,7 +171,7 @@ export default function AdminDashboard() {
       ) : (
         <div className="space-y-8">
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <Link href="/dashboard/admin/events" className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all group">
                   <div className="flex items-center justify-between mb-4">
                     <div className="p-3 bg-[#39894c]/10 rounded-lg group-hover:bg-[#39894c] transition-colors">
@@ -218,6 +224,17 @@ export default function AdminDashboard() {
                   <p className="text-3xl font-extrabold text-slate-900">{stats.totalMessages}</p>
                   <p className="text-xs text-slate-500 mt-2">{stats.unreadMessages} unread</p>
                 </Link>
+
+                <Link href="/dashboard/admin/launchpad" className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all group">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-600 transition-colors">
+                      <Rocket className="text-indigo-600 group-hover:text-white transition-colors" size={24} />
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-500 font-medium mb-1">Launchpad Sessions</p>
+                  <p className="text-3xl font-extrabold text-slate-900">{stats.totalSessions}</p>
+                  <p className="text-xs text-slate-500 mt-2">Cohort sessions</p>
+                </Link>
               </div>
 
               {/* Quick Actions */}
@@ -252,6 +269,16 @@ export default function AdminDashboard() {
                       <div>
                         <p className="text-sm font-bold text-slate-900">Add Ambassador</p>
                         <p className="text-xs text-slate-500">Expand network</p>
+                      </div>
+                    </Link>
+
+                    <Link href="/dashboard/admin/launchpad" className="flex items-center gap-4 p-4 rounded-lg border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50 transition-all group">
+                      <div className="p-2 bg-indigo-100 rounded-lg group-hover:bg-indigo-600 transition-colors">
+                        <Rocket className="text-indigo-600 group-hover:text-white transition-colors" size={20} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">Add Launchpad Session</p>
+                        <p className="text-xs text-slate-500">Manage cohort sessions</p>
                       </div>
                     </Link>
                   </div>
@@ -316,7 +343,7 @@ export default function AdminDashboard() {
                       value={newAdminName}
                       onChange={(e) => setNewAdminName(e.target.value)}
                       placeholder="Full name (optional)"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     />
                     <input
                       type="email"
@@ -324,7 +351,7 @@ export default function AdminDashboard() {
                       value={newAdminEmail}
                       onChange={(e) => setNewAdminEmail(e.target.value)}
                       placeholder="admin@example.com"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     />
                     <input
                       type="password"
@@ -333,7 +360,7 @@ export default function AdminDashboard() {
                       value={newAdminPassword}
                       onChange={(e) => setNewAdminPassword(e.target.value)}
                       placeholder="Temporary password (min 6 chars)"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     />
                     <button
                       type="submit"
@@ -355,7 +382,7 @@ export default function AdminDashboard() {
                       value={promoteEmail}
                       onChange={(e) => setPromoteEmail(e.target.value)}
                       placeholder="existing-user@example.com"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c]"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     />
                     <button
                       type="submit"
