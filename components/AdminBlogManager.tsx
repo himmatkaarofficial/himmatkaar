@@ -327,7 +327,7 @@ export default function AdminBlogManager() {
                     required
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     placeholder="5 Ways to Build a Successful Startup"
                   />
                 </div>
@@ -338,7 +338,7 @@ export default function AdminBlogManager() {
                     type="text"
                     value={formData.slug}
                     onChange={(e) => setFormData({...formData, slug: e.target.value})}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     placeholder="5-ways-to-build-successful-startup"
                   />
                 </div>
@@ -350,7 +350,7 @@ export default function AdminBlogManager() {
                     value={formData.excerpt}
                     onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
                     rows={3}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     placeholder="Brief description of the blog post..."
                   />
                 </div>
@@ -362,7 +362,7 @@ export default function AdminBlogManager() {
                     required
                     value={formData.author}
                     onChange={(e) => setFormData({...formData, author: e.target.value})}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     placeholder="Ahmed Khan"
                   />
                 </div>
@@ -374,7 +374,7 @@ export default function AdminBlogManager() {
                     required
                     value={formData.category}
                     onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     placeholder="Entrepreneurship, Leadership, etc."
                   />
                 </div>
@@ -386,7 +386,7 @@ export default function AdminBlogManager() {
                     required
                     value={formData.date}
                     onChange={(e) => setFormData({...formData, date: e.target.value})}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                   />
                 </div>
 
@@ -397,7 +397,7 @@ export default function AdminBlogManager() {
                     required
                     value={formData.read_time}
                     onChange={(e) => setFormData({...formData, read_time: e.target.value})}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
                     placeholder="5 min read"
                   />
                 </div>

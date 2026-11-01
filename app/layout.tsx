@@ -1,28 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Montserrat, Noto_Nastaliq_Urdu } from "next/font/google";
 import "./globals.css";
-
-const playfairDisplay = Playfair_Display({
-  variable: "--font-display",
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
-});
-
-const montserrat = Montserrat({
-  variable: "--font-body",
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
-});
-
-const notoNastaliqUrdu = Noto_Nastaliq_Urdu({
-  variable: "--font-urdu",
-  subsets: ["arabic"],
-  weight: ["400", "700"],
-  display: "swap",
-  preload: true,
-});
 
 export const metadata: Metadata = {
   title: "HimmatKaar - Empowering Youth Through Skills & Mindset Development",
@@ -50,17 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="light" style={{ colorScheme: 'light' }}>
-      <head>
-        <meta name="color-scheme" content="light only" />
-      </head>
+    <html lang="en" className="dark scroll-smooth">
       <body
-        className={`${playfairDisplay.variable} ${montserrat.variable} ${notoNastaliqUrdu.variable} antialiased`}
+        className="font-sans antialiased bg-[#0a2012] text-[#ffffff] selection:bg-[#2d7a46]/40 selection:text-[#ffffff] bg-grid-subtle"
       >
         {children}
       </body>
     </html>
   );
 }
-
-

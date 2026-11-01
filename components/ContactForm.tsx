@@ -39,18 +39,30 @@ export default function ContactForm() {
     }
   };
 
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '14px 18px',
+    borderRadius: '8px',
+    border: '1px solid #1a3a24',
+    background: '#08170d',
+    color: '#ffffff',
+    fontSize: '14px',
+    outline: 'none',
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" aria-label="Contact form">
+    <form onSubmit={handleSubmit} className="space-y-4" aria-label="Contact form">
       {success && (
         <div 
-          className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg"
+          className="px-4 py-3 rounded-full bg-[#0ae448]/10 border border-[#0ae448]/40 text-[#0ae448] font-mono text-xs uppercase tracking-wider flex items-center gap-2"
           role="alert"
           aria-live="polite"
         >
-          Message sent successfully! We'll get back to you soon.
+          <span className="w-2 h-2 rounded-full bg-[#0ae448] shadow-[0_0_8px_#0ae448]" />
+          Message sent successfully! We will get back to you soon.
         </div>
       )}
-      <div className="grid md:grid-cols-2 gap-5">
+      <div className="grid md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="first-name" className="sr-only">First Name</label>
           <input 
@@ -60,7 +72,7 @@ export default function ContactForm() {
             required
             value={formData.first_name}
             onChange={(e) => setFormData({...formData, first_name: e.target.value})}
-            className="w-full px-5 py-4 rounded-xl border-2 border-slate-200 bg-white text-slate-900 focus:border-[#39894c] focus:outline-none transition-colors"
+            style={inputStyle}
             aria-label="First Name"
           />
         </div>
@@ -73,7 +85,7 @@ export default function ContactForm() {
             required
             value={formData.last_name}
             onChange={(e) => setFormData({...formData, last_name: e.target.value})}
-            className="w-full px-5 py-4 rounded-xl border-2 border-slate-200 bg-white text-slate-900 focus:border-[#39894c] focus:outline-none transition-colors"
+            style={inputStyle}
             aria-label="Last Name"
           />
         </div>
@@ -83,10 +95,10 @@ export default function ContactForm() {
         <input 
           id="phone"
           type="tel" 
-          placeholder="Phone" 
+          placeholder="Phone Number" 
           value={formData.phone}
           onChange={(e) => setFormData({...formData, phone: e.target.value})}
-          className="w-full px-5 py-4 rounded-xl border-2 border-slate-200 bg-white  text-slate-900 focus:border-[#39894c] focus:outline-none transition-colors"
+          style={inputStyle}
           aria-label="Phone number"
         />
       </div>
@@ -95,11 +107,11 @@ export default function ContactForm() {
         <input 
           id="email"
           type="email" 
-          placeholder="Email" 
+          placeholder="Email Address" 
           required
           value={formData.email}
           onChange={(e) => setFormData({...formData, email: e.target.value})}
-          className="w-full px-5 py-4 rounded-xl border-2 border-slate-200 bg-white  text-slate-900 focus:border-[#39894c] focus:outline-none transition-colors"
+          style={inputStyle}
           aria-label="Email address"
         />
       </div>
@@ -107,19 +119,19 @@ export default function ContactForm() {
         <label htmlFor="message" className="sr-only">Message</label>
         <textarea 
           id="message"
-          placeholder="Message" 
+          placeholder="Your Message" 
           rows={5} 
           required
           value={formData.message}
           onChange={(e) => setFormData({...formData, message: e.target.value})}
-          className="w-full px-5 py-4 rounded-xl border-2 border-slate-200 bg-white  text-slate-900 focus:border-[#39894c] focus:outline-none transition-colors resize-none"
+          style={{ ...inputStyle, resize: 'none' }}
           aria-label="Your message"
         ></textarea>
       </div>
       <button 
         type="submit" 
         disabled={submitting}
-        className="bg-[#39894c] text-white px-6 sm:px-10 py-4 rounded-xl font-bold text-lg hover:bg-[#2d6f3d] transition-colors shadow-lg hover:shadow-xl w-full md:w-auto disabled:opacity-50"
+        className="btn-gsap-cta w-full md:w-auto"
         aria-label={submitting ? 'Sending message' : 'Submit message'}
       >
         {submitting ? 'Sending...' : 'Submit Message'}
@@ -127,4 +139,3 @@ export default function ContactForm() {
     </form>
   );
 }
-

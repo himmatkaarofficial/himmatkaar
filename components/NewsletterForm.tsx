@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Mail, ArrowUpRight, CheckCircle2 } from "lucide-react";
 
 export default function NewsletterForm() {
   const [email, setEmail] = useState("");
@@ -29,8 +30,7 @@ export default function NewsletterForm() {
       } else {
         setError(data.error || 'Failed to subscribe');
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
       setError('Failed to subscribe. Please try again.');
     } finally {
       setSubmitting(false);
@@ -38,48 +38,61 @@ export default function NewsletterForm() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="max-w-[560px]">
       {success && (
-        <div 
-          className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-4"
+        <div
+          className="mb-4 px-4 py-3 rounded-xl bg-[#e8f5ec] border border-[#2d7a46] text-[#2d7a46] font-mono text-xs uppercase tracking-wider flex items-center gap-2"
           role="alert"
           aria-live="polite"
         >
-          Successfully subscribed to newsletter!
+          <CheckCircle2 size={16} className="text-[#2d7a46]" />
+          Successfully subscribed to Himmatkaar newsletter!
         </div>
       )}
       {error && (
-        <div 
-          className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-4"
+        <div
+          className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-300 text-red-700 font-mono text-xs uppercase tracking-wider"
           role="alert"
           aria-live="assertive"
         >
           {error}
         </div>
       )}
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row sm:items-stretch gap-3 sm:gap-4" aria-label="Newsletter subscription form">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+        aria-label="Newsletter subscription form"
+      >
         <label htmlFor="newsletter-email" className="sr-only">Email address</label>
-        <input 
-          id="newsletter-email"
-          type="email" 
-          placeholder="Enter your email" 
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full flex-1 px-5 py-4 rounded-xl border-2 border-slate-200 bg-white text-slate-900 focus:border-[#39894c] focus:outline-none transition-colors"
-          aria-label="Email address for newsletter subscription"
-          aria-describedby={error ? "newsletter-error" : undefined}
-        />
-        <button 
+        <div className="relative flex-1">
+          {/* Naked Mail Icon */}
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4a6b53] pointer-events-none">
+            <Mail size={18} />
+          </div>
+          <input
+            id="newsletter-email"
+            type="email"
+            placeholder="Enter your email address"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full bg-[#f8faf7] border border-[#d8e6db] rounded-xl pl-11 pr-4 py-3.5 text-[#07190e] placeholder-[#4a6b53]/60 focus:outline-none focus:border-[#2d7a46] focus:ring-1 focus:ring-[#2d7a46] transition-all text-sm font-normal shadow-sm"
+            aria-label="Email address for newsletter subscription"
+            aria-describedby={error ? "newsletter-error" : undefined}
+          />
+        </div>
+        <button
           type="submit"
           disabled={submitting}
-          className="bg-[#39894c] text-white px-6 sm:px-10 py-4 rounded-xl font-bold hover:bg-[#2d6f3d] transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 w-full sm:w-auto sm:min-w-[170px]"
+          className="btn-gsap-cta disabled:opacity-50 whitespace-nowrap justify-center !rounded-xl !py-3.5 !px-6"
           aria-label={submitting ? 'Subscribing to newsletter' : 'Subscribe to newsletter'}
         >
-          {submitting ? 'Subscribing...' : 'Subscribe'}
+          <span>{submitting ? 'Subscribing…' : 'SUBSCRIBE'}</span>
+          <ArrowUpRight size={16} className="text-[#f3ae29]" />
         </button>
       </form>
     </div>
   );
 }
+
 

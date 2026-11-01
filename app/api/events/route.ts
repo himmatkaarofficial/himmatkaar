@@ -7,13 +7,13 @@ export const revalidate = 0;
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = searchParams.get('limit') || '10';
+    const limit = searchParams.get('limit') || '100';
     const status = searchParams.get('status') || 'upcoming';
 
     let query = supabase
       .from('events')
       .select('*')
-      .order('date', { ascending: true });
+      .order('date', { ascending: false });
 
     // Only filter by status if not 'all'
     if (status !== 'all') {

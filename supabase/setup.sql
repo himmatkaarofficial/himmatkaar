@@ -257,6 +257,51 @@ INSERT INTO ambassadors (name, role, university, city, bio, image, linkedin_url,
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================
+-- LAUNCHPAD SESSIONS TABLE
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS launchpad_sessions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  session_number INTEGER NOT NULL DEFAULT 1,
+  title VARCHAR(255) NOT NULL,
+  category VARCHAR(100) DEFAULT 'Career Development',
+  date VARCHAR(100),
+  time VARCHAR(100),
+  cohort VARCHAR(100) DEFAULT 'Cohort 1',
+  status VARCHAR(50) DEFAULT 'Completed',
+  mentor_name VARCHAR(255),
+  mentor_role VARCHAR(255),
+  mentor_photo_url TEXT,
+  mentor_bio TEXT,
+  summary TEXT,
+  key_takeaways TEXT[] DEFAULT '{}',
+  session_photos JSONB DEFAULT '[]',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_launchpad_sessions_cohort ON launchpad_sessions(cohort);
+CREATE INDEX IF NOT EXISTS idx_launchpad_sessions_number ON launchpad_sessions(session_number);
+
+ALTER TABLE launchpad_sessions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read access" ON launchpad_sessions
+  FOR SELECT USING (true);
+
+CREATE POLICY "Allow authenticated insert" ON launchpad_sessions
+  FOR INSERT TO authenticated WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated update" ON launchpad_sessions
+  FOR UPDATE TO authenticated USING (true);
+
+CREATE POLICY "Allow authenticated delete" ON launchpad_sessions
+  FOR DELETE TO authenticated USING (true);
+
+CREATE TRIGGER update_launchpad_sessions_updated_at BEFORE UPDATE ON launchpad_sessions
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+
+-- ============================================
 -- STORAGE BUCKETS
 -- ============================================
 
@@ -265,6 +310,7 @@ ON CONFLICT (id) DO NOTHING;
 -- 1. event-images (already exists)
 -- 2. team-images (for team member photos)
 -- 3. ambassador-images (for ambassador photos)
+-- 4. launchpad-images (for session photos)
 --
 -- Each bucket should have:
 -- - Public read access

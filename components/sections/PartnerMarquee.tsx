@@ -1,37 +1,92 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
+import React, { useState } from "react";
+import Image from "next/image";
+import PartnerDetailModal, { PartnerDetail } from "@/components/PartnerDetailModal";
 
-interface PartnerMarqueeProps {
-  logos: string[];
+export interface PartnerItem {
+  id?: string;
+  name: string;
+  logo_url: string;
+  category?: "managing" | "tech";
+  description?: string;
+  website_url?: string;
 }
 
-export const PartnerMarquee: React.FC<PartnerMarqueeProps> = ({ logos }) => {
-  // Triple logos for truly seamless infinite scroll
-  const infiniteLogos = [...logos, ...logos, ...logos];
+interface PartnerMarqueeProps {
+  title?: string;
+  logos?: string[];
+  partnersData?: PartnerItem[];
+  category?: "managing" | "tech";
+  reverse?: boolean;
+}
+
+export const PartnerMarquee: React.FC<PartnerMarqueeProps> = ({ 
+  title = "Our Collaborative Partners", 
+  logos = [],
+  partnersData,
+  category,
+  reverse = false 
+}) => {
+  const [selectedPartner, setSelectedPartner] = useState<PartnerDetail | null>(null);
+
+  // Normalize partner objects
+  let items: PartnerDetail[] = [];
+  if (partnersData && partnersData.length > 0) {
+    items = partnersData;
+  } else if (logos && logos.length > 0) {
+    items = logos.map((url, idx) => ({
+      id: `p-${idx}`,
+      name: "Partner",
+      logo_url: url,
+      category: category || "managing",
+    }));
+  }
+
+  // If there are no partner items, hide this marquee completely
+  if (items.length === 0) {
+    return null;
+  }
+
+  const infiniteItems = [...items, ...items, ...items, ...items];
 
   return (
-    <div className="w-full overflow-hidden py-12 bg-[var(--color-deep-navy)] border-y border-[var(--color-courage-gold)]/20">
-      <div className="relative">
-        {/* Gradient Overlays */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[var(--color-deep-navy)] to-transparent z-10"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[var(--color-deep-navy)] to-transparent z-10"></div>
+    <div className="w-full overflow-hidden py-10 bg-[#0a2012] border-b border-[#1d442a] relative">
+      <div className="text-center mb-6">
+        <span className="annotation-curly">
+          {title}
+        </span>
+      </div>
 
-        {/* Marquee Container - Continuous Animation */}
-        <div className="flex animate-marquee-infinite">
-          {infiniteLogos.map((logo, index) => (
+      <div className="relative">
+        {/* Gradient Edge Masks */}
+        <div
+          className="absolute left-0 top-0 bottom-0 w-24 sm:w-48 z-10 pointer-events-none"
+          style={{ background: "linear-gradient(to right, #0a2012, transparent)" }}
+        />
+        <div
+          className="absolute right-0 top-0 bottom-0 w-24 sm:w-48 z-10 pointer-events-none"
+          style={{ background: "linear-gradient(to left, #0a2012, transparent)" }}
+        />
+
+        {/* Marquee Track */}
+        <div className={`flex items-center ${reverse ? "animate-marquee-reverse" : "animate-marquee-infinite"}`}>
+          {infiniteItems.map((item, index) => (
             <div
               key={index}
-              className="flex-shrink-0 mx-8 w-56 h-36 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-2xl flex items-center justify-center p-8 transition-all hover:scale-105 border border-[var(--color-courage-gold)]/10"
+              onClick={() => setSelectedPartner(item)}
+              className="flex-shrink-0 mx-3 sm:mx-5 flex items-center justify-center p-3 sm:p-4 bg-white rounded-2xl border border-[#d8e6db] hover:border-[#2d7a46] hover:shadow-xl transition-all hover:scale-105 cursor-pointer shadow-md group"
+              style={{ width: "170px", height: "85px" }}
+              title={`Click to view ${item.name} details`}
             >
               <div className="relative w-full h-full">
                 <Image
-                  src={logo}
-                  alt={`Partner ${(index % logos.length) + 1}`}
+                  src={item.logo_url}
+                  alt={item.name}
                   fill
-                  className="object-contain"
-                  sizes="224px"
+                  unoptimized
+                  className="object-contain p-1 transition-transform group-hover:scale-105"
+                  sizes="170px"
                 />
               </div>
             </div>
@@ -39,24 +94,30 @@ export const PartnerMarquee: React.FC<PartnerMarqueeProps> = ({ logos }) => {
         </div>
       </div>
 
+      {/* Partner Detail Modal */}
+      <PartnerDetailModal
+        partner={selectedPartner}
+        onClose={() => setSelectedPartner(null)}
+      />
+
       <style jsx>{`
         @keyframes marquee-infinite {
-          0% {
-            transform: translateX(0%);
-          }
-          100% {
-            transform: translateX(-33.333%);
-          }
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
         }
-
+        @keyframes marquee-reverse {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0%); }
+        }
         .animate-marquee-infinite {
-          animation: marquee-infinite 40s linear infinite;
+          animation: marquee-infinite 32s linear infinite;
           will-change: transform;
         }
-
-        /* Remove pause on hover for continuous animation */
+        .animate-marquee-reverse {
+          animation: marquee-reverse 32s linear infinite;
+          will-change: transform;
+        }
       `}</style>
     </div>
   );
 };
-

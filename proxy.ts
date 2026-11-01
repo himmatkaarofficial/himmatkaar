@@ -13,8 +13,8 @@ export async function proxy(req: NextRequest) {
   // Check if accessing admin routes
   if (req.nextUrl.pathname.startsWith('/dashboard/admin')) {
     // Get Supabase session from cookies
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || '';
 
     // Create a Supabase client with the request cookies
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {

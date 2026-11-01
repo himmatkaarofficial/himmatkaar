@@ -6,6 +6,7 @@ export interface PrimaryButtonProps {
   onClick?: () => void;
   href?: string;
   disabled?: boolean;
+  className?: string;
 }
 
 export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
@@ -13,23 +14,10 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   onClick,
   href,
   disabled = false,
+  className = "",
 }) => {
-  const baseClasses = `
-    inline-block
-    px-6 py-4
-    font-sans font-bold text-base
-    text-white
-    bg-[var(--color-courage-green)]
-    rounded-lg
-    transition-all duration-300 ease-in-out
-    hover:brightness-110 hover:scale-105
-    focus:outline-none focus:ring-2 focus:ring-[var(--color-courage-green)] focus:ring-offset-2
-    disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:brightness-100
-    w-full md:w-auto
-    text-center
-  `.trim().replace(/\s+/g, ' ');
+  const baseClasses = `btn-gsap-cta inline-flex items-center justify-center text-center cursor-pointer font-bold disabled:opacity-50 disabled:cursor-not-allowed !rounded-xl ${className}`;
 
-  // If href is provided, render as a Link
   if (href && !disabled) {
     return (
       <Link href={href} className={baseClasses}>
@@ -38,7 +26,6 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
     );
   }
 
-  // Otherwise, render as a button
   return (
     <button
       type="button"
@@ -50,4 +37,3 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
     </button>
   );
 };
-

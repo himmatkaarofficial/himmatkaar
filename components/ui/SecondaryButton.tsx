@@ -6,6 +6,7 @@ export interface SecondaryButtonProps {
   onClick?: () => void;
   href?: string;
   disabled?: boolean;
+  className?: string;
 }
 
 export const SecondaryButton: React.FC<SecondaryButtonProps> = ({
@@ -13,24 +14,10 @@ export const SecondaryButton: React.FC<SecondaryButtonProps> = ({
   onClick,
   href,
   disabled = false,
+  className = "",
 }) => {
-  const baseClasses = `
-    inline-block
-    px-6 py-4
-    font-sans font-bold text-base
-    text-[var(--color-courage-gold)]
-    bg-transparent
-    border-2 border-[var(--color-courage-gold)]
-    rounded-lg
-    transition-all duration-300 ease-in-out
-    hover:bg-[var(--color-courage-gold)] hover:text-[var(--color-deep-navy)]
-    focus:outline-none focus:ring-2 focus:ring-[var(--color-courage-gold)] focus:ring-offset-2
-    disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-[var(--color-courage-gold)]
-    w-full md:w-auto
-    text-center
-  `.trim().replace(/\s+/g, ' ');
+  const baseClasses = `btn-gsap-ghost inline-flex items-center justify-center text-center cursor-pointer font-bold disabled:opacity-50 disabled:cursor-not-allowed !rounded-xl ${className}`;
 
-  // If href is provided, render as a Link
   if (href && !disabled) {
     return (
       <Link href={href} className={baseClasses}>
@@ -39,7 +26,6 @@ export const SecondaryButton: React.FC<SecondaryButtonProps> = ({
     );
   }
 
-  // Otherwise, render as a button
   return (
     <button
       type="button"
@@ -51,4 +37,3 @@ export const SecondaryButton: React.FC<SecondaryButtonProps> = ({
     </button>
   );
 };
-
