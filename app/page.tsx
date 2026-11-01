@@ -33,27 +33,40 @@ import { PartnerItem } from "@/components/sections/PartnerMarquee";
 
 export default function Home() {
 
-  const [managingPartners, setManagingPartners] = useState<PartnerItem[]>([
-    { name: "The Cabinet", logo_url: "/partners/the-cabinet.png", category: "managing" },
-    { name: "Executive Partner", logo_url: "/partners/partner2.png", category: "managing" }
-  ]);
-
-  const [techPartners, setTechPartners] = useState<PartnerItem[]>([
-    { name: "Cybergen", logo_url: "/partners/tech1.png", category: "tech" },
-    { name: "Tech Partner", logo_url: "/partners/tech2.png", category: "tech" }
-  ]);
+  const [managingPartners, setManagingPartners] = useState<PartnerItem[]>([]);
+  const [techPartners, setTechPartners] = useState<PartnerItem[]>([]);
+  const [partnerSettings, setPartnerSettings] = useState<{
+    managing: { title: string; enabled: boolean };
+    tech: { title: string; enabled: boolean };
+  }>({
+    managing: { title: "Our Managing Partners", enabled: true },
+    tech: { title: "Our Tech Partners", enabled: true }
+  });
 
   useEffect(() => {
     async function fetchPartnerLogos() {
       try {
         const res = await fetch("/api/partners", { cache: "no-store" });
         const data = await res.json();
-        if (data.partners && data.partners.length > 0) {
-          const managing = data.partners.filter((p: any) => p.category === "managing" && p.logo_url);
-          const tech = data.partners.filter((p: any) => p.category === "tech" && p.logo_url);
+        if (data) {
+          const managing = (data.partners || []).filter((p: any) => p.category === "managing" && p.logo_url);
+          const tech = (data.partners || []).filter((p: any) => p.category === "tech" && p.logo_url);
 
-          if (managing.length > 0) setManagingPartners(managing);
-          if (tech.length > 0) setTechPartners(tech);
+          setManagingPartners(managing);
+          setTechPartners(tech);
+
+          if (data.settings) {
+            setPartnerSettings({
+              managing: {
+                title: data.settings.managing?.title || "Our Managing Partners",
+                enabled: data.settings.managing?.enabled ?? true,
+              },
+              tech: {
+                title: data.settings.tech?.title || "Our Tech Partners",
+                enabled: data.settings.tech?.enabled ?? true,
+              }
+            });
+          }
         }
       } catch (err) {
         console.error("Failed to fetch partner logos:", err);
@@ -184,8 +197,21 @@ export default function Home() {
         <HeroSection {...heroData} onPrimaryClick={() => setIsNextCohortModalOpen(true)} />
 
         {/* Partner Marquees */}
-        <PartnerMarquee title="Our Managing Partners" partnersData={managingPartners} category="managing" />
-        <PartnerMarquee title="Our Tech Partners" partnersData={techPartners} category="tech" reverse={true} />
+        {partnerSettings.managing.enabled && managingPartners.length > 0 && (
+          <PartnerMarquee
+            title={partnerSettings.managing.title}
+            partnersData={managingPartners}
+            category="managing"
+          />
+        )}
+        {partnerSettings.tech.enabled && techPartners.length > 0 && (
+          <PartnerMarquee
+            title={partnerSettings.tech.title}
+            partnersData={techPartners}
+            category="tech"
+            reverse={true}
+          />
+        )}
 
         {/* About Section */}
         <AboutSection {...aboutData} />

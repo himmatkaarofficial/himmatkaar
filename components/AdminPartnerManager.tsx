@@ -14,7 +14,10 @@ import {
   Building2, 
   Cpu, 
   Layers,
-  ExternalLink
+  ExternalLink,
+  Eye,
+  EyeOff,
+  Save
 } from "lucide-react";
 import AdminImageUploader from "./AdminImageUploader";
 
@@ -39,6 +42,17 @@ export default function AdminPartnerManager() {
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  const [sectionSettings, setSectionSettings] = useState<{
+    managing: { title: string; enabled: boolean };
+    tech: { title: string; enabled: boolean };
+  }>({
+    managing: { title: "Our Managing Partners", enabled: true },
+    tech: { title: "Our Tech Partners", enabled: true },
+  });
+  const [managingTitleInput, setManagingTitleInput] = useState("Our Managing Partners");
+  const [techTitleInput, setTechTitleInput] = useState("Our Tech Partners");
+  const [savingSettings, setSavingSettings] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -73,10 +87,48 @@ export default function AdminPartnerManager() {
       const res = await fetch("/api/partners", { cache: "no-store" });
       const data = await res.json();
       setPartners(data.partners || []);
+      if (data.settings) {
+        setSectionSettings(data.settings);
+        if (data.settings.managing?.title) {
+          setManagingTitleInput(data.settings.managing.title);
+        }
+        if (data.settings.tech?.title) {
+          setTechTitleInput(data.settings.tech.title);
+        }
+      }
     } catch {
       showToast("error", "Failed to fetch partners");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const updateSettings = async (category: "managing" | "tech", updates: { title?: string; enabled?: boolean }) => {
+    setSavingSettings(category);
+    try {
+      const newSettings = {
+        ...sectionSettings,
+        [category]: {
+          ...sectionSettings[category],
+          ...updates,
+        },
+      };
+
+      const res = await fetch("/api/partners/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newSettings),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to update settings");
+
+      setSectionSettings(newSettings);
+      showToast("success", `${category === "managing" ? "Managing" : "Tech"} Partners section settings saved!`);
+    } catch (err: any) {
+      showToast("error", err.message || "Failed to save section settings");
+    } finally {
+      setSavingSettings(null);
     }
   };
 
@@ -301,7 +353,7 @@ export default function AdminPartnerManager() {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#39894c]" />
               <h3 className="text-lg font-bold text-slate-900 font-heading">
-                Our Managing Partners ({managingPartners.length})
+                {sectionSettings.managing.title} ({managingPartners.length})
               </h3>
             </div>
             <button
@@ -310,6 +362,71 @@ export default function AdminPartnerManager() {
             >
               <Plus size={14} /> Add Logo
             </button>
+          </div>
+
+          {/* Section Heading & Visibility Controls */}
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-2.5">
+              <label className="text-xs font-bold text-slate-700 whitespace-nowrap">
+                Section Heading:
+              </label>
+              <div className="flex items-center gap-2 flex-1 max-w-md">
+                <input
+                  type="text"
+                  value={managingTitleInput}
+                  onChange={(e) => setManagingTitleInput(e.target.value)}
+                  placeholder="e.g. Our Managing Partners"
+                  className="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#39894c]"
+                />
+                <button
+                  onClick={() => updateSettings("managing", { title: managingTitleInput })}
+                  disabled={savingSettings === "managing" || managingTitleInput === sectionSettings.managing.title}
+                  className="px-3 py-2 bg-[#39894c] text-white rounded-xl text-xs font-bold hover:bg-[#2d7040] disabled:opacity-40 transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap"
+                >
+                  {savingSettings === "managing" ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
+                  Save
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 self-start md:self-auto flex-wrap">
+              {/* Status Badge */}
+              {!sectionSettings.managing.enabled ? (
+                <span className="px-2.5 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                  <EyeOff size={13} /> Removed from Homepage
+                </span>
+              ) : managingPartners.length === 0 ? (
+                <span className="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                  <AlertCircle size={13} /> 0 Logos (Auto-Hidden)
+                </span>
+              ) : (
+                <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                  <CheckCircle size={13} /> Live on Homepage
+                </span>
+              )}
+
+              {/* Complete Remove / Show toggle */}
+              <button
+                onClick={() => updateSettings("managing", { enabled: !sectionSettings.managing.enabled })}
+                disabled={savingSettings === "managing"}
+                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  sectionSettings.managing.enabled
+                    ? "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100"
+                    : "bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100"
+                }`}
+                title={sectionSettings.managing.enabled ? "Remove this entire section from the homepage" : "Show this section on the homepage"}
+              >
+                {sectionSettings.managing.enabled ? (
+                  <>
+                    <EyeOff size={14} /> Remove from Homepage
+                  </>
+                ) : (
+                  <>
+                    <Eye size={14} /> Show on Homepage
+                  </>
+                )}
+              </button>
+            </div>
           </div>
 
           {managingPartners.length === 0 ? (
@@ -397,7 +514,7 @@ export default function AdminPartnerManager() {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-purple-600" />
               <h3 className="text-lg font-bold text-slate-900 font-heading">
-                Our Tech Partners ({techPartners.length})
+                {sectionSettings.tech.title} ({techPartners.length})
               </h3>
             </div>
             <button
@@ -406,6 +523,71 @@ export default function AdminPartnerManager() {
             >
               <Plus size={14} /> Add Logo
             </button>
+          </div>
+
+          {/* Section Heading & Visibility Controls */}
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-2.5">
+              <label className="text-xs font-bold text-slate-700 whitespace-nowrap">
+                Section Heading:
+              </label>
+              <div className="flex items-center gap-2 flex-1 max-w-md">
+                <input
+                  type="text"
+                  value={techTitleInput}
+                  onChange={(e) => setTechTitleInput(e.target.value)}
+                  placeholder="e.g. Our Tech Partners"
+                  className="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-600"
+                />
+                <button
+                  onClick={() => updateSettings("tech", { title: techTitleInput })}
+                  disabled={savingSettings === "tech" || techTitleInput === sectionSettings.tech.title}
+                  className="px-3 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold hover:bg-purple-700 disabled:opacity-40 transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap"
+                >
+                  {savingSettings === "tech" ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
+                  Save
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 self-start md:self-auto flex-wrap">
+              {/* Status Badge */}
+              {!sectionSettings.tech.enabled ? (
+                <span className="px-2.5 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                  <EyeOff size={13} /> Removed from Homepage
+                </span>
+              ) : techPartners.length === 0 ? (
+                <span className="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                  <AlertCircle size={13} /> 0 Logos (Auto-Hidden)
+                </span>
+              ) : (
+                <span className="px-2.5 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                  <CheckCircle size={13} /> Live on Homepage
+                </span>
+              )}
+
+              {/* Complete Remove / Show toggle */}
+              <button
+                onClick={() => updateSettings("tech", { enabled: !sectionSettings.tech.enabled })}
+                disabled={savingSettings === "tech"}
+                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  sectionSettings.tech.enabled
+                    ? "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100"
+                    : "bg-purple-50 text-purple-800 border border-purple-300 hover:bg-purple-100"
+                }`}
+                title={sectionSettings.tech.enabled ? "Remove this entire section from the homepage" : "Show this section on the homepage"}
+              >
+                {sectionSettings.tech.enabled ? (
+                  <>
+                    <EyeOff size={14} /> Remove from Homepage
+                  </>
+                ) : (
+                  <>
+                    <Eye size={14} /> Show on Homepage
+                  </>
+                )}
+              </button>
+            </div>
           </div>
 
           {techPartners.length === 0 ? (

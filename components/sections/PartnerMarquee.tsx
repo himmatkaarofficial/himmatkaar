@@ -21,13 +21,6 @@ interface PartnerMarqueeProps {
   reverse?: boolean;
 }
 
-const DEFAULT_PARTNERS = [
-  { name: "The Cabinet", logo: "/partners/the-cabinet.png" },
-  { name: "Cybergen", logo: "/partners/tech1.png" },
-  { name: "Tech Partner", logo: "/partners/tech2.png" },
-  { name: "Executive Partner", logo: "/partners/partner2.png" },
-];
-
 export const PartnerMarquee: React.FC<PartnerMarqueeProps> = ({ 
   title = "Our Collaborative Partners", 
   logos = [],
@@ -44,17 +37,15 @@ export const PartnerMarquee: React.FC<PartnerMarqueeProps> = ({
   } else if (logos && logos.length > 0) {
     items = logos.map((url, idx) => ({
       id: `p-${idx}`,
-      name: url.includes("cabinet") ? "The Cabinet" : url.includes("tech") ? "Tech Partner" : "Partner",
+      name: "Partner",
       logo_url: url,
       category: category || "managing",
     }));
-  } else {
-    items = DEFAULT_PARTNERS.map((p, idx) => ({
-      id: `def-${idx}`,
-      name: p.name,
-      logo_url: p.logo,
-      category: category || "managing",
-    }));
+  }
+
+  // If there are no partner items, hide this marquee completely
+  if (items.length === 0) {
+    return null;
   }
 
   const infiniteItems = [...items, ...items, ...items, ...items];

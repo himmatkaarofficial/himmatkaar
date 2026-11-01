@@ -4,6 +4,11 @@ import { supabase, supabaseAdmin } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+const DEFAULT_SETTINGS = {
+  managing: { title: "Our Managing Partners", enabled: true },
+  tech: { title: "Our Tech Partners", enabled: true }
+};
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -19,14 +24,36 @@ export async function GET(request: Request) {
       query = query.eq('category', category);
     }
 
-    const { data: partners, error } = await query;
+    const { data: allData, error } = await query;
 
     if (error) {
       console.error('Supabase partners fetch error:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ partners: partners || [] });
+    const partners = (allData || []).filter((p) => p.category !== '__settings__');
+    const settingsRow = (allData || []).find((p) => p.category === '__settings__');
+
+    let settings = DEFAULT_SETTINGS;
+    if (settingsRow && settingsRow.logo_url) {
+      try {
+        const parsed = JSON.parse(settingsRow.logo_url);
+        settings = {
+          managing: {
+            title: parsed.managing?.title || DEFAULT_SETTINGS.managing.title,
+            enabled: parsed.managing?.enabled ?? DEFAULT_SETTINGS.managing.enabled,
+          },
+          tech: {
+            title: parsed.tech?.title || DEFAULT_SETTINGS.tech.title,
+            enabled: parsed.tech?.enabled ?? DEFAULT_SETTINGS.tech.enabled,
+          }
+        };
+      } catch (e) {
+        console.error('Error parsing settings in GET /api/partners:', e);
+      }
+    }
+
+    return NextResponse.json({ partners, settings });
   } catch (error) {
     console.error('API partners GET error:', error);
     return NextResponse.json({ error: 'Failed to fetch partners' }, { status: 500 });
