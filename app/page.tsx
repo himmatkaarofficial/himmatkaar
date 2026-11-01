@@ -232,9 +232,9 @@ export default function Home() {
 
           <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="bg-[#0c2616] rounded-2xl p-6 sm:p-10 lg:p-14 border border-[#1d442a] relative overflow-hidden shadow-2xl">
-              
+
               {/* Urdu watermark in background */}
-              <div 
+              <div
                 className="absolute -right-10 -bottom-10 font-urdu text-9xl sm:text-[180px] text-[#2d7a46]/10 select-none pointer-events-none"
                 dir="rtl"
               >
@@ -311,20 +311,18 @@ export default function Home() {
                         onClick={() => setActiveIdentity(index)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`cursor-pointer rounded-2xl p-5 sm:p-6 border transition-all duration-300 flex flex-col justify-between relative overflow-hidden select-none shadow-lg ${
-                          isActive
+                        className={`cursor-pointer rounded-2xl p-5 sm:p-6 border transition-all duration-300 flex flex-col justify-between relative overflow-hidden select-none shadow-lg ${isActive
                             ? "bg-[#10321e] text-white border-[#389456] shadow-[0_8px_30px_rgba(45,122,70,0.3)] scale-[1.02]"
                             : "bg-[#0a2012] text-white border-[#1d442a] hover:border-[#389456]/60 hover:bg-[#10321e]/60"
-                        }`}
+                          }`}
                       >
                         <div>
                           {/* Top Phase & Stat */}
                           <div className="flex items-center justify-between mb-4">
-                            <span className={`font-mono text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border ${
-                              isActive
+                            <span className={`font-mono text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border ${isActive
                                 ? "bg-[#2d7a46] text-white border-[#389456]"
                                 : "bg-[#0c2616] text-[#a3caad] border-[#1d442a]"
-                            }`}>
+                              }`}>
                               {identity.phase}
                             </span>
                             <span className="font-mono text-xs font-semibold text-[#f3ae29]">

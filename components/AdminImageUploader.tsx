@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { Upload, Crop, Image as ImageIcon, Loader2, X, CheckCircle } from "lucide-react";
+import { Upload, Crop, Image as ImageIcon, Loader2, X, CheckCircle, AlertCircle, Link2 } from "lucide-react";
 import ImageCropModal, { AspectRatioOption } from "./ImageCropModal";
 
 interface AdminImageUploaderProps {
@@ -25,6 +25,8 @@ export default function AdminImageUploader({
 }: AdminImageUploaderProps) {
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploadDone, setUploadDone] = useState<boolean>(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [showUrlInput, setShowUrlInput] = useState<boolean>(false);
 
   // For crop flow
   const [selectedSrc, setSelectedSrc] = useState<string | null>(null);
@@ -41,6 +43,7 @@ export default function AdminImageUploader({
 
     setUploading(true);
     setUploadDone(false);
+    setUploadError(null);
 
     try {
       const fd = new FormData();
@@ -55,10 +58,10 @@ export default function AdminImageUploader({
         setUploadDone(true);
         setTimeout(() => setUploadDone(false), 2500);
       } else {
-        alert(data.error || "Upload failed. Please try again.");
+        setUploadError(data.error || "Upload failed. Please try again.");
       }
     } catch {
-      alert("Upload failed. Please check your connection and try again.");
+      setUploadError("Upload failed. Please check your connection and try again.");
     } finally {
       setUploading(false);
       if (directInputRef.current) directInputRef.current.value = "";
@@ -70,6 +73,7 @@ export default function AdminImageUploader({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setUploadError(null);
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
@@ -96,10 +100,20 @@ export default function AdminImageUploader({
         <div className="relative w-20 h-20 bg-white rounded-lg border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
           {imageUrl ? (
             <>
-              <Image src={imageUrl} alt="Preview" fill className="object-cover" />
+              <Image 
+                src={imageUrl} 
+                alt="Preview" 
+                fill 
+                unoptimized
+                className="object-contain p-1" 
+              />
               <button
                 type="button"
-                onClick={() => onChange("")}
+                onClick={() => {
+                  onChange("");
+                  setUploadDone(false);
+                  setUploadError(null);
+                }}
                 className="absolute top-0.5 right-0.5 p-0.5 bg-red-500 rounded-full text-white hover:bg-red-600 transition-all z-10"
                 title="Remove image"
               >
@@ -121,14 +135,14 @@ export default function AdminImageUploader({
           <input
             ref={directInputRef}
             type="file"
-            accept="image/png,image/jpeg,image/jpg,image/webp"
+            accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml,image/*"
             className="hidden"
             onChange={handleDirectUpload}
           />
           <input
             ref={cropInputRef}
             type="file"
-            accept="image/png,image/jpeg,image/jpg,image/webp"
+            accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml,image/*"
             className="hidden"
             onChange={handleCropSelect}
           />
@@ -138,7 +152,10 @@ export default function AdminImageUploader({
             {/* Direct Upload Button */}
             <button
               type="button"
-              onClick={() => directInputRef.current?.click()}
+              onClick={() => {
+                setUploadError(null);
+                directInputRef.current?.click();
+              }}
               disabled={uploading}
               className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer disabled:opacity-50 border ${
                 uploadDone
@@ -159,7 +176,7 @@ export default function AdminImageUploader({
               ) : (
                 <>
                   <Upload size={13} className="text-[#39894c]" />
-                  <span>{imageUrl ? "Change" : "Upload"}</span>
+                  <span>{imageUrl ? "Change Image" : "Upload Image"}</span>
                 </>
               )}
             </button>
@@ -167,7 +184,10 @@ export default function AdminImageUploader({
             {/* Crop & Upload Button */}
             <button
               type="button"
-              onClick={() => cropInputRef.current?.click()}
+              onClick={() => {
+                setUploadError(null);
+                cropInputRef.current?.click();
+              }}
               disabled={uploading}
               className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border border-slate-200 bg-white text-slate-700 hover:border-[#f3ae29] hover:text-[#c98a10] transition-all shadow-sm cursor-pointer disabled:opacity-50"
             >
@@ -176,9 +196,42 @@ export default function AdminImageUploader({
             </button>
           </div>
 
-          <p className="text-[10px] text-slate-400 font-mono leading-relaxed">
-            {helpText || "Upload as-is  •  OR  •  Upload & Crop to adjust before saving"}
-          </p>
+          {/* Upload Error Banner */}
+          {uploadError && (
+            <div className="p-2 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-xs text-red-700">
+              <AlertCircle size={14} className="shrink-0 text-red-600" />
+              <span>{uploadError}</span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-1">
+            <p className="text-[10px] text-slate-400 font-mono leading-relaxed">
+              {helpText || "Upload PNG, JPG, SVG, WebP"}
+            </p>
+            <button
+              type="button"
+              onClick={() => setShowUrlInput(!showUrlInput)}
+              className="text-[10px] text-[#39894c] font-semibold hover:underline flex items-center gap-1"
+            >
+              <Link2 size={11} /> {showUrlInput ? "Hide URL input" : "Or paste image URL"}
+            </button>
+          </div>
+
+          {/* Optional Direct URL Input */}
+          {showUrlInput && (
+            <div className="pt-1.5">
+              <input
+                type="text"
+                value={imageUrl}
+                onChange={(e) => {
+                  onChange(e.target.value);
+                  setUploadError(null);
+                }}
+                placeholder="Paste image URL (e.g. https://... or /partners/logo.png)"
+                className="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#39894c]"
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -193,6 +246,7 @@ export default function AdminImageUploader({
           onChange(croppedUrl);
           setIsCropOpen(false);
           setUploadDone(true);
+          setUploadError(null);
           setTimeout(() => setUploadDone(false), 2500);
         }}
       />

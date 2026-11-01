@@ -11,12 +11,33 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
-    const { data: partner, error } = await supabaseAdmin
+    const updatePayload: Record<string, any> = {};
+    const allowedKeys = ['name', 'logo_url', 'category', 'display_order', 'description', 'website_url'];
+    for (const key of allowedKeys) {
+      if (body[key] !== undefined) {
+        updatePayload[key] = body[key];
+      }
+    }
+
+    let { data: partner, error } = await supabaseAdmin
       .from('partners')
-      .update(body)
+      .update(updatePayload)
       .eq('id', id)
       .select()
       .single();
+
+    if (error && (error.message?.includes('description') || error.message?.includes('website_url'))) {
+      delete updatePayload.description;
+      delete updatePayload.website_url;
+      const retry = await supabaseAdmin
+        .from('partners')
+        .update(updatePayload)
+        .eq('id', id)
+        .select()
+        .single();
+      partner = retry.data;
+      error = retry.error;
+    }
 
     if (error) {
       console.error('Supabase partner update error:', error);

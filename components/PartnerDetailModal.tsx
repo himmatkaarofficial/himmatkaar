@@ -94,6 +94,7 @@ export default function PartnerDetailModal({
                   src={partner.logo_url}
                   alt={partner.name}
                   fill
+                  unoptimized
                   className="object-contain"
                   sizes="300px"
                 />

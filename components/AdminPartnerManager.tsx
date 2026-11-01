@@ -453,6 +453,7 @@ export default function AdminPartnerManager() {
                       src={partner.logo_url}
                       alt={partner.name}
                       fill
+                      unoptimized
                       className="object-contain p-2 group-hover:scale-105 transition-transform"
                     />
                   </div>
@@ -614,6 +615,7 @@ export default function AdminPartnerManager() {
                       src={partner.logo_url}
                       alt={partner.name}
                       fill
+                      unoptimized
                       className="object-contain p-2 group-hover:scale-105 transition-transform"
                     />
                   </div>

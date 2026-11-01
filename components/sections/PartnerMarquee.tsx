@@ -84,6 +84,7 @@ export const PartnerMarquee: React.FC<PartnerMarqueeProps> = ({
                   src={item.logo_url}
                   alt={item.name}
                   fill
+                  unoptimized
                   className="object-contain p-1 transition-transform group-hover:scale-105"
                   sizes="170px"
                 />

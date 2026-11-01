@@ -105,3 +105,4 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: err.message || 'Failed to update partner settings' }, { status: 500 });
   }
 }
+

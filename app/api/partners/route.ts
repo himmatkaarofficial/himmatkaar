@@ -68,18 +68,40 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Logo URL is required' }, { status: 400 });
     }
 
-    const { data: partner, error } = await supabaseAdmin
+    const insertPayload: Record<string, any> = {
+      name: body.name || 'Partner',
+      logo_url: body.logo_url,
+      category: body.category || 'managing', // 'managing' or 'tech'
+      display_order: body.display_order ?? 0,
+    };
+
+    if (body.description) insertPayload.description = body.description;
+    if (body.website_url) insertPayload.website_url = body.website_url;
+
+    let { data: partner, error } = await supabaseAdmin
       .from('partners')
-      .insert([{
-        name: body.name || 'Partner',
-        logo_url: body.logo_url,
-        category: body.category || 'managing', // 'managing' or 'tech'
-        display_order: body.display_order ?? 0,
-        description: body.description || '',
-        website_url: body.website_url || '',
-      }])
+      .insert([insertPayload])
       .select()
       .single();
+
+    // If description or website_url column doesn't exist in partners table, retry with standard columns
+    if (error && (error.message?.includes('description') || error.message?.includes('website_url'))) {
+      const fallbackPayload = {
+        name: body.name || 'Partner',
+        logo_url: body.logo_url,
+        category: body.category || 'managing',
+        display_order: body.display_order ?? 0,
+      };
+
+      const retry = await supabaseAdmin
+        .from('partners')
+        .insert([fallbackPayload])
+        .select()
+        .single();
+
+      partner = retry.data;
+      error = retry.error;
+    }
 
     if (error) {
       console.error('Supabase partner create error:', error);

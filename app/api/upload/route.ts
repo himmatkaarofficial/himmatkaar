@@ -5,21 +5,21 @@ export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const type = formData.get('type') as string || 'event'; // 'event', 'team', or 'ambassador'
+    const type = formData.get('type') as string || 'event'; // 'event', 'team', 'partner', 'ambassador', 'launchpad'
     
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' }, { status: 400 });
+    // Validate file type (allow standard image formats including SVG, GIF, WebP)
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif', 'image/avif'];
+    if (!allowedTypes.includes(file.type?.toLowerCase()) && !file.type?.startsWith('image/')) {
+      return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, SVG, and WebP are allowed.' }, { status: 400 });
     }
 
-    // Validate file size (5MB max)
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File size exceeds 5MB limit' }, { status: 400 });
+    // Validate file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: 'File size exceeds 10MB limit' }, { status: 400 });
     }
 
     // Determine bucket and folder based on type
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     }
 
     // Generate unique filename
-    const fileExt = file.name.split('.').pop();
+    const fileExt = (file.name.split('.').pop() || 'png').toLowerCase();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
     const filePath = `${folder}/${fileName}`;
 
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     let { data, error } = await supabaseAdmin.storage
       .from(bucket)
       .upload(filePath, buffer, {
-        contentType: file.type,
+        contentType: file.type || 'image/png',
         upsert: false
       });
 
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
         const retry = await supabaseAdmin.storage
           .from(bucket)
           .upload(filePath, buffer, {
-            contentType: file.type,
+            contentType: file.type || 'image/png',
             upsert: false
           });
         data = retry.data;
