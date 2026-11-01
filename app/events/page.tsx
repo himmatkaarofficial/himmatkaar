@@ -46,18 +46,10 @@ export default function Events() {
         if (response.ok && data.events && data.events.length > 0) {
           setEvents(data.events);
         } else {
-          setEvents([
-            { id: '1', title: "Youth Leadership Summit 2025", date: "2025-12-15", location: "Karachi Convention Center", image: "/events/event-slide-1.jpg", description: "A transformative summit bringing together young leaders from across Pakistan to discuss innovation and social impact.", type: "Summit", time: "09:00 AM", status: "past" },
-            { id: '2', title: "Innovation & Tech Workshop Series", date: "2025-11-20", location: "Lahore Tech Hub", image: "/events/event-slide-2.jpg", description: "Hands-on workshops focused on design thinking, product development, and entrepreneurship skills.", type: "Workshop", time: "02:00 PM", status: "past" },
-            { id: '3', title: "Faisalabad Community Open House", date: "2025-10-10", location: "Faisalabad Executive Center", image: "/events/event-slide-4.jpg", description: "An open house event showcasing student projects and connecting with community partners.", type: "Open House", time: "10:00 AM", status: "past" },
-          ]);
+          setEvents([]);
         }
       } catch {
-        setEvents([
-          { id: '1', title: "Youth Leadership Summit 2025", date: "2025-12-15", location: "Karachi Convention Center", image: "/events/event-slide-1.jpg", description: "A transformative summit bringing together young leaders from across Pakistan to discuss innovation and social impact.", type: "Summit", time: "09:00 AM", status: "past" },
-          { id: '2', title: "Innovation & Tech Workshop Series", date: "2025-11-20", location: "Lahore Tech Hub", image: "/events/event-slide-2.jpg", description: "Hands-on workshops focused on design thinking, product development, and entrepreneurship skills.", type: "Workshop", time: "02:00 PM", status: "past" },
-          { id: '3', title: "Faisalabad Community Open House", date: "2025-10-10", location: "Faisalabad Executive Center", image: "/events/event-slide-4.jpg", description: "An open house event showcasing student projects and connecting with community partners.", type: "Open House", time: "10:00 AM", status: "past" },
-        ]);
+        setEvents([]);
       } finally {
         setLoading(false);
       }

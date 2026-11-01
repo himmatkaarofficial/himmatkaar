@@ -15,23 +15,16 @@ export const EventsSection: React.FC = () => {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch("/api/events?limit=50&status=upcoming");
+        const response = await fetch("/api/events?limit=50&status=upcoming", { cache: "no-store" });
         const data = await response.json();
         if (response.ok && data.events && data.events.length > 0) {
           setEvents(data.events);
         } else {
-          setEvents([
-            { id: "1", title: "Startup Pitch Competition 2026", date: "2026-03-25", time: "10:00 AM - 5:00 PM", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities with leading industry executives.", location: "Faisalabad Expo Center", status: "upcoming", type: "Competition" },
-            { id: "2", title: "Tech Skills & AI Masterclass", date: "2026-04-10", time: "2:00 PM - 6:00 PM", image: "/events/event-slide-2.jpg", description: "Intensive training covering web development, modern cloud tooling, and AI fundamentals.", location: "Lahore Tech Hub", status: "upcoming", type: "Workshop" },
-            { id: "3", title: "Community Youth Impact Summit", date: "2026-04-20", time: "11:00 AM - 4:00 PM", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to build scalable local community initiatives.", location: "Islamabad Convention Hall", status: "upcoming", type: "Summit" }
-          ]);
+          setEvents([]);
         }
-      } catch {
-        setEvents([
-          { id: "1", title: "Startup Pitch Competition 2026", date: "2026-03-25", time: "10:00 AM - 5:00 PM", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities with leading industry executives.", location: "Faisalabad Expo Center", status: "upcoming", type: "Competition" },
-          { id: "2", title: "Tech Skills & AI Masterclass", date: "2026-04-10", time: "2:00 PM - 6:00 PM", image: "/events/event-slide-2.jpg", description: "Intensive training covering web development, modern cloud tooling, and AI fundamentals.", location: "Lahore Tech Hub", status: "upcoming", type: "Workshop" },
-          { id: "3", title: "Community Youth Impact Summit", date: "2026-04-20", time: "11:00 AM - 4:00 PM", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to build scalable local community initiatives.", location: "Islamabad Convention Hall", status: "upcoming", type: "Summit" }
-        ]);
+      } catch (err) {
+        console.error("Failed to fetch upcoming events:", err);
+        setEvents([]);
       } finally {
         setLoading(false);
       }
@@ -48,6 +41,11 @@ export const EventsSection: React.FC = () => {
       return dateStr;
     }
   };
+
+  // Only show this section if upcoming events have been added via admin panel
+  if (loading || events.length === 0) {
+    return null;
+  }
 
   return (
     <section id="events" className="bg-[#0a2012] py-20 md:py-28 border-t border-[#1d442a] text-white relative overflow-hidden">
@@ -86,33 +84,27 @@ export const EventsSection: React.FC = () => {
         </motion.div>
 
         {/* Events Grid */}
-        {loading ? (
-          <div className="text-center py-16">
-            <p className="font-mono text-sm text-[#a3caad]/70 animate-pulse">Loading events...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {events.map((event, index) => (
-              <motion.div
-                key={event.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="h-full"
-              >
-                <EventCard
-                  image={event.image}
-                  title={event.title}
-                  date={formatDate(event.date)}
-                  description={event.description}
-                  location={event.location}
-                  onClick={() => setSelectedEvent(event)}
-                />
-              </motion.div>
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {events.map((event, index) => (
+            <motion.div
+              key={event.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="h-full"
+            >
+              <EventCard
+                image={event.image}
+                title={event.title}
+                date={formatDate(event.date)}
+                description={event.description}
+                location={event.location}
+                onClick={() => setSelectedEvent(event)}
+              />
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* Event Detail Modal */}

@@ -45,49 +45,16 @@ export default function EventsSection() {
     fetchEvents();
   }, []);
 
-  // Fallback events if no events in database
-  const fallbackEvents = [
-    {
-      id: '1',
-      title: "Youth Leadership Summit",
-      image: "/event-leadership.jpg",
-      date: "2026-03-25",
-      time: "09:00 AM",
-      location: "Faisalabad",
-      type: "Summit",
-      description: "Join us for an inspiring leadership summit",
-      status: "upcoming"
-    },
-    {
-      id: '2',
-      title: "Innovation Workshop",
-      image: "/event-workshop.jpg",
-      date: "2026-04-10",
-      time: "02:00 PM",
-      location: "Faisalabad",
-      type: "Workshop",
-      description: "Learn innovative skills and techniques",
-      status: "upcoming"
-    },
-    {
-      id: '3',
-      title: "Community Open House",
-      image: "/event-openhouse.jpg",
-      date: "2026-04-20",
-      time: "10:00 AM",
-      location: "Faisalabad",
-      type: "Open House",
-      description: "Meet the community and explore opportunities",
-      status: "upcoming"
-    }
-  ];
-
-  const displayEvents = events.length > 0 ? events : fallbackEvents;
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   };
+
+  if (loading || events.length === 0) {
+    return null;
+  }
+
+  const displayEvents = events;
 
   return (
     <section style={{ background: 'var(--color-canvas)', padding: '80px 0' }}>

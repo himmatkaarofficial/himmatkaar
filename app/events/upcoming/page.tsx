@@ -46,18 +46,10 @@ export default function UpcomingEvents() {
         if (response.ok && data.events && data.events.length > 0) {
           setEvents(data.events);
         } else {
-          setEvents([
-            { id: '1', title: "Startup Pitch Competition 2026", date: "2026-03-25", time: "10:00 AM - 5:00 PM", location: "Karachi Expo Center", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities. Present your startup idea to leading investors.", status: "upcoming", type: "Competition" },
-            { id: '2', title: "Tech Skills Bootcamp", date: "2026-04-10", time: "9:00 AM - 6:00 PM", location: "Lahore Innovation Hub", image: "/events/event-slide-2.jpg", description: "Intensive bootcamp covering web development, mobile apps, and AI fundamentals with hands-on projects.", status: "upcoming", type: "Bootcamp" },
-            { id: '3', title: "Social Impact Summit", date: "2026-04-20", time: "2:00 PM - 8:00 PM", location: "Islamabad Convention Hall", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to discuss sustainable solutions for community challenges.", status: "upcoming", type: "Summit" },
-          ]);
+          setEvents([]);
         }
       } catch {
-        setEvents([
-          { id: '1', title: "Startup Pitch Competition 2026", date: "2026-03-25", time: "10:00 AM - 5:00 PM", location: "Karachi Expo Center", image: "/events/event-slide-1.jpg", description: "Compete for seed funding and mentorship opportunities. Present your startup idea to leading investors.", status: "upcoming", type: "Competition" },
-          { id: '2', title: "Tech Skills Bootcamp", date: "2026-04-10", time: "9:00 AM - 6:00 PM", location: "Lahore Innovation Hub", image: "/events/event-slide-2.jpg", description: "Intensive bootcamp covering web development, mobile apps, and AI fundamentals with hands-on projects.", status: "upcoming", type: "Bootcamp" },
-          { id: '3', title: "Social Impact Summit", date: "2026-04-20", time: "2:00 PM - 8:00 PM", location: "Islamabad Convention Hall", image: "/events/event-slide-4.jpg", description: "Join social entrepreneurs and changemakers to discuss sustainable solutions for community challenges.", status: "upcoming", type: "Summit" },
-        ]);
+        setEvents([]);
       } finally {
         setLoading(false);
       }
@@ -177,6 +169,18 @@ export default function UpcomingEvents() {
             {loading ? (
               <div className="flex items-center justify-center h-64">
                 <Loader2 className="animate-spin text-[#2d7a46]" size={40} />
+              </div>
+            ) : events.length === 0 ? (
+              <div className="text-center py-20 px-4 bg-[#f8faf7] rounded-2xl border border-[#d8e6db]">
+                <Calendar size={48} className="mx-auto text-[#2d7a46]/50 mb-4" />
+                <h3 className="font-serif-heading text-2xl font-bold text-[#07190e] mb-2">No Upcoming Events Right Now</h3>
+                <p className="text-[#3a5342] max-w-md mx-auto mb-6 text-sm">
+                  We are actively planning exciting new masterclasses and fellowship meetups. Check back soon or explore our previous events!
+                </p>
+                <Link href="/events" className="btn-gsap-ghost inline-flex items-center gap-2 !rounded-xl !text-[#2d7a46] !border-[#2d7a46]">
+                  <span>Explore Past Events</span>
+                  <ArrowUpRight size={16} />
+                </Link>
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
