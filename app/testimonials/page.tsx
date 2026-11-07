@@ -13,7 +13,7 @@ const testimonials = [
     id: "1",
     name: "Ahmed Khan",
     role: "Software Engineer at Systems Ltd",
-    location: "Karachi",
+    location: "Faisalabad",
     image: "/himmatkaar-logo.jpg",
     track: "Tech & Software Readiness",
     text: "HimmatKaar transformed my career trajectory. The fellowship taught me not just technical skills, but how to think critically and communicate effectively during tough technical interviews. Within 2 months of completing the program, I landed my dream job!",
@@ -23,7 +23,7 @@ const testimonials = [
     id: "2",
     name: "Fatima Ali",
     role: "Brand Marketing Specialist",
-    location: "Lahore",
+    location: "Faisalabad",
     image: "/himmatkaar-logo.jpg",
     track: "Corporate Communication",
     text: "The confidence I gained through HimmatKaar is invaluable. The public speaking sessions and resume masterclasses prepared me for real-world corporate challenges. I'm now leading a team of 10 people and couldn't be happier!",
@@ -33,7 +33,7 @@ const testimonials = [
     id: "3",
     name: "Hassan Raza",
     role: "Data Analytics Associate",
-    location: "Islamabad",
+    location: "Faisalabad",
     image: "/himmatkaar-logo.jpg",
     track: "Analytics & Problem Solving",
     text: "Coming from a smaller campus, I was unsure if I could compete with tier-1 graduates. HimmatKaar showed me that with the right mindset, mentorship, and practical projects, anything is possible. Forever grateful to my facilitators!",
@@ -53,7 +53,7 @@ const testimonials = [
     id: "5",
     name: "Ali Hussain",
     role: "Business Operations Analyst",
-    location: "Multan",
+    location: "Faisalabad",
     image: "/himmatkaar-logo.jpg",
     track: "Operations & Strategy",
     text: "HimmatKaar didn't just teach me hard skills; it gave me an unshakeable community of like-minded peers. The networking opportunities and alumni support were as valuable as the formal curriculum itself.",
@@ -63,7 +63,7 @@ const testimonials = [
     id: "6",
     name: "Sara Ahmed",
     role: "People & Talent Associate",
-    location: "Peshawar",
+    location: "Faisalabad",
     image: "/himmatkaar-logo.jpg",
     track: "HR & Talent Development",
     text: "The mock interview preparation and executive presence modules were true game-changers. I went from feeling nervous in interviews to presenting my portfolio with total confidence. Received multiple offers within weeks!",
@@ -115,15 +115,12 @@ export default function Testimonials() {
                 <span className="text-[#389456]">
                   Courage & Success
                 </span>
-                <span className="font-urdu block text-2xl sm:text-3xl lg:text-4xl text-[#f3ae29] font-normal mt-2">
-                  ہمت کار کامیابی کی کہانیاں
-                </span>
               </motion.h1>
               <motion.p
                 variants={fadeInUp}
                 className="text-base sm:text-lg lg:text-xl text-[#d1e7d8] max-w-2xl mx-auto leading-relaxed font-normal"
               >
-                Hear directly from our ambitious alumni across Pakistan who transitioned from classroom theory into high-impact careers through HimmatKaar.
+                Hear directly from our ambitious alumni in Faisalabad who transitioned from classroom theory into high-impact careers through HimmatKaar.
               </motion.p>
             </motion.div>
           </div>

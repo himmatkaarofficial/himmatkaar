@@ -45,7 +45,6 @@ export default function Login() {
             </div>
             <div>
               <span className="font-serif-heading text-xl font-bold text-white block">HimmatKaar</span>
-              <span className="font-urdu text-sm text-[#f3ae29]">ہمت کار پورٹل</span>
             </div>
           </Link>
           
@@ -55,10 +54,10 @@ export default function Login() {
               <span>Administrative Gateway</span>
             </div>
             <h1 className="font-serif-heading text-4xl sm:text-5xl font-extrabold text-white mb-4 leading-tight">
-              Empowering the youth of Pakistan.
+              Empowering the youth of Faisalabad.
             </h1>
             <p className="text-base text-[#d1e7d8] leading-relaxed font-normal">
-              Sign in to manage curriculum milestones, verify student portfolios, and coordinate nationwide events.
+              Sign in to manage curriculum milestones, verify student portfolios, and coordinate Faisalabad events.
             </p>
           </div>
 
@@ -87,7 +86,6 @@ export default function Login() {
             </div>
             <div>
               <span className="font-serif-heading text-lg font-bold text-[#0c2616]">HimmatKaar</span>
-              <span className="font-urdu text-xs text-[#2d7a46] block">ہمت کار</span>
             </div>
           </div>
 

@@ -26,13 +26,7 @@ export const NewsletterSection: React.FC = () => {
             }}
           />
 
-          {/* Urdu Calligraphy Background Watermark */}
-          <div
-            className="absolute -right-4 -bottom-6 font-urdu text-8xl sm:text-9xl text-[#2d7a46]/10 select-none pointer-events-none"
-            dir="rtl"
-          >
-            ہمت کار
-          </div>
+          
 
           <div className="relative z-10">
             <motion.div
@@ -54,7 +48,7 @@ export const NewsletterSection: React.FC = () => {
                 </span>
               </h2>
               <p className="text-base sm:text-lg leading-relaxed text-[#3a5342] max-w-lg font-normal">
-                Subscribe to our newsletter for the latest cohort announcements, technical masterclasses, and career opportunities across Pakistan.
+                Subscribe to our newsletter for the latest cohort announcements, technical masterclasses, and career opportunities in Faisalabad.
               </p>
             </motion.div>
 

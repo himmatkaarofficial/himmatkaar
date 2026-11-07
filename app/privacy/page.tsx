@@ -56,9 +56,6 @@ export default function PrivacyPage() {
               <span className="text-[#389456]">
                 Policy
               </span>
-              <span className="font-urdu block text-2xl sm:text-3xl text-[#f3ae29] font-normal mt-2">
-                رازداری کی پالیسی
-              </span>
             </h1>
             <p className="text-xs font-mono text-[#a3caad] uppercase tracking-wider">Effective date: March 30, 2026</p>
           </div>

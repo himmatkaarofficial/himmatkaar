@@ -28,9 +28,6 @@ export default function Footer() {
                   <span className="text-xl font-bold tracking-tight text-white leading-none">
                     Himmatkaar
                   </span>
-                  <span className="font-urdu text-sm text-[#f3ae29]" dir="rtl">
-                    ہمت کار
-                  </span>
                 </div>
                 <span className="text-[10px] font-mono tracking-widest text-[#a3caad] font-semibold uppercase mt-0.5">
                   Faisalabad, Pakistan
@@ -39,7 +36,7 @@ export default function Footer() {
             </div>
             
             <p className="text-sm leading-relaxed text-[#a3caad] mb-6 max-w-sm">
-              Building a vibrant ecosystem where every young person in Pakistan develops the courage and capability to lead transformative impact.
+              Building a vibrant ecosystem where every young person in Faisalabad develops the courage and capability to lead transformative impact.
             </p>
 
             {/* Social Links (Naked Icons without circular wrappers) */}
@@ -143,8 +140,6 @@ export default function Footer() {
         <div className="mt-16 pt-6 pb-8 border-t border-[#1d442a] flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[#a3caad]/70 font-mono">
           <div className="flex items-center gap-2">
             <p>© 2026 Himmatkaar. All rights reserved.</p>
-            <span className="text-[#1d442a]">|</span>
-            <span className="font-urdu text-[#f3ae29]" dir="rtl">ہمت کار — فیصل آباد، پاکستان</span>
           </div>
           <div className="flex flex-wrap justify-center gap-6">
             {[

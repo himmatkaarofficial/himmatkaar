@@ -74,7 +74,7 @@ export const EventsSection: React.FC = () => {
               </span>
             </h2>
             <p className="text-base sm:text-lg leading-relaxed text-[#a3caad] max-w-lg font-normal">
-              Join us for exciting masterclasses, fellowship meetups, and leadership opportunities across Pakistan. Click any card for details.
+              Join us for exciting masterclasses, fellowship meetups, and leadership opportunities in Faisalabad. Click any card for details.
             </p>
           </div>
           <Link href="/events" className="btn-gsap-ghost flex-shrink-0 self-start sm:self-auto !rounded-xl">
