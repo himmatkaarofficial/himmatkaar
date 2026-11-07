@@ -194,7 +194,7 @@ export default function AdminAmbassadorsManager() {
           <p className="text-3xl font-extrabold text-slate-900">{ambassadors.length}</p>
         </div>
         <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-          <p className="text-sm text-slate-500 font-medium mb-2">Cities Covered</p>
+          <p className="text-sm text-slate-500 font-medium mb-2">Campuses Covered</p>
           <p className="text-3xl font-extrabold text-slate-900">{new Set(ambassadors.map(a => a.city)).size}</p>
         </div>
       </div>
@@ -300,7 +300,7 @@ export default function AdminAmbassadorsManager() {
                   value={formData.city}
                   onChange={(e) => setFormData({...formData, city: e.target.value})}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
-                  placeholder="Karachi"
+                  placeholder="Faisalabad"
                 />
               </div>
 
@@ -312,7 +312,7 @@ export default function AdminAmbassadorsManager() {
                   value={formData.university}
                   onChange={(e) => setFormData({...formData, university: e.target.value})}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#39894c]/20 focus:border-[#39894c] transition-all bg-white text-slate-900 font-medium placeholder:text-slate-400"
-                  placeholder="University of Karachi"
+                  placeholder="University of Agriculture Faisalabad"
                 />
               </div>
 

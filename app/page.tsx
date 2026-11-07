@@ -101,7 +101,6 @@ export default function Home() {
   // Hero Section Data
   const heroData = {
     headline: "Evolve Your Future with Himmatkaar!",
-    urduHeadline: "ہمت کار",
     primaryCTA: { text: "Apply for Himmatkaar LaunchPad" },
     secondaryCTA: { text: "Learn More", href: "/about" },
     heroImages: homeHeroImages
@@ -113,7 +112,7 @@ export default function Home() {
     heading: "Faisalabad's Leading Youth Empowerment Platform",
     description: [
       "Himmatkaar is Faisalabad's premier youth empowerment platform, driving the growth of the next generation of leaders. We provide comprehensive support through mentorship, skill development, and community engagement.",
-      "Our mission is to cultivate a strong resource pool to support young innovators and change-makers across Pakistan, helping them transform their ideas into impactful initiatives that benefit their communities."
+      "Our mission is to cultivate a strong resource pool to support young innovators and change-makers in Faisalabad, helping them transform their ideas into impactful initiatives that benefit their communities."
     ],
     stats: [
       { value: "1,000+", label: "Youth Empowered" },
@@ -233,13 +232,7 @@ export default function Home() {
           <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="bg-[#0c2616] rounded-2xl p-6 sm:p-10 lg:p-14 border border-[#1d442a] relative overflow-hidden shadow-2xl">
 
-              {/* Urdu watermark in background */}
-              <div
-                className="absolute -right-10 -bottom-10 font-urdu text-9xl sm:text-[180px] text-[#2d7a46]/10 select-none pointer-events-none"
-                dir="rtl"
-              >
-                ہمت کار
-              </div>
+              
 
               <div className="relative z-10">
                 {/* Section Eyebrow & Title */}
@@ -393,7 +386,7 @@ export default function Home() {
                         title: "Direct Career Placement & Network",
                         duration: "25 Seats per Cohort",
                         tagline: "Employment & Alumni Network",
-                        description: "Direct talent pipeline to hiring corporate partners, job referrals, and lifetime access to the Himmatkaar alumni community across Pakistan.",
+                        description: "Direct talent pipeline to hiring corporate partners, job referrals, and lifetime access to the Himmatkaar alumni community in Faisalabad.",
                         highlights: ["Corporate Hiring Pipeline", "Job Referrals & Endorsements", "Lifetime Alumni Community"]
                       }
                     ][activeIdentity];

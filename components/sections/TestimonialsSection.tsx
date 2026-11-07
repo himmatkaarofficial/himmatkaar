@@ -31,7 +31,7 @@ export const TestimonialsSection: React.FC = () => {
             </span>
           </h2>
           <p className="text-base sm:text-lg leading-relaxed text-[#a3caad] font-normal">
-            Real experiences and career milestones from graduates across Pakistan
+            Real experiences and career milestones from graduates in Faisalabad
           </p>
         </motion.div>
 

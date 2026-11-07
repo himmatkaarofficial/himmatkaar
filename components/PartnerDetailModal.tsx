@@ -118,7 +118,7 @@ export default function PartnerDetailModal({
               </p>
               <p className="text-sm text-[#d1e7d8] leading-relaxed">
                 {partner.description ||
-                  `${partner.name} collaborates with HimmatKaar to empower youth, provide industrial exposure, and create professional growth pathways across Pakistan.`}
+                  `${partner.name} collaborates with HimmatKaar to empower youth, provide industrial exposure, and create professional growth pathways in Faisalabad.`}
               </p>
             </div>
 

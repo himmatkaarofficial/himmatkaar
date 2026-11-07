@@ -25,8 +25,8 @@ const DEFAULT_AMBASSADORS: Ambassador[] = [
     id: "1",
     name: "Ayesha Khan",
     role: "Campus Ambassador",
-    city: "Lahore",
-    bio: "Representing Himmatkaar at UET Lahore and driving student engagement initiatives across STEM departments.",
+    city: "Faisalabad",
+    bio: "Representing Himmatkaar at University of Agriculture Faisalabad (UAF) and driving student engagement initiatives.",
     image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
     linkedin: "https://linkedin.com",
   },
@@ -34,8 +34,8 @@ const DEFAULT_AMBASSADORS: Ambassador[] = [
     id: "2",
     name: "Hamza Ali",
     role: "Campus Ambassador",
-    city: "Islamabad",
-    bio: "Building tech community connections and hosting peer learning workshops at FAST Islamabad.",
+    city: "Faisalabad",
+    bio: "Building tech community connections and hosting peer learning workshops at National Textile University (NTU) Faisalabad.",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
     linkedin: "https://linkedin.com",
   },
@@ -52,8 +52,8 @@ const DEFAULT_AMBASSADORS: Ambassador[] = [
     id: "4",
     name: "Bilal Ahmed",
     role: "Campus Ambassador",
-    city: "Karachi",
-    bio: "Fostering entrepreneurial networks and organizing campus discovery bootcamps at NED University Karachi.",
+    city: "Faisalabad",
+    bio: "Fostering entrepreneurial networks and organizing campus discovery bootcamps at GC University Faisalabad (GCUF).",
     image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80",
     linkedin: "https://linkedin.com",
   },
@@ -103,19 +103,16 @@ export default function Ambassadors() {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#07190e] border border-[#1d442a] text-[#f3ae29] text-xs font-mono uppercase tracking-widest mb-4">
                 <GraduationCap size={14} className="text-[#f3ae29]" />
-                <span>Nationwide Student Network</span>
+                <span>Faisalabad Student Network</span>
               </div>
               <h1 className="font-serif-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 tracking-tight leading-[1.1] max-w-3xl">
                 Campus Ambassadors{" "}
                 <span className="text-[#389456]">
                   Network
                 </span>
-                <span className="font-urdu block text-2xl sm:text-3xl lg:text-4xl text-[#f3ae29] font-normal mt-2">
-                  ہمت کار سفیر
-                </span>
               </h1>
               <p className="text-base sm:text-lg text-[#d1e7d8] max-w-2xl font-normal leading-relaxed">
-                Meet our passionate student leaders representing Himmatkaar across Pakistan&apos;s leading universities, running local events, and connecting peers with industry opportunities.
+                Meet our passionate student leaders representing Himmatkaar across Faisalabad&apos;s leading universities, running local events, and connecting peers with industry opportunities.
               </p>
             </motion.div>
           </div>

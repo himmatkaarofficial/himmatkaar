@@ -102,7 +102,6 @@ export const OfferingsSection: React.FC<OfferingsSectionProps> = ({ offerings })
                     <span className="badge-category-green !text-xs !rounded-md">
                       Curriculum 0{activeIndex + 1}
                     </span>
-                    <span className="font-urdu text-base text-[#389456]" dir="rtl">ہمت کار</span>
                   </div>
 
                   <div className="text-[#f3ae29]">

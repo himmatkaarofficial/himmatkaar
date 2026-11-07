@@ -136,9 +136,6 @@ export default function Blog() {
                 <span className="text-[#389456]">
                   Perspectives
                 </span>
-                <span className="font-urdu block text-2xl sm:text-3xl lg:text-4xl text-[#f3ae29] font-normal mt-2">
-                  ہمت کار بلاگ اور تحریریں
-                </span>
               </h1>
               <p className="text-base sm:text-lg text-[#d1e7d8] max-w-2xl font-normal leading-relaxed">
                 Explore articles on career development, technical interview prep, executive presence, and stories from Pakistan&apos;s youth ecosystem.

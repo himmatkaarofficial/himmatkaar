@@ -27,7 +27,6 @@ export default function SignUp() {
             </div>
             <div>
               <span className="font-serif-heading text-lg font-bold text-white block">HimmatKaar</span>
-              <span className="font-urdu text-xs text-[#f3ae29]">ہمت کار رجسٹریشن</span>
             </div>
           </div>
 

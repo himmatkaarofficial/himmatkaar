@@ -113,7 +113,7 @@ export default function Events() {
                 <span className="text-[#389456] italic">Summits &amp; Workshops!</span>
               </h1>
               <p className="text-base sm:text-xl text-[#d1e7d8] font-normal leading-relaxed mb-8">
-                Explore our past impact summits and upcoming masterclasses designed to build real-world leadership and skills across Pakistan. Click any event card to view full details.
+                Explore our past impact summits and upcoming masterclasses designed to build real-world leadership and skills in Faisalabad. Click any event card to view full details.
               </p>
               <div className="flex flex-wrap items-center gap-4">
                 <Link href="/events/upcoming" className="btn-gsap-cta flex items-center gap-2 !rounded-xl !py-3.5 !px-7">
@@ -232,7 +232,7 @@ export default function Events() {
                 Don&apos;t Miss Our Next Event
               </h2>
               <p className="text-base leading-relaxed text-[#a3caad] max-w-lg mb-8">
-                Reserve your seat for upcoming webinars, leadership workshops, and pitch competitions across Pakistan.
+                Reserve your seat for upcoming webinars, leadership workshops, and pitch competitions in Faisalabad.
               </p>
               <Link href="/events/upcoming" className="btn-gsap-cta inline-flex items-center gap-2 !rounded-xl !py-3.5 !px-8">
                 <span>View All Upcoming Events</span>

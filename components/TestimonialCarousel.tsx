@@ -106,13 +106,7 @@ export default function TestimonialCarousel() {
                   viewport={{ once: true }}
                   className="bg-[#0c2616] rounded-2xl p-6 sm:p-10 md:p-12 border border-[#1d442a] shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[340px]"
                 >
-                  {/* Urdu Calligraphy Background Watermark */}
-                  <div
-                    className="absolute -right-6 -bottom-8 font-urdu text-8xl sm:text-9xl text-[#2d7a46]/10 select-none pointer-events-none"
-                    dir="rtl"
-                  >
-                    ہمت کار
-                  </div>
+                  
 
                   <div>
                     {/* Top Row: Naked Quote Icon & Verified Member Badge */}

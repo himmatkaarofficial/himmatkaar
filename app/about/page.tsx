@@ -53,7 +53,7 @@ export default function About() {
       step: "03",
       title: "1,000+ Alumni Impact",
       tagline: "National Movement",
-      desc: "Empowered over 1,000 fellows from diverse educational backgrounds to secure meaningful corporate careers and community leadership across Pakistan.",
+      desc: "Empowered over 1,000 fellows from diverse educational backgrounds to secure meaningful corporate careers and community leadership in Faisalabad.",
     },
   ];
 
@@ -66,12 +66,6 @@ export default function About() {
         {/* ── 1. Hero / Page Header (Dark Forest Green with Urdu Watermark) ── */}
         <section className="bg-[#0a2012] pt-16 pb-20 sm:pt-20 sm:pb-24 relative border-b border-[#1d442a] overflow-hidden">
           <div className="absolute inset-0 bg-grid-subtle opacity-35 pointer-events-none" />
-          <div 
-            className="absolute -right-6 -bottom-8 font-urdu text-9xl sm:text-[180px] text-[#2d7a46]/10 select-none pointer-events-none" 
-            dir="rtl"
-          >
-            ہمت کار
-          </div>
 
           <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
@@ -126,14 +120,12 @@ export default function About() {
                   title: 'Our Mission',
                   text: 'To empower underserved youth with the corporate skills, entrepreneurial mindset, and confidence needed to succeed in competitive careers and become transformative leaders in their communities. We provide the tools; they bring the drive.',
                   badge: 'Mission Statement',
-                  urdu: 'ہمارا مقصد',
                 },
                 {
                   icon: <Eye size={32} className="text-[#2d7a46]" />,
                   title: 'Our Vision',
-                  text: "A Pakistan where every ambitious student has direct access to high-caliber mentorship, corporate networking, and live internship opportunities—enabling them to build meaningful careers and secure their socio-economic futures.",
+                  text: "An ecosystem where every ambitious student in Faisalabad has direct access to high-caliber mentorship, corporate networking, and live internship opportunities—enabling them to build meaningful careers and secure their socio-economic futures.",
                   badge: 'Long-term Vision',
-                  urdu: 'ہماری بصیرت',
                 },
               ].map((card, i) => (
                 <motion.div
@@ -148,7 +140,6 @@ export default function About() {
                     <span className="font-mono text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-[#e8f5ec] text-[#2d7a46] border border-[#a3caad]">
                       {card.badge}
                     </span>
-                    <span className="font-urdu text-sm text-[#2d7a46]" dir="rtl">{card.urdu}</span>
                   </div>
                   <div className="mb-4">{card.icon}</div>
                   <h3 className="font-serif-heading text-2xl sm:text-3xl font-bold text-[#07190e] mb-3 tracking-tight">
