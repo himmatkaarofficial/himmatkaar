@@ -11,7 +11,7 @@ const benefits = [
   { id: "training", title: "6-Month Leadership Curriculum", desc: "Structured intensive skill-building covering management, executive communication, and AI enablement.", icon: <BookOpen size={24} /> },
   { id: "mentorship", title: "1-on-1 Executive Mentorship", desc: "Weekly dedicated advisory sessions with corporate CXOs and experienced startup founders.", icon: <Users size={24} /> },
   { id: "workshops", title: "Exclusive Masterclasses", desc: "Hands-on masterclasses covering fullstack tools, growth frameworks, and product development.", icon: <Sparkles size={24} /> },
-  { id: "network", title: "National Alumni Network", desc: "Lifelong access to an influential peer circle and corporate partner talent pipelines across Pakistan.", icon: <Target size={24} /> },
+  { id: "network", title: "Faisalabad Alumni Network", desc: "Lifelong access to an influential peer circle and corporate partner talent pipelines in Faisalabad.", icon: <Target size={24} /> },
   { id: "certification", title: "Accredited Certification", desc: "Official verification of completion, executive endorsement, and talent referrals.", icon: <Award size={24} /> },
   { id: "placement", title: "Direct Career Placement", desc: "Fast-track candidate interviews with hiring partner organizations in tech, finance, and consulting.", icon: <Rocket size={24} /> },
 ];
@@ -27,12 +27,6 @@ export default function Fellowship() {
         {/* ── 1. Page Header (Dark Forest Green) ── */}
         <section className="bg-[#0a2012] pt-12 pb-16 sm:pt-16 sm:pb-20 border-b border-[#1d442a] relative overflow-hidden">
           <div className="absolute inset-0 bg-grid-subtle opacity-35 pointer-events-none" />
-          <div 
-            className="absolute -right-6 -bottom-8 font-urdu text-9xl sm:text-[180px] text-[#2d7a46]/10 select-none pointer-events-none" 
-            dir="rtl"
-          >
-            ہمت کار
-          </div>
 
           <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <Link href="/" className="inline-flex items-center gap-2 mb-6 text-xs font-mono text-[#a3caad] hover:text-white transition-colors uppercase">

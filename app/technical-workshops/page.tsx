@@ -25,12 +25,6 @@ export default function TechnicalWorkshopsPage() {
         {/* ── 1. Page Header (Dark Forest Green) ── */}
         <section className="bg-[#0a2012] pt-12 pb-16 sm:pt-16 sm:pb-20 border-b border-[#1d442a] relative overflow-hidden">
           <div className="absolute inset-0 bg-grid-subtle opacity-35 pointer-events-none" />
-          <div 
-            className="absolute -right-6 -bottom-8 font-urdu text-9xl sm:text-[180px] text-[#2d7a46]/10 select-none pointer-events-none" 
-            dir="rtl"
-          >
-            ہمت کار
-          </div>
 
           <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <Link href="/" className="inline-flex items-center gap-2 mb-6 text-xs font-mono text-[#a3caad] hover:text-white transition-colors uppercase">

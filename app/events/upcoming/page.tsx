@@ -113,7 +113,7 @@ export default function UpcomingEvents() {
                 <span className="text-[#389456] italic">Events &amp; Summits!</span>
               </h1>
               <p className="text-base sm:text-xl text-[#d1e7d8] font-normal leading-relaxed mb-8">
-                Reserve your seat for upcoming masterclasses, pitch competitions, and fellowship conventions across Pakistan. Click any event card to view full schedule and register.
+                Reserve your seat for upcoming masterclasses, pitch competitions, and fellowship conventions in Faisalabad. Click any event card to view full schedule and register.
               </p>
             </motion.div>
           </div>

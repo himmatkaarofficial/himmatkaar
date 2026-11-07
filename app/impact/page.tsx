@@ -12,7 +12,7 @@ export default function Impact() {
   const [activeRippleIndex, setActiveRippleIndex] = useState<number | null>(0);
 
   const mainStats = [
-    { icon: <Users className="w-8 h-8" />, number: "1,000+", label: "Fellows Empowered", desc: "Students from diverse universities and backgrounds across Pakistan.", tag: "National Reach" },
+    { icon: <Users className="w-8 h-8" />, number: "1,000+", label: "Fellows Empowered", desc: "Students from diverse universities and colleges across Faisalabad.", tag: "Faisalabad Reach" },
     { icon: <TrendingUp className="w-8 h-8" />, number: "85%", label: "Career Placement Rate", desc: "Secured meaningful employment or paid internships within 90 days.", tag: "Employment" },
     { icon: <Award className="w-8 h-8" />, number: "75%", label: "Skills Improvement Index", desc: "Average measurable growth in technical and executive competencies.", tag: "Competency" }
   ];
@@ -32,9 +32,9 @@ export default function Impact() {
     },
     { 
       icon: <Globe className="w-6 h-6" />, 
-      title: "National Geographic Reach", 
-      stats: ["Ambitious fellows representing 125+ universities", "Representing over 170+ towns and villages in Pakistan", "Active alumni clusters in Lahore, Faisalabad, and Islamabad"],
-      tag: "Reach"
+      title: "Faisalabad Regional Footprint",
+      stats: ["Ambitious fellows representing campuses across Faisalabad", "Representing youth from all sectors of Faisalabad", "Active local alumni clusters across Faisalabad"],
+      tag: "Faisalabad Reach"
     },
     { 
       icon: <Users className="w-6 h-6" />, 
@@ -53,12 +53,6 @@ export default function Impact() {
         {/* ── 1. Hero Section (Dark Forest Green) ── */}
         <section className="bg-[#0a2012] py-16 sm:py-20 px-4 sm:px-6 lg:px-8 relative z-10 border-b border-[#1d442a] overflow-hidden">
           <div className="absolute inset-0 bg-grid-subtle opacity-35 pointer-events-none" />
-          <div 
-            className="absolute -right-6 -bottom-8 font-urdu text-9xl sm:text-[180px] text-[#2d7a46]/10 select-none pointer-events-none" 
-            dir="rtl"
-          >
-            ہمت کار
-          </div>
 
           <div className="max-w-[1280px] mx-auto text-center relative z-10">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
@@ -74,7 +68,7 @@ export default function Impact() {
                 </span>
               </h1>
               <p className="text-base sm:text-lg lg:text-xl text-[#a3caad] max-w-2xl mx-auto leading-relaxed font-normal">
-                At HimmatKaar, data tells a story. Our impact isn&apos;t just measured in numbers, but in careers launched, lives transformed, and communities uplifted across Pakistan.
+                At HimmatKaar, data tells a story. Our impact isn&apos;t just measured in numbers, but in careers launched, lives transformed, and communities uplifted across Faisalabad.
               </p>
             </motion.div>
           </div>

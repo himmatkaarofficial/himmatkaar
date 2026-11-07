@@ -31,7 +31,7 @@ const DEFAULT_CORE_TEAM: TeamMember[] = [
     id: "1",
     name: "Salman Khan",
     role: "Founder & Executive Director",
-    bio: "Career mentor and visionary driving youth empowerment and industry readiness across Pakistan.",
+    bio: "Career mentor and visionary driving youth empowerment and industry readiness in Faisalabad.",
     image: "/team/founder.jpeg",
     linkedin: "https://linkedin.com",
   },
@@ -193,9 +193,6 @@ export default function CoreTeamPage() {
                 Meet All Our{" "}
                 <span className="text-[#389456]">
                   Teammates
-                </span>
-                <span className="font-urdu block text-2xl sm:text-3xl lg:text-4xl text-[#f3ae29] font-normal mt-2">
-                  ہمت کار لیڈرشپ
                 </span>
               </h1>
               <p className="text-base sm:text-lg text-[#d1e7d8] max-w-2xl font-normal leading-relaxed">
@@ -412,7 +409,7 @@ export default function CoreTeamPage() {
               Want to Join the HimmatKaar Team?
             </h2>
             <p className="text-base text-[#d1e7d8] max-w-xl mx-auto mb-8 font-normal leading-relaxed">
-              We are continually expanding our facilitator network, campus leads, and strategic advisors across Pakistan.
+              We are continually expanding our facilitator network, campus leads, and strategic advisors in Faisalabad.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link

@@ -27,7 +27,7 @@ export default function Contact() {
   const contactItems = [
     { icon: Mail, title: 'Email Us', items: ['hello@himmatkaar.com', 'admissions@himmatkaar.com'], note: 'Direct email support within 24 hours' },
     { icon: Phone, title: 'Helpline & WhatsApp', items: ['0342-4853908', 'Mon–Fri, 9am–5pm PKT'], note: 'Direct WhatsApp and voice admissions query' },
-    { icon: MapPin, title: 'Nationwide Footprint', items: ['Remote & Hybrid Hubs', 'Serving students in 15+ cities'], note: 'On-ground campus workshops & virtual cohorts' },
+    { icon: MapPin, title: 'Faisalabad Headquarters', items: ['Faisalabad, Pakistan', 'Local Campus Hubs'], note: 'On-ground campus workshops & local cohorts' },
   ];
 
   const timeline = [
@@ -55,9 +55,6 @@ export default function Contact() {
                 Start Your{" "}
                 <span className="text-[#389456]">
                   Journey
-                </span>
-                <span className="font-urdu block text-2xl sm:text-3xl lg:text-4xl text-[#f3ae29] font-normal mt-2">
-                  ہم سے رابطہ کریں
                 </span>
               </h1>
               <p className="text-base sm:text-lg text-[#d1e7d8] max-w-2xl font-normal leading-relaxed">

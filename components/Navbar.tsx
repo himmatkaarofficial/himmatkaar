@@ -105,9 +105,6 @@ export default function Navbar() {
                 <span className="text-lg sm:text-xl font-bold text-white tracking-tight leading-none">
                   Himmatkaar
                 </span>
-                <span className="font-urdu text-sm text-[#a3caad] leading-none opacity-90 hidden xs:inline" dir="rtl">
-                  ہمت کار
-                </span>
               </div>
               <span className="text-[10px] font-mono tracking-widest text-[#f3ae29] font-medium uppercase mt-0.5">
                 Empowering Youth

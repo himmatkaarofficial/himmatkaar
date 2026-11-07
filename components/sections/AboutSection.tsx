@@ -18,16 +18,14 @@ const CONCEPTS = [
   {
     id: "youth",
     label: "Youth",
-    urdu: "نوجوان",
     icon: <Users size={20} />,
     title: "Youth Transformation",
     tagline: "Unlocking bold potential",
-    description: "Empowering university students and ambitious youth across Pakistan with competitive skills, high-level confidence, and strategic networks."
+    description: "Empowering university students and ambitious youth in Faisalabad with competitive skills, high-level confidence, and strategic networks."
   },
   {
     id: "skills",
     label: "Skills",
-    urdu: "مہارتیں",
     icon: <Sparkles size={20} />,
     title: "In-Demand Capabilities",
     tagline: "Corporate & technical mastery",
@@ -36,7 +34,6 @@ const CONCEPTS = [
   {
     id: "mentorship",
     label: "Mentorship",
-    urdu: "رہنمائی",
     icon: <Compass size={20} />,
     title: "1-on-1 Guidance",
     tagline: "Direct industry connections",
@@ -45,7 +42,6 @@ const CONCEPTS = [
   {
     id: "community",
     label: "Community",
-    urdu: "برادری",
     icon: <HeartHandshake size={20} />,
     title: "Vibrant Ecosystem",
     tagline: "Lifelong collaborative network",
@@ -54,7 +50,6 @@ const CONCEPTS = [
   {
     id: "ideas",
     label: "Ideas",
-    urdu: "نظریات",
     icon: <Lightbulb size={20} />,
     title: "Innovation & Ventures",
     tagline: "Converting thoughts to execution",
@@ -63,7 +58,6 @@ const CONCEPTS = [
   {
     id: "change",
     label: "Change",
-    urdu: "تبدیلی",
     icon: <Award size={20} />,
     title: "Regional & Social Impact",
     tagline: "Leading meaningful progress",
@@ -87,7 +81,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
   const pillars = [
     { title: "Mentorship", desc: "Executive 1-on-1 career guidance with seasoned corporate leaders", tag: "Pillar 01" },
     { title: "Skill Building", desc: "Hands-on technical & corporate readiness masterclasses", tag: "Pillar 02" },
-    { title: "Community", desc: "Lifelong collaborative changemaker network across Pakistan", tag: "Pillar 03" },
+    { title: "Community", desc: "Lifelong collaborative changemaker network in Faisalabad", tag: "Pillar 03" },
   ];
 
   return (
@@ -140,10 +134,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#07190e]/70 via-transparent to-transparent" />
                 
-                {/* Urdu badge */}
-                <div className="absolute bottom-4 left-4 px-3.5 py-1.5 rounded-lg bg-white/95 border border-[#d8e6db] backdrop-blur-md shadow-md">
-                  <span className="font-urdu text-sm text-[#2d7a46] font-bold" dir="rtl">ہمت کار — پاکستان</span>
-                </div>
+                
               </div>
 
               {/* Stats Cards (White surfaces with dark text & gold accents) */}
@@ -226,9 +217,6 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                       Interactive Concept Explorer
                     </span>
                   </div>
-                  <span className="font-urdu text-sm text-[#2d7a46] font-semibold" dir="rtl">
-                    ہمت کار
-                  </span>
                 </div>
 
                 {/* Concept Selector Buttons (Click to change color and preview) */}
@@ -273,9 +261,6 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                           {activeConcept.tagline}
                         </p>
                       </div>
-                      <span className="font-urdu text-2xl text-[#f3ae29]/30 select-none" dir="rtl">
-                        {activeConcept.urdu}
-                      </span>
                     </div>
                     <p className="text-sm sm:text-base leading-relaxed text-[#d1e7d8]">
                       {activeConcept.description}

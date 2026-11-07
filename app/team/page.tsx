@@ -92,8 +92,8 @@ const DEFAULT_AMBASSADORS: Ambassador[] = [
     id: "1",
     name: "Ayesha Khan",
     role: "Campus Ambassador",
-    city: "Lahore",
-    bio: "Representing Himmatkaar at UET Lahore and driving student engagement initiatives.",
+    city: "Faisalabad",
+    bio: "Representing Himmatkaar at University of Agriculture Faisalabad (UAF) and driving student engagement initiatives.",
     image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
     linkedin: "https://linkedin.com",
   },
@@ -101,8 +101,8 @@ const DEFAULT_AMBASSADORS: Ambassador[] = [
     id: "2",
     name: "Hamza Ali",
     role: "Campus Ambassador",
-    city: "Islamabad",
-    bio: "Building tech community connections and hosting peer learning workshops at FAST Islamabad.",
+    city: "Faisalabad",
+    bio: "Building tech community connections and hosting peer learning workshops at National Textile University (NTU) Faisalabad.",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
     linkedin: "https://linkedin.com",
   },
@@ -119,8 +119,8 @@ const DEFAULT_AMBASSADORS: Ambassador[] = [
     id: "4",
     name: "Bilal Ahmed",
     role: "Campus Ambassador",
-    city: "Karachi",
-    bio: "Fostering entrepreneurial networks and campus events at NED University Karachi.",
+    city: "Faisalabad",
+    bio: "Fostering entrepreneurial networks and campus events at GC University Faisalabad (GCUF).",
     image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80",
     linkedin: "https://linkedin.com",
   },
@@ -237,7 +237,7 @@ export default function Team() {
                 </span>
               </h1>
               <p className="text-base sm:text-lg lg:text-xl leading-relaxed text-[#d1e7d8] max-w-2xl font-normal">
-                Our dedicated team of professionals is committed to empowering youth across Pakistan and creating lasting impact in local communities.
+                Our dedicated team of professionals is committed to empowering youth in Faisalabad and creating lasting impact in local communities.
               </p>
             </motion.div>
           </div>
@@ -380,7 +380,7 @@ export default function Team() {
                   Campus <span className="text-[#2d7a46] italic">Ambassadors!</span>
                 </h2>
                 <p className="text-base sm:text-lg text-[#3a5342] font-normal leading-relaxed mt-2">
-                  Our student leaders driving impact across Pakistan&apos;s leading universities. Click any card to select.
+                  Our student leaders driving impact across Faisalabad&apos;s leading universities. Click any card to select.
                 </p>
               </div>
               <Link href="/ambassadors" className="btn-gsap-ghost !text-[#07190e] !border-[#d8e6db] hover:!border-[#2d7a46] inline-flex items-center gap-2 !rounded-xl">

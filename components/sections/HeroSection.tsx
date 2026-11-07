@@ -9,7 +9,6 @@ import { ChevronLeft, ChevronRight, ArrowUpRight, Zap, Users, BookOpen } from "l
 interface HeroSectionProps {
   badge?: string;
   headline: string;
-  urduHeadline?: string;
   primaryCTA: { text: string; href?: string };
   secondaryCTA: { text: string; href: string };
   heroImages: string[];
@@ -19,7 +18,6 @@ interface HeroSectionProps {
 export const HeroSection: React.FC<HeroSectionProps> = ({
   badge = "FAISALABAD'S LEADING YOUTH EMPOWERMENT PLATFORM",
   headline = "Evolve Your Future with Himmatkaar!",
-  urduHeadline = "ہمت کار",
   primaryCTA,
   secondaryCTA,
   heroImages,
@@ -70,13 +68,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0a2012]/90 via-transparent to-black/20" />
       <div className="absolute inset-0 z-10 bg-radial-grid opacity-30 pointer-events-none" />
 
-      {/* Urdu Calligraphy Watermark (Background Graphic) */}
-      <div 
-        className="absolute right-2 sm:right-6 lg:right-20 top-1/4 z-10 font-urdu text-7xl sm:text-9xl lg:text-[200px] text-[#2d7a46]/15 select-none pointer-events-none leading-none"
-        dir="rtl"
-      >
-        {urduHeadline}
-      </div>
+      
 
       {/* Hero Content Container */}
       <div className="relative z-20 max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-8 pb-12 sm:pt-12 sm:pb-16">

@@ -28,7 +28,7 @@
 
 ## 1. Project Overview
 
-**HimmatKaar** (ہمت کار) is Faisalabad's premier youth empowerment platform. It serves the youth of Faisalabad and surrounding regions in Pakistan, with the mission of cultivating the next generation of leaders through mentorship, skill development, and community engagement.
+**HimmatKaar** is Faisalabad's premier youth empowerment platform. It serves the youth of Faisalabad and surrounding regions in Pakistan, with the mission of cultivating the next generation of leaders through mentorship, skill development, and community engagement.
 
 ### Mission
 > *"To cultivate a strong resource pool to support young innovators and change-makers across Pakistan, helping them transform their ideas into impactful initiatives that benefit their communities."*
@@ -99,7 +99,7 @@ Three Google Fonts are loaded globally via `next/font`:
 |---|---|---|
 | **Playfair Display** | `--font-display` | Headings, titles |
 | **Montserrat** | `--font-body` | Body text, UI elements |
-| **Noto Nastaliq Urdu** | `--font-urdu` | Urdu language text (ہمت کار) |
+| **Noto Nastaliq Urdu** | `--font-urdu` | Urdu language text |
 
 ### Font Sizes (Tokens)
 - `--font-size-hero`: `64px`

@@ -717,7 +717,7 @@ function LaunchpadContent() {
                     { icon: <Target size={28} />, title: "Career Purpose & Growth Path", desc: "Identify your career purpose and personal growth trajectory with clarity, confidence, and structured roadmap.", tag: "Goal Setting" },
                     { icon: <DollarSign size={28} />, title: "Job-Ready Documents", desc: "Develop executive documents including CV, LinkedIn profile, and digital portfolio that command attention from recruiters.", tag: "Branding" },
                     { icon: <Network size={28} />, title: "Interview & Communication", desc: "Master interview frameworks, public speaking, and executive correspondence for corporate boardrooms.", tag: "Soft Skills" },
-                    { icon: <Lightbulb size={28} />, title: "Professional Networks", desc: "Build and leverage high-level industry relationships with mentors, founders, and peers across Pakistan.", tag: "Networking" },
+                    { icon: <Lightbulb size={28} />, title: "Professional Networks", desc: "Build and leverage high-level industry relationships with mentors, founders, and peers in Faisalabad.", tag: "Networking" },
                     { icon: <TrendingUp size={28} />, title: "Essential Soft Skills", desc: "Understand sales mindset, active listening, teamwork, and modern workplace adaptability.", tag: "Mindset" },
                     { icon: <Rocket size={28} />, title: "AI & Automation Tools", desc: "Apply cutting-edge AI, prompting, and automation tools for maximum productivity and competitive edge.", tag: "Technology" }
                   ].map((benefit, index) => {
